@@ -1,0 +1,9 @@
+schedulers:
+  zhuque:
+    - jiantingxxx
+scripts:
+  zhuque:
+    - redpocket
+    - dajie
+  ssd:
+    - transform
