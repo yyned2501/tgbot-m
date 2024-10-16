@@ -1,7 +1,7 @@
-from sqlalchemy import BigInteger
+from sqlalchemy import BigInteger, DateTime, func
 from sqlalchemy.orm import mapped_column, DeclarativeBase, Mapped
 from sqlalchemy.ext.asyncio import AsyncAttrs
 
 
 class Base(AsyncAttrs, DeclarativeBase):
-    id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
+    create_time: Mapped[int] = mapped_column(DateTime, default=func.now())

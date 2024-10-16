@@ -1,0 +1,12 @@
+tg:
+  api_id: 123
+  api_hash: xxx
+redis:
+  host: 192.168.31.10
+  port: 6379
+  db: 0
+mysql:
+  host: 192.168.31.10
+  db: tgbot
+  user: xxx
+  password: xxx

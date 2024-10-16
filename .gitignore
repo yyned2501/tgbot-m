@@ -1,3 +1,7 @@
 .venv/
 __pycache__
 config/
+
+test*
+tgbot.session
+*.log
