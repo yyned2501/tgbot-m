@@ -1,3 +1,4 @@
+import asyncio
 import json
 import re
 from pyrogram import filters, Client
@@ -19,7 +20,7 @@ async def in_redpockets_filter(_, __, m: Message):
 @app.on_message(
     filters.chat(TARGET)
     & custom_filters.zhuque_bot
-    & filters.regex(r"内容: (.*)\n灵石: .*\n余: .*\n大善人: (.*)")
+    & filters.regex(r"内容: (.*)\n灵石: .*\n剩余: .*\n大善人: (.*)")
 )
 async def get_redpocket_gen(client: Client, message: Message):
     match = message.matches[0]

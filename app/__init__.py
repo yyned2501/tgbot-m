@@ -11,7 +11,9 @@ os.environ["TZ"] = "Asia/Shanghai"
 scheduler = AsyncIOScheduler()
 scheduler.start()
 app = Client(
-    "tgbot", api_id=setting["tg"]["api_id"], api_hash=setting["tg"]["api_hash"]
+    "tgbot",
+    api_id=setting["tg"]["api_id"],
+    api_hash=setting["tg"]["api_hash"],
 )
 redis_cli = redis.Redis(
     host=setting["redis"]["host"],
