@@ -35,9 +35,10 @@ async def get_redpocket_gen(client: Client, message: Message):
                 return await client.send_message(
                     TARGET, f"感谢大善人 {from_user} 的红包~\n感谢 {bonus} 零食的打赏~"
                 )
+        await asyncio.sleep(1)
 
 
 @app.on_message(filters.me & filters.command("message") & filters.reply)
 async def getmessage(client: Client, message: Message):
     await message.delete()
-    logger.info(str(message.reply_to_message))
+    logger.info(str(message.reply_to_message.text))
