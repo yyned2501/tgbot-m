@@ -1,6 +1,6 @@
 from pyrogram import idle
 
-from app import app, models
+from app import app, models, scripts
 
 
 async def main():

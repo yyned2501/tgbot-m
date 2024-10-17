@@ -1,11 +1,17 @@
 import logging
+from logging.handlers import RotatingFileHandler
 
 
-formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+formatter = logging.Formatter(
+    "[%(levelname)s] %(asctime)s - %(filename)s - %(message)s"
+)
 
-scheduler_logger = logging.getLogger("main")
-scheduler_logger.setLevel(logging.DEBUG)
-scheduler_handler = logging.FileHandler("main.log")
-scheduler_handler.setLevel(logging.INFO)
-scheduler_handler.setFormatter(formatter)
-scheduler_logger.addHandler(scheduler_handler)
+
+logger = logging.getLogger("main")
+logger.setLevel(logging.INFO)
+file_handler = RotatingFileHandler("main.log", maxBytes=10 * 1024 * 1024, backupCount=5)
+file_handler.setFormatter(formatter)
+logger.addHandler(file_handler)
+console_handler = logging.StreamHandler()
+console_handler.setFormatter(formatter)
+logger.addHandler(console_handler)

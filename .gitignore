@@ -3,5 +3,5 @@ __pycache__
 config/
 
 test*
-tgbot.session
+*.session*
 *.log
