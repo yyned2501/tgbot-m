@@ -29,16 +29,18 @@ async def get_redpocket_gen(client: Client, message: Message):
         d += 1
         x = 0
     else:
-        n *= 2
+        n = 2 * n + 1
         d = 0
         x += 1
-    if d>2:
-        r=f"连续{d}次大"
-    else:
-        r=f"连续{x}次小"
+    r = None
+    if d > 2:
+        r = f"连续{d}次大"
+    elif x > 2:
+        r = f"连续{x}次小"
 
     await client.send_message(TARGET, "/ydx")
-    await client.send_message(-1002114116260,r)
+    if r:
+        await client.send_message(-1002114116260, r)
 
 
 @app.on_message(
