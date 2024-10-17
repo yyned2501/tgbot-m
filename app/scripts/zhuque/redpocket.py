@@ -26,8 +26,8 @@ async def in_redpockets_filter(_, __, m: Message):
     filters.chat(TARGET) & custom_filters.zhuque_bot & filters.regex(r"内容: (.*)\n灵石: .*\n剩余: .*\n大善人: (.*)")
 )
 async def get_redpocket_gen(client: Client, message: Message):
-    redpocket_message = message.group(1)
-    from_user = message.group(2)
+    match = message.matches[0]
+    from_user = match.group(2)
     button_reply = await message.click(0)
     reply_dict = json.loads(button_reply)
     while True:
