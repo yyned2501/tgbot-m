@@ -23,19 +23,24 @@ async def in_redpockets_filter(_, __, m: Message):
 
 
 @app.on_message(
-    filters.chat(TARGET) & custom_filters.zhuque_bot & filters.regex(r"内容: (.*)\n灵石: .*\n剩余: .*\n大善人: (.*)")
+    filters.chat(TARGET)
+    & custom_filters.zhuque_bot
+    & filters.regex(r"内容: (.*)\n灵石: .*\n剩余: .*\n大善人: (.*)")
 )
 async def get_redpocket_gen(client: Client, message: Message):
     match = message.matches[0]
     from_user = match.group(2)
     button_reply = await message.click(0)
-    reply_dict = json.loads(button_reply)
+    reply_dict = json.loads(str(button_reply))
     while True:
         if reply_dict.get("message"):
-            match = re.search(r"已获得 (\d+) 灵石", reply_dict.get("message")) 
+            match = re.search(r"已获得 (\d+) 灵石", reply_dict.get("message"))
             if match:
                 bonus = match.group(1)
-                return await client.send_message(TARGET, f"感谢大善人 {from_user} 的红包~\n感谢 {bonus} 零食的打赏~")
+                return await client.send_message(
+                    TARGET, f"感谢大善人 {from_user} 的红包~\n感谢 {bonus} 零食的打赏~"
+                )
+
 
 @app.on_message(filters.me & filters.command("message") & filters.reply)
 async def getmessage(client: Client, message: Message):
