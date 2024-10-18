@@ -54,3 +54,14 @@ async def get_redpocket_gen(client: Client, message: Message):
 async def getmessage(client: Client, message: Message):
     await message.delete()
     logger.info(str(message.reply_to_message.text))
+
+@app.on_message(filters.me & filters.command("add2"))
+async def getmessage(client: Client, message: Message):
+    async with ASession() as session:
+        async with session.begin():
+            redpocket = await Redpocket.add("zhuque", 1, session)
+            ret_str = f"""```红包 1 领取成功
+成功领取口令红包 1 灵石
+今日领取口令红包 {redpocket.today_bonus} 灵石
+累计领取口令红包 {redpocket.total_bonus} 灵石```"""
+            await client.send_message("me", ret_str)

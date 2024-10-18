@@ -3,7 +3,7 @@ from logging.handlers import RotatingFileHandler
 
 
 formatter = logging.Formatter(
-    "[%(levelname)s] %(asctime)s - %(filename)s - %(message)s"
+    "[%(levelname)s] %(asctime)s - %(name)s - %(message)s"
 )
 
 

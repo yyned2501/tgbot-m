@@ -29,7 +29,7 @@ async def get_redpocket_gen(client: Client, message: Message):
         d += 1
         x = 0
     else:
-        n = 2 * n + 1
+        n = int(2 * n / 0.975) + 1
         d = 0
         x += 1
     r = None
