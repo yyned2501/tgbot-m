@@ -12,7 +12,8 @@ TARGET = -1001833464786
 n = 1
 d = 0
 x = 0
-lds = 0
+ldx = 0
+
 
 @app.on_message(
     filters.chat(TARGET)
@@ -22,7 +23,7 @@ lds = 0
 async def get_redpocket_gen(client: Client, message: Message):
     match = message.matches[0]
     dx = match.group(1)
-    global n, d, x,ldx
+    global n, d, x, ldx
     if dx == ldx:
         n = 1
     else:
@@ -49,7 +50,7 @@ async def get_redpocket_gen(client: Client, message: Message):
 async def get_redpocket_gen(client: Client, message: Message):
     d = random.randint(0, 1)
     global ldx
-    ldx="大" if d==1 else "小"
+    ldx = "大" if d == 1 else "小"
     for _ in range(n):
         await message.click(d, 4)
 
