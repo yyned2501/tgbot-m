@@ -36,8 +36,7 @@ async def get_redpocket_gen(client: Client, message: Message):
                 return
             match = re.search(r"已获得 (\d+) 灵石", m)
             if match:
-                bonus = match.group(1)
-
+                bonus = int(match.group(1))
                 async with ASession() as session:
                     async with session.begin():
                         redpocket = await Redpocket.add("zhuque", bonus, session)
@@ -54,6 +53,7 @@ async def get_redpocket_gen(client: Client, message: Message):
 async def getmessage(client: Client, message: Message):
     await message.delete()
     logger.info(str(message.reply_to_message.text))
+
 
 @app.on_message(filters.me & filters.command("add2"))
 async def getmessage(client: Client, message: Message):

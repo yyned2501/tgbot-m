@@ -49,4 +49,4 @@ async def get_redpocket_gen(client: Client, message: Message):
 async def get_redpocket_gen(client: Client, message: Message):
     for _ in range(n):
         await message.click(1, 4)
-        await asyncio.sleep(1)
+        # await asyncio.sleep(1)
