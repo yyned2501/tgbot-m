@@ -8,7 +8,7 @@ from app import app, logger
 from app.models import ASession
 from app.models.redpocket import Redpocket
 from app.filters import custom_filters
-
+from app.config import setting
 
 TARGET = -1001833464786
 
@@ -27,8 +27,6 @@ async def in_redpockets_filter(_, __, m: Message):
 async def get_redpocket_gen(client: Client, message: Message):
     match = message.matches[0]
     content = match.group(1)
-    from_user = match.group(2)
-
     while True:
         button_reply = await message.click(0)
         if m := button_reply.message:
@@ -40,28 +38,12 @@ async def get_redpocket_gen(client: Client, message: Message):
                 async with ASession() as session:
                     async with session.begin():
                         redpocket = await Redpocket.add("zhuque", bonus, session)
-                        ret_str = f"""```红包 {content} 领取成功
+                        ret_str = f"""```朱雀红包 {content} 领取成功
 成功领取口令红包 {bonus} 灵石
 今日领取口令红包 {redpocket.today_bonus} 灵石
 累计领取口令红包 {redpocket.total_bonus} 灵石```"""
-                        await client.send_message("me", ret_str)
+                        await client.send_message(
+                            setting["zhuque"]["redpocket"]["push_chat_id"], ret_str
+                        )
                 return
         await asyncio.sleep(1)
-
-
-@app.on_message(filters.me & filters.command("message") & filters.reply)
-async def getmessage(client: Client, message: Message):
-    await message.delete()
-    logger.info(str(message.reply_to_message.text))
-
-
-@app.on_message(filters.me & filters.command("add2"))
-async def getmessage(client: Client, message: Message):
-    async with ASession() as session:
-        async with session.begin():
-            redpocket = await Redpocket.add("zhuque", 1, session)
-            ret_str = f"""```红包 1 领取成功
-成功领取口令红包 1 灵石
-今日领取口令红包 {redpocket.today_bonus} 灵石
-累计领取口令红包 {redpocket.total_bonus} 灵石```"""
-            await client.send_message("me", ret_str)

@@ -10,8 +10,9 @@ mysql:
   db: tgbot
   user: xxx
   password: xxx
-zhuque_redpocket:
-  retry_count: 20
-  sleep_time_max: 20
-  sleep_time_min: 10
-  push_chat_id: "me"
+zhuque:
+  redpocket:
+    push_chat_id: "me"
+redleaves:
+  redpocket:
+    push_chat_id: "me"

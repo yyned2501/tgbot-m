@@ -1,6 +1,3 @@
-import asyncio
-import json
-import re
 from pyrogram import filters, Client
 from pyrogram.types.messages_and_media import Message
 
@@ -33,12 +30,12 @@ async def get_redpocket_gen(client: Client, message: Message):
         d = 0
         x += 1
     r = None
-    if d > 2:
+    if d > 1:
         r = f"连续{d}次大"
-    elif x > 2:
+    elif x > 1:
         r = f"连续{x}次小"
 
-    await client.send_message(TARGET, "/ydx")
+    # await client.send_message(TARGET, "/ydx")
     if r:
         await client.send_message(-1002114116260, r)
 
@@ -49,4 +46,3 @@ async def get_redpocket_gen(client: Client, message: Message):
 async def get_redpocket_gen(client: Client, message: Message):
     for _ in range(n):
         await message.click(1, 4)
-        # await asyncio.sleep(1)
