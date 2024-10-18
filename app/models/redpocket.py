@@ -39,18 +39,6 @@ class Redpocket(Base):
     __tablename__ = "redpockets"
     id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
     site: Mapped[str] = mapped_column(String(32))
-    bonus: Mapped[float] = mapped_column(Float)
-    message: Mapped[str] = mapped_column(Text)
-
-    @classmethod
-    async def add(cls, site: str, bonus: float, message: str):
-        return cls(site=site, bonus=bonus, message=message)
-
-
-class RedpocketSum(Base):
-    __tablename__ = "redpockets_sum"
-    id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
-    site: Mapped[str] = mapped_column(String(32))
     today_bonus: Mapped[float] = mapped_column(Float)
     total_bonus: Mapped[str] = mapped_column(Text)
     update_time: Mapped[datetime.datetime] = mapped_column(DateTime)
@@ -63,7 +51,8 @@ class RedpocketSum(Base):
         if not self:
             self = cls(site=site, today_bonus=0, total_bonus=0)
             session.add(self)
-        self.add_(bonus)
+        await self.add_(bonus)
+        return self
 
     async def add_(self, bonus: float):
         if not is_today(self.update_time):
