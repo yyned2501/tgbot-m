@@ -63,7 +63,7 @@ async def zhuque_ydx_switch(client: Client, message: Message):
                     await message.edit(f"自动开盘启动！！！！。。。")
                     await asyncio.sleep(5)
                     await message.delete()
-                elif message.command[2] == 'on':
+                elif message.command[2] == 'off':
                     kp_switch = 0
                     await message.edit(f"自动开盘关闭！！！！。。。")
                     await asyncio.sleep(5)
@@ -88,7 +88,7 @@ async def zhuque_ydx_switch(client: Client, message: Message):
                     await message.delete()
                 elif message.command[2] == 'd':
                     bet_mode = 'D'
-                    await message.edit(f"mode c 启动！！！！。。。")
+                    await message.edit(f"mode d 启动！！！！。。。")
                     await asyncio.sleep(5)
                     await message.delete()
 
