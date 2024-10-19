@@ -223,10 +223,6 @@ async def zhuque_ydx_bet(client: Client, message: Message):
                         await app.send_message(TARGET,f"破产了")
                         return
 
-
-
-
-
 async def listofWinners_check(message: Message, target_username: str) -> bool:
     for entity in message.entities:
         if entity.user:
