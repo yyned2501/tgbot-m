@@ -47,10 +47,11 @@ async def zhuque_ydx_switch(client: Client, message: Message):
 
         elif message.command[1] == "set":
             if len(message.command) >= 3:
-                if message.command[2].isdigit():
-                    if (int(message.command[1]) < 100000
-                            and int(message.command[1]) >= 500):
-                        start_bouns = int(message.command[1])
+                bonus = message.command[2]
+                if bonus.isdigit():
+                    bonus = int(bonus)
+                    if 500 <= bonus < 100000:
+                        start_bouns = bonus
                         await message.edit(f"底注 {start_bouns} 设置成功！。。。")
                         await asyncio.sleep(5)
                         await message.delete()
