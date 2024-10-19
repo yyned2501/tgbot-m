@@ -133,14 +133,12 @@ async def zhuque_ydx_check(client: Client, message: Message):
 
         win_check = await listofWinners_check(message, setting['tg']['username'])
         if win_check:
-            re_mess = f"**[胜]** 本次实际下注 {rele_betbouns} , 本次投注盈利: {rele_betbouns * 0.99}, **连续判胜: {
-                win_times} 次**, 本轮追投盈利: {thisround_winbouns} ,**[本轮共计追投 {add_bet_times} 次]** , **[{re_message}]**"
+            re_mess = f"**[胜]** 本次实际下注 {rele_betbouns} , 本次投注盈利: {rele_betbouns * 0.99}, **连续判胜: {win_times} 次**, 本轮追投盈利: {thisround_winbouns} ,**[本轮共计追投 {add_bet_times} 次]** , **[{re_message}]**"
             logger.info(re_mess)
             rele_betbouns = 0
             await app.send_message(setting['GB_VAR']['GROUP_ID']['PRIVATE_ID'], re_mess)
         else:
-            re_mess = f"**[负]** 本次实际下注 {rele_betbouns} , 本次投注亏损: {rele_betbouns} , **连续判负: {
-                lose_times} 次**, 本轮追投累计亏损 {sum_losebouns} , **[{re_message}]**"
+            re_mess = f"**[负]** 本次实际下注 {rele_betbouns} , 本次投注亏损: {rele_betbouns} , **连续判负: {lose_times} 次**, 本轮追投累计亏损 {sum_losebouns} , **[{re_message}]**"
             logger.info(re_mess)
             rele_betbouns = 0
             await app.send_message(setting['GB_VAR']['GROUP_ID']['PRIVATE_ID'], re_mess)
@@ -165,15 +163,17 @@ async def zhuque_ydx_bet(client: Client, message: Message):
             flag = "s"
 
         elif bet_mode == 'C':  # 启动时追小，连败3败后追上次胜局，连败后3次后继续切上次胜的
-            if lose_times > 2:
-                if flag == "s":
-                    bet_point = "大"
-                    flag = "b"
-
+            if lose_times != 0:
+                if lose_times %  2 == 0:
+                    if flag == "s":
+                        bet_point="大"
+                        flag = "b"                    
+                    else:
+                        bet_point="小"
+                        flag = "s"
                 else:
-                    bet_point = "小"
-                    flag = "s"
-
+                    bet_point = last_bet_point
+                    flag = last_flag
             else:
                 bet_point = last_bet_point
                 flag = last_flag
@@ -198,7 +198,10 @@ async def zhuque_ydx_bet(client: Client, message: Message):
         bet_values = [1000000, 250000, 50000, 20000, 5000, 2000, 500]
         bet_counts = []
         # 计算每个下注金额按钮点击次数
-        remaining_bouns = bet_bouns
+        if bet_bouns > 5000000:
+            remaining_bouns = 5000000
+        else:
+            remaining_bouns = bet_bouns 
         logger.info(f"remaining_bouns= {remaining_bouns}")
         for value in bet_values:
             count = remaining_bouns // value
@@ -211,8 +214,7 @@ async def zhuque_ydx_bet(client: Client, message: Message):
                 bet_value = bet_values[i]
                 callback_data = f'{{"t":"{flag}","b":{
                     int(bet_value)},"action":"ydxxz"}}'
-                logger.info(f"bet_value= {bet_value} count= {
-                            count} callback_data= {callback_data}")
+                logger.info(f"bet_value= {bet_value} count= {count} callback_data= {callback_data}")
                 for _ in range(count):
                     result_message = await app.request_callback_answer(message.chat.id, message.id, callback_data)
                     rele_betbouns += bet_value
