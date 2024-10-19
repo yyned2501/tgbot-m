@@ -1,6 +1,17 @@
 tg:
   api_id: 123
   api_hash: xxx
+  username: "xxxx"
+
+
+
+GB_VAR:
+  GROUP_ID:
+    PRIVATE_ID: -1,
+    TESET_ID: -2,
+
+
+
 redis:
   host: 192.168.31.10
   port: 6379
