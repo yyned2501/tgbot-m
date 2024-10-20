@@ -115,22 +115,22 @@ async def zhuque_ydx_check(client: Client, message: Message):
                     db.low_times += 1
                 re_message = None
                 if db.high_times >= 1:
-                    re_message = f"庄盘已连续开 “大” {db.high_times} 次"
+                    re_message = f"庄盘连 “大” **{db.high_times}** 次"
                 elif db.low_times >= 1:
-                    re_message = f"庄盘已连续开 “小” {db.low_times} 次"
+                    re_message = f"庄盘连 “小” **{db.low_times}** 次"
 
                 win_check = await listofWinners_check(
                     message, setting["tg"]["username"]
                 )
                 if win_check:
-                    re_mess = f"**[胜]** 本次实际下注 {db.rele_betbouns} , 本次投注盈利: {db.rele_betbouns * 0.99}, **连续判胜: {db.win_times} 次**, 本轮追投盈利: {thisround_winbouns} ,**[本轮共计追投 {db.add_bet_times} 次]** , **[{re_message}]**"
+                    re_mess = f"**[ 胜 ]** 连胜:**[ {db.win_times} ]**, 下注:**[ {db.bet_point} ]** 金额 {db.rele_betbouns} , 本次盈利: {db.rele_betbouns * 0.99}, 本轮追投盈利: {thisround_winbouns} ,**[本轮共计追投 {db.add_bet_times} 次]** , [{re_message}]"
                     logger.info(re_mess)
                     db.rele_betbouns = 0
                     await app.send_message(
                         setting["GB_VAR"]["GROUP_ID"]["PRIVATE_ID"], re_mess
                     )
                 else:
-                    re_mess = f"**[负]** 本次实际下注 {db.rele_betbouns} , 本次投注亏损: {db.rele_betbouns} , **连续判负: {db.lose_times} 次**, 本轮追投累计亏损 {db.sum_losebouns} , **[{re_message}]**"
+                    re_mess = f"**[ 负 ]** 连负:**[ {db.lose_times} ]**, 下注:**[ {db.bet_point} ]** 金额 {db.rele_betbouns} , 本次亏损: {db.rele_betbouns} , 本轮追投累计亏损 {db.sum_losebouns} , [{re_message}]"
                     logger.info(re_mess)
                     db.rele_betbouns = 0
                     await app.send_message(
