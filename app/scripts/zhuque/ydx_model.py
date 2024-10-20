@@ -107,9 +107,6 @@ async def zhuque_ydx_check(client: Client, message: Message):
                         db.lose_times += 1
                         db.win_times = 0
                         db.add_bet_times = 0
-                    db.bet_bouns = int(db.sum_losebouns / 0.99) + db.start_bouns * (
-                        db.lose_times + 1
-                    )
 
                 if Lottery_Point == "大":
                     db.high_times += 1
@@ -192,22 +189,22 @@ async def zhuque_ydx_bet(client: Client, message: Message):
                 db.last_bet_point = db.bet_point
                 db.last_flag = flag
                 # 计算下注金额
-                bet_bouns = int(db.sum_losebouns / 0.99) + db.start_bouns * (
+                bet_bonus = int(db.sum_losebouns / 0.99) + db.start_bouns * (
                     db.lose_times + 1
                 )
-                if bet_bouns == 0:
-                    bet_bouns = db.start_bouns
+                if bet_bonus == 0:
+                    bet_bonus = db.start_bouns
 
-                if bet_bouns // 5000000 > 1:
-                    bet_bouns = db.start_bouns
+                if bet_bonus // 5000000 > 1:
+                    bet_bonus = db.start_bouns
                 # 对应按钮金额
                 bet_values = [1000000, 250000, 50000, 20000, 5000, 2000, 500]
                 bet_counts = []
                 # 计算每个下注金额按钮点击次数
-                if bet_bouns > 5000000:
+                if bet_bonus > 5000000:
                     remaining_bouns = 5000000
                 else:
-                    remaining_bouns = bet_bouns
+                    remaining_bouns = bet_bonus
                 logger.info(f"remaining_bouns= {remaining_bouns}")
                 for value in bet_values:
                     count = remaining_bouns // value
