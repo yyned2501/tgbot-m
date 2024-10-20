@@ -41,7 +41,7 @@ class ZqYdx(Base):
     add_bet_times: Mapped[int] = mapped_column(Integer)
     last_bet_point: Mapped[str] = mapped_column(String(8))
     last_flag: Mapped[str] = mapped_column(String(8))
-    message_id: Mapped[int] = mapped_column(Integer)
+    message_id: Mapped[int] = mapped_column(Integer, nullable=True)
     update_time: Mapped[datetime.datetime] = mapped_column(DateTime)
 
     @classmethod
