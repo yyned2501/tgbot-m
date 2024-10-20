@@ -94,8 +94,7 @@ async def zhuque_ydx_check(client: Client, message: Message):
         async with session.begin():
             db = await session.get(ZqYdx, 1) or ZqYdx.init(session)
             if db.bet_switch == 1:
-
-                if db.bet_point != 0:
+                if db.bet_point != "":
                     if Lottery_Point == db.bet_point:
                         thisround_winbouns = db.rele_betbouns * 0.99 - db.sum_losebouns
                         db.sum_losebouns = 0

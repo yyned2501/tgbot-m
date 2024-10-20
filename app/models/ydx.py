@@ -30,7 +30,7 @@ class ZqYdx(Base):
     start_bouns: Mapped[int] = mapped_column(Integer)
     high_times: Mapped[int] = mapped_column(Integer)
     low_times: Mapped[int] = mapped_column(Integer)
-    bet_point: Mapped[int] = mapped_column(Integer)
+    bet_point: Mapped[str] = mapped_column(String(8))
     bet_switch: Mapped[int] = mapped_column(Integer)
     bet_mode: Mapped[str] = mapped_column(String(8))
     kp_switch: Mapped[int] = mapped_column(Integer)
@@ -50,7 +50,7 @@ class ZqYdx(Base):
             start_bouns=500,
             high_times=0,
             low_times=0,
-            bet_point=0,
+            bet_point="",
             bet_switch=0,
             bet_mode="A",
             kp_switch=0,
