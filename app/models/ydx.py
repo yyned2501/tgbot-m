@@ -12,6 +12,7 @@ from sqlalchemy import (
     TIMESTAMP,
     SmallInteger,
     DateTime,
+    func,
 )
 from sqlalchemy import select
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -25,9 +26,8 @@ logger = logging.getLogger("main")
 
 class ZqYdx(Base):
     __tablename__ = "zqydx"
-    id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     start_bouns: Mapped[int] = mapped_column(Integer)
-    bet_bouns: Mapped[int] = mapped_column(Integer)
     high_times: Mapped[int] = mapped_column(Integer)
     low_times: Mapped[int] = mapped_column(Integer)
     bet_point: Mapped[int] = mapped_column(Integer)
@@ -41,13 +41,13 @@ class ZqYdx(Base):
     add_bet_times: Mapped[int] = mapped_column(Integer)
     last_bet_point: Mapped[str] = mapped_column(String(8))
     last_flag: Mapped[str] = mapped_column(String(8))
+    message_id: Mapped[int] = mapped_column(Integer)
     update_time: Mapped[datetime.datetime] = mapped_column(DateTime)
 
     @classmethod
-    async def init(cls, session: AsyncSession):
+    def init(cls, session: AsyncSession):
         self = cls(
             start_bouns=500,
-            bet_bouns=0,
             high_times=0,
             low_times=0,
             bet_point=0,
@@ -61,6 +61,7 @@ class ZqYdx(Base):
             add_bet_times=0,
             last_bet_point="小",
             last_flag="s",
+            update_time=func.now(),
         )
-        await session.add(self)
+        session.add(self)
         return self

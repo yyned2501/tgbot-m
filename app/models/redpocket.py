@@ -1,5 +1,4 @@
 import logging
-import random
 import datetime
 
 from sqlalchemy import (
@@ -8,16 +7,11 @@ from sqlalchemy import (
     Integer,
     Float,
     BigInteger,
-    Text,
-    TIMESTAMP,
-    SmallInteger,
     DateTime,
-    Enum,
     func,
-    text,
 )
 from sqlalchemy import select
-from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models.base import Base
@@ -37,7 +31,7 @@ def is_today(last_date: datetime.datetime):
 
 class Redpocket(Base):
     __tablename__ = "redpockets"
-    id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     site: Mapped[str] = mapped_column(String(32))
     today_bonus: Mapped[float] = mapped_column(Float)
     total_bonus: Mapped[float] = mapped_column(Float)

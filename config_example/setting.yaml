@@ -1,29 +1,35 @@
 tg:
   api_id: 123
   api_hash: xxx
-  username: "xxxxx"
+  username: xxx
 
+database: sqlite
 
+proxy:
+  enable: False
+  ip: 127.0.0.1
+  port: 7890
 
 GB_VAR:
   GROUP_ID:
-    PRIVATE_ID: -1,
-    TESET_ID: -2,
-
-
+    PRIVATE_ID: me
+    TESET_ID: -1
 
 redis:
   host: 192.168.31.10
   port: 6379
   db: 0
+
 mysql:
   host: 192.168.31.10
   db: tgbot
   user: xxx
   password: xxx
+
 zhuque:
   redpocket:
     push_chat_id: "me"
+
 redleaves:
   redpocket:
     push_chat_id: "me"
