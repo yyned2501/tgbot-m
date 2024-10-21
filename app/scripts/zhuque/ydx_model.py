@@ -12,6 +12,7 @@ from app.models.ydx import ZqYdx
 
 
 TARGET = -1001833464786
+rate = 0.99
 
 
 @app.on_message(filters.chat(TARGET) & filters.command("zqydx") & filters.me)
@@ -96,7 +97,7 @@ async def zhuque_ydx_check(client: Client, message: Message):
             if db.bet_switch == 1:
                 if db.bet_point != "":
                     if Lottery_Point == db.bet_point:
-                        thisround_winbouns = db.rele_betbouns * 0.99 - db.sum_losebouns
+                        thisround_winbouns = db.rele_betbouns * rate - db.sum_losebouns
                         db.sum_losebouns = 0
                         db.add_bet_times = db.lose_times + 1
                         db.win_times += 1
@@ -119,10 +120,10 @@ async def zhuque_ydx_check(client: Client, message: Message):
                 elif db.low_times >= 1:
                     re_message = f"庄盘连 “小” **{db.low_times}** 次"
 
-                win_check = await listofWinners_check(
-                    message, setting["tg"]["username"]
-                )
-                if win_check:
+                # win_check = await listofWinners_check(
+                #     message, setting["tg"]["username"]
+                # )
+                if Lottery_Point == db.bet_point:
                     re_mess = f"**[ 胜 ]** 连胜:**[ {db.win_times} ]**, 下注:**[ {db.bet_point} ]** 金额 {db.rele_betbouns} , 本次盈利: {db.rele_betbouns * 0.99}, 本轮追投盈利: {thisround_winbouns} ,**[本轮共计追投 {db.add_bet_times} 次]** , [{re_message}]"
                     logger.info(re_mess)
                     db.rele_betbouns = 0
@@ -188,7 +189,7 @@ async def zhuque_ydx_bet(client: Client, message: Message):
                 db.last_bet_point = db.bet_point
                 db.last_flag = flag
                 # 计算下注金额
-                bet_bonus = int(db.sum_losebouns / 1) + db.start_bouns * (
+                bet_bonus = int(db.sum_losebouns / rate) + db.start_bouns * (
                     db.lose_times + 1
                 )
                 if bet_bonus == 0:
