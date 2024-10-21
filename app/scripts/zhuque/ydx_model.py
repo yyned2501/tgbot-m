@@ -138,6 +138,7 @@ async def zhuque_ydx_check(client: Client, message: Message):
                         setting["GB_VAR"]["GROUP_ID"]["PRIVATE_ID"], re_mess
                     )
                 if db.kp_switch == 1:
+                    await asyncio.sleep(1)
                     await app.send_message(TARGET, f"/ydx")
 
 
