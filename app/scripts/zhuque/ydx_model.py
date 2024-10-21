@@ -181,7 +181,7 @@ async def zhuque_ydx_bet(client: Client, message: Message):
 
                 elif db.bet_mode == "D":
                     r = random.random()
-                    if random.random() > 0.5:
+                    if db.lose_times > 2 and random.random() > 0.5:
                         r = 1 - r
                     if r <= 0.5:
                         db.bet_point = "大"
