@@ -188,7 +188,7 @@ async def zhuque_ydx_bet(client: Client, message: Message):
                 db.last_bet_point = db.bet_point
                 db.last_flag = flag
                 # 计算下注金额
-                bet_bonus = int(db.sum_losebouns / 0.99) + db.start_bouns * (
+                bet_bonus = int(db.sum_losebouns / 1) + db.start_bouns * (
                     db.lose_times + 1
                 )
                 if bet_bonus == 0:
