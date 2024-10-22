@@ -24,10 +24,26 @@ async def zhuque_ydx_switch(client: Client, message: Message):
                 if message.command[1] == "on":
                     db.bet_switch = 1
                     await message.edit(f"朱雀自动 “运动鞋” 穿起来。。。")
+                    if db.message_id:
+                        l_mess = await client.get_messages(
+                            message.chat.id, db.message_id
+                        )
+                        if not l_mess or "已结算" in l_mess.text:
+                            await message.edit(
+                                f"朱雀自动 “运动鞋” 穿起来。。。上局对局已结束，自动重置"
+                            )
+                            db.high_times = 0
+                            db.low_times = 0
+                            db.rele_betbouns = 0
+                            db.lose_times = 0
+                            db.win_times = 0
+                            db.sum_losebouns = 0
+                            db.add_bet_times = 0
+                            db.message_id = None
                     await asyncio.sleep(5)
                     await message.delete()
 
-                elif message.command[1] == "on":
+                elif message.command[1] == "off":
                     db.bet_switch = 0
                     await message.edit(f"朱雀自动 “运动鞋” 脱掉！脱掉！。。。")
                     await asyncio.sleep(5)
@@ -199,7 +215,7 @@ async def zhuque_ydx_bet(client: Client, message: Message):
                 if bet_bonus == 0:
                     bet_bonus = db.start_bouns
 
-                if bet_bonus // 5000000 > 1:
+                if bet_bonus // 5000000 > 0:
                     bet_bonus = db.start_bouns
                 # 对应按钮金额
                 bet_values = [1000000, 250000, 50000, 20000, 5000, 2000, 500]
