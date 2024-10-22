@@ -25,14 +25,12 @@ async def zhuque_ydx_switch(client: Client, message: Message):
                     db.bet_switch = 1
                     await message.edit(f"朱雀自动 “运动鞋” 穿起来。。。")
                     if db.message_id:
-                        
                         l_mess = await client.get_messages(
                             message.chat.id, db.message_id
                         )
-                        logger.info(str(l_mess))
                         if l_mess.empty or "已结算" in l_mess.text:
                             await message.edit(
-                                f"朱雀自动 “运动鞋” 穿起来。。。上局对局已结束，自动重置"
+                                f"朱雀自动 “运动鞋” 穿起来。。。\n上局对局已结束，自动重置"
                             )
                             db.high_times = 0
                             db.low_times = 0
@@ -42,6 +40,7 @@ async def zhuque_ydx_switch(client: Client, message: Message):
                             db.sum_losebouns = 0
                             db.add_bet_times = 0
                             db.message_id = None
+                            db.bet_point = ""
                     await asyncio.sleep(5)
                     await message.delete()
 
@@ -113,6 +112,18 @@ async def zhuque_ydx_check(client: Client, message: Message):
         async with session.begin():
             db = await session.get(ZqYdx, 1) or ZqYdx.init(session)
             if db.bet_switch == 1:
+                if db.message_id and message.reply_to_message_id:
+                    if db.message_id != message.reply_to_message_id:
+                        logger.warning("结算id与记录不一致，重置历史记录")
+                        db.high_times = 0
+                        db.low_times = 0
+                        db.rele_betbouns = 0
+                        db.lose_times = 0
+                        db.win_times = 0
+                        db.sum_losebouns = 0
+                        db.add_bet_times = 0
+                        db.message_id = None
+                        db.bet_point = ""
                 if db.bet_point != "":
                     if Lottery_Point == db.bet_point:
                         thisround_winbouns = db.rele_betbouns * rate - db.sum_losebouns
@@ -125,22 +136,18 @@ async def zhuque_ydx_check(client: Client, message: Message):
                         db.lose_times += 1
                         db.win_times = 0
                         db.add_bet_times = 0
-
                 if Lottery_Point == "大":
                     db.high_times += 1
                     db.low_times = 0
                 else:
                     db.high_times = 0
                     db.low_times += 1
+                db.message_id = None
                 re_message = None
                 if db.high_times >= 1:
                     re_message = f"庄盘连 “大” **{db.high_times}** 次"
                 elif db.low_times >= 1:
                     re_message = f"庄盘连 “小” **{db.low_times}** 次"
-
-                # win_check = await listofWinners_check(
-                #     message, setting["tg"]["username"]
-                # )
                 if Lottery_Point == db.bet_point:
                     re_mess = f"**[ 胜 ]** 连胜:**[ {db.win_times} ]**, 下注:**[ {db.bet_point} ]** 金额 {db.rele_betbouns} , 本次盈利: {db.rele_betbouns * 0.99}, 本轮追投盈利: {thisround_winbouns} ,**[本轮共计追投 {db.add_bet_times} 次]** , [{re_message}]"
                     logger.info(re_mess)
@@ -164,21 +171,22 @@ async def zhuque_ydx_check(client: Client, message: Message):
     filters.chat(TARGET) & custom_filters.zhuque_bot & filters.regex(r"创建时间")
 )
 async def zhuque_ydx_bet(client: Client, message: Message):
-
     async with ASession() as session:
         async with session.begin():
             db = await session.get(ZqYdx, 1) or ZqYdx.init(session)
+            if db.message_id:
+                logger.warning("检测到上局未结束，5秒后重新检测...")
+                asyncio.sleep(5)
+                return zhuque_ydx_bet(client, message)
             flag = db.last_flag
             if db.bet_switch == 1:
                 db.message_id = message.id
                 if db.bet_mode == "A":  # 追大
                     db.bet_point = "大"
                     flag = "b"
-
                 elif db.bet_mode == "B":  # 追小
                     db.bet_point = "小"
                     flag = "s"
-
                 elif (
                     db.bet_mode == "C"
                 ):  # 启动时追小，连败3败后追上次胜局，连败后3次后继续切上次胜的
