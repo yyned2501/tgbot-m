@@ -174,12 +174,12 @@ async def zhuque_ydx_bet(client: Client, message: Message):
     async with ASession() as session:
         async with session.begin():
             db = await session.get(ZqYdx, 1) or ZqYdx.init(session)
-            if db.message_id:
-                logger.warning("检测到上局未结束，5秒后重新检测...")
-                asyncio.sleep(5)
-                return zhuque_ydx_bet(client, message)
-            flag = db.last_flag
             if db.bet_switch == 1:
+                if db.message_id:
+                    logger.warning("检测到上局未结束，5秒后重新检测...")
+                    await asyncio.sleep(5)
+                    return await zhuque_ydx_bet(client, message)
+                flag = db.last_flag
                 db.message_id = message.id
                 if db.bet_mode == "A":  # 追大
                     db.bet_point = "大"
