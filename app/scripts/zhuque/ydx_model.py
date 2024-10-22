@@ -25,10 +25,12 @@ async def zhuque_ydx_switch(client: Client, message: Message):
                     db.bet_switch = 1
                     await message.edit(f"朱雀自动 “运动鞋” 穿起来。。。")
                     if db.message_id:
+                        
                         l_mess = await client.get_messages(
                             message.chat.id, db.message_id
                         )
-                        if not l_mess or "已结算" in l_mess.text:
+                        logger.info(str(l_mess))
+                        if l_mess.empty or "已结算" in l_mess.text:
                             await message.edit(
                                 f"朱雀自动 “运动鞋” 穿起来。。。上局对局已结束，自动重置"
                             )
