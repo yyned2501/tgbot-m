@@ -229,7 +229,7 @@ async def zhuque_ydx_bet(client: Client, message: Message):
                 if bet_bonus // 5000000 > 0:
                     bet_bonus = db.start_bouns
                 # 对应按钮金额
-                bet_values = [5000000,1000000, 250000, 50000, 20000, 2000]
+                bet_values = [5000000, 1000000, 250000, 50000, 20000, 2000, 500]
                 bet_counts = []
                 # 计算每个下注金额按钮点击次数
                 if bet_bonus > 5000000:
