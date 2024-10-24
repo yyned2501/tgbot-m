@@ -65,3 +65,9 @@ class ZqYdx(Base):
         )
         session.add(self)
         return self
+
+
+class YdxHistory(Base):
+    __tablename__ = "zqydx_history"
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    dx: Mapped[int] = mapped_column(Integer)

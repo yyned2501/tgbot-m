@@ -8,7 +8,7 @@ from app import app, logger
 from app.config import setting
 from app.filters import custom_filters
 from app.models import ASession
-from app.models.ydx import ZqYdx
+from app.models.ydx import YdxHistory, ZqYdx
 
 
 TARGET = -1001833464786
@@ -111,6 +111,7 @@ async def zhuque_ydx_check(client: Client, message: Message):
     async with ASession() as session:
         async with session.begin():
             db = await session.get(ZqYdx, 1) or ZqYdx.init(session)
+            session.add(YdxHistory(dx=1 if Lottery_Point == "大" else 0))
             if db.bet_switch == 1:
                 if db.message_id and message.reply_to_message_id:
                     if db.message_id != message.reply_to_message_id:
