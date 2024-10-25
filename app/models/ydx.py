@@ -27,7 +27,7 @@ logger = logging.getLogger("main")
 class ZqYdx(Base):
     __tablename__ = "zqydx"
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
-    start_bouns: Mapped[int] = mapped_column(Integer)
+    start_bonus: Mapped[int] = mapped_column(Integer)
     high_times: Mapped[int] = mapped_column(Integer)
     low_times: Mapped[int] = mapped_column(Integer)
     dx: Mapped[int] = mapped_column(Integer, nullable=True)
@@ -44,17 +44,17 @@ class ZqYdx(Base):
     @classmethod
     def init(cls, session: AsyncSession):
         self = cls(
-            start_bouns=500,
+            start_bonus=500,
             high_times=0,
             low_times=0,
-            bet_point=1,
+            dx=1,
             bet_switch=0,
             bet_mode="A",
             kp_switch=0,
-            rele_betbouns=0,
+            rel_betbonus=0,
             lose_times=0,
             win_times=0,
-            sum_losebouns=0,
+            sum_losebonus=0,
             update_time=func.now(),
         )
         session.add(self)
