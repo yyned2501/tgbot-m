@@ -170,14 +170,13 @@ async def zhuque_ydx_bet(client: Client, message: Message):
                     db.dx = 0
                 elif db.bet_mode == "C":
                     # 双败追胜
-                    db.dx = db.dx or 0
                     if (db.lose_times > 0) and db.lose_times % 2 == 0:
                         db.dx = 1 - db.dx
                 elif db.bet_mode == "D":
-                    # 随机大小，连败多一次随机切换
-                    db.dx = random.randint(0, 1)
-                    if db.lose_times > 2 and random.random() > 0.5:
-                        db.dx = 1 - db.dx
+                    # 单败追连75%切
+                    if db.lose_times > 0:
+                        if random.random() < 0.75:
+                            db.dx = 1 - db.dx
 
                 # 计算下注金额
                 remaining_bouns = int(db.sum_losebonus / rate) + db.start_bonus * (
