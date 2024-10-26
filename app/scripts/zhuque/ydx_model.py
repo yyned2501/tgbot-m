@@ -108,7 +108,6 @@ async def zhuque_ydx_check(client: Client, message: Message):
                         db.win_times = 0
                         db.sum_losebonus = 0
                         db.message_id = None
-                        db.dx = None
                 if dx == 1:
                     db.high_times += 1
                     db.low_times = 0
@@ -121,29 +120,28 @@ async def zhuque_ydx_check(client: Client, message: Message):
                     re_message = f"庄盘连 “大” **{db.high_times}** 次"
                 elif db.low_times >= 1:
                     re_message = f"庄盘连 “小” **{db.low_times}** 次"
-                if db.dx:
-                    if dx == db.dx:
-                        thisround_winbouns = db.rel_betbonus * rate - db.sum_losebonus
-                        db.sum_losebonus = 0
-                        add_bet_times = db.lose_times + 1
-                        db.win_times += 1
-                        db.lose_times = 0
-                        re_mess = f"**[ 胜 ]** 连胜:**[ {db.win_times} ]**, 下注:**[ {dx_list[db.dx]} ]** 金额 {db.rel_betbonus} , 本次盈利: {db.rel_betbonus * 0.99}, 本轮追投盈利: {thisround_winbouns} ,**[本轮共计追投 {add_bet_times} 次]** , [{re_message}]"
-                        logger.info(re_mess)
-                        db.rel_betbonus = 0
-                        await app.send_message(
-                            setting["GB_VAR"]["GROUP_ID"]["PRIVATE_ID"], re_mess
-                        )
-                    else:
-                        db.sum_losebonus += db.rel_betbonus
-                        db.lose_times += 1
-                        db.win_times = 0
-                        re_mess = f"**[ 负 ]** 连负:**[ {db.lose_times} ]**, 下注:**[ {dx_list[db.dx]} ]** 金额 {db.rel_betbonus} , 本次亏损: {db.rel_betbonus} , 本轮追投累计亏损 {db.sum_losebonus} , [{re_message}]"
-                        logger.info(re_mess)
-                        db.rel_betbonus = 0
-                        await app.send_message(
-                            setting["GB_VAR"]["GROUP_ID"]["PRIVATE_ID"], re_mess
-                        )
+                if dx == db.dx:
+                    thisround_winbouns = db.rel_betbonus * rate - db.sum_losebonus
+                    db.sum_losebonus = 0
+                    add_bet_times = db.lose_times + 1
+                    db.win_times += 1
+                    db.lose_times = 0
+                    re_mess = f"**[ 胜 ]** 连胜:**[ {db.win_times} ]**, 下注:**[ {dx_list[db.dx]} ]** 金额 {db.rel_betbonus} , 本次盈利: {db.rel_betbonus * 0.99}, 本轮追投盈利: {thisround_winbouns} ,**[本轮共计追投 {add_bet_times} 次]** , [{re_message}]"
+                    logger.info(re_mess)
+                    db.rel_betbonus = 0
+                    await app.send_message(
+                        setting["GB_VAR"]["GROUP_ID"]["PRIVATE_ID"], re_mess
+                    )
+                else:
+                    db.sum_losebonus += db.rel_betbonus
+                    db.lose_times += 1
+                    db.win_times = 0
+                    re_mess = f"**[ 负 ]** 连负:**[ {db.lose_times} ]**, 下注:**[ {dx_list[db.dx]} ]** 金额 {db.rel_betbonus} , 本次亏损: {db.rel_betbonus} , 本轮追投累计亏损 {db.sum_losebonus} , [{re_message}]"
+                    logger.info(re_mess)
+                    db.rel_betbonus = 0
+                    await app.send_message(
+                        setting["GB_VAR"]["GROUP_ID"]["PRIVATE_ID"], re_mess
+                    )
                 if db.kp_switch == 1:
                     await asyncio.sleep(1)
                     await app.send_message(TARGET, f"/ydx")
