@@ -29,6 +29,9 @@ mysql:
 zhuque:
   redpocket:
     push_chat_id: "me"
+  ydx_model:
+    push_chat_id: "me"
+    mode_D_rate: 0.75
 
 redleaves:
   redpocket:
