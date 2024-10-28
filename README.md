@@ -17,7 +17,7 @@ services:
     network_mode: bridge
     working_dir: /app
     ports:
-      - 8880:5001 #supervisor管理端口
+      - 8880:9001 #supervisor管理端口
     tty: true
 ```
 启动后

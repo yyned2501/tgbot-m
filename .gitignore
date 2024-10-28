@@ -2,6 +2,7 @@
 __pycache__
 config/
 session/
+logs/
 
 test*
 *.session*
