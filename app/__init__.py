@@ -22,7 +22,7 @@ else:
     proxy = None
 
 app = Client(
-    "tgbot",
+    "sessions/tgbot",
     api_id=setting["tg"]["api_id"],
     api_hash=setting["tg"]["api_hash"],
     proxy=proxy,

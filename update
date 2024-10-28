@@ -1,0 +1,9 @@
+while true; do
+    git fetch origin >/dev/null
+    if [ $(git rev-list --count --right-only HEAD...origin/"$GIT_BRANCH") -gt 0 ]; then
+        git reset --hard origin/"$GIT_BRANCH"
+        git pull origin "$GIT_BRANCH"
+        supervisorctl restart main
+    fi
+    sleep 60
+done
