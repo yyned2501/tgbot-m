@@ -1,3 +1,4 @@
+import os, shutil
 import yaml
 
 
@@ -17,24 +18,19 @@ def merge_and_overwrite(base: dict, update: dict):
     return base
 
 
-with open("config/launch.yaml", "r") as file:
-    launch = yaml.safe_load(file)
+shutil.copyfile("config_example/launch.yaml", "config/launch_example.yaml")
+if os.path.exists("config/launch.yaml"):
+    shutil.copyfile("config_example/launch.yaml", "config/launch.yaml")
 
-if not launch:
-    with open("config_examply/launch.yaml", "r") as file:
-        launch = yaml.safe_load(file)
-    with open("config/launch.yaml", "w") as file:
-        yaml.safe_dump(
-            launch, file, default_flow_style=False, allow_unicode=True, sort_keys=False
-        )
-
-with open("config/setting.yaml", "r") as file:
-    setting = yaml.safe_load(file)
 
 with open("config_example/setting.yaml", "r") as file:
     setting_example = yaml.safe_load(file) or {}
-
-setting = merge_and_overwrite(setting_example, setting)
+if not os.path.exists("config/setting.yaml"):
+    setting = setting_example
+else:
+    with open("config/setting.yaml", "r") as file:
+        setting = yaml.safe_load(file)
+    setting = merge_and_overwrite(setting_example, setting)
 
 with open("config/setting.yaml", "w") as file:
     yaml.safe_dump(
