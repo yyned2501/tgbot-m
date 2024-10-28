@@ -1,6 +1,7 @@
 .venv/
 __pycache__
 config/
+session/
 
 test*
 *.session*
