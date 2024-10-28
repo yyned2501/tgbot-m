@@ -172,8 +172,9 @@ async def zhuque_ydx_bet(client: Client, message: Message):
                         db.dx = 1 - db.dx
                 elif db.bet_mode == "D":
                     # 单败追连75%切
+                    setting_rate = setting["zhuque"]["ydx_model"]["mode_D_rate"]
                     if db.lose_times > 0:
-                        if random.random() < 0.75:
+                        if random.random() < setting_rate:
                             db.dx = 1 - db.dx
 
                 # 计算下注金额
