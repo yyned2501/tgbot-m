@@ -22,6 +22,8 @@ shutil.copyfile("config_example/launch.yaml", "config/launch_example.yaml")
 if not os.path.exists("config/launch.yaml"):
     shutil.copyfile("config_example/launch.yaml", "config/launch.yaml")
 
+with open("config/launch.yaml", "r") as file:
+    launch = yaml.safe_load(file)
 
 with open("config_example/setting.yaml", "r") as file:
     setting_example = yaml.safe_load(file) or {}
