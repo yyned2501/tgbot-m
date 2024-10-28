@@ -20,6 +20,14 @@ def merge_and_overwrite(base: dict, update: dict):
 with open("config/launch.yaml", "r") as file:
     launch = yaml.safe_load(file)
 
+if not launch:
+    with open("config_examply/launch.yaml", "r") as file:
+        launch = yaml.safe_load(file)
+    with open("config/launch.yaml", "w") as file:
+        yaml.safe_dump(
+            launch, file, default_flow_style=False, allow_unicode=True, sort_keys=False
+        )
+
 with open("config/setting.yaml", "r") as file:
     setting = yaml.safe_load(file)
 

@@ -25,10 +25,11 @@ app = Client(
 
 
 async def main():
+    print("登录成功")
     command = ["supervisorctl", "restart", "main"]
     result = subprocess.run(command, capture_output=True, text=True)
     if result.returncode == 0:
-        print("重启成功")
+        print("重启main成功")
     else:
         print(result.stdout)
         print(result.stderr)
