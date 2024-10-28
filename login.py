@@ -31,7 +31,7 @@ async def main():
     command = ["supervisorctl", "start", "main"]
     result = subprocess.run(command, capture_output=True, text=True)
     if result.returncode == 0:
-        print("重启main成功")
+        print("启动main成功")
     else:
         print(result.stdout)
         print(result.stderr)
