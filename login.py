@@ -25,6 +25,8 @@ app = Client(
 
 
 async def main():
+    async with app:
+        await app.send_message("me", "登录成功") 
     print("登录成功")
     command = ["supervisorctl", "restart", "main"]
     result = subprocess.run(command, capture_output=True, text=True)
