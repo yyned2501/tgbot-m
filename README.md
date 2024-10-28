@@ -20,4 +20,4 @@ services:
       - 8880:9001 #supervisor管理端口
     tty: true
 ```
-启动后
+启动后 进宿主机控制台 `docker exec -it tgbot-m python login.py` 登录成功后可以正常运行。
