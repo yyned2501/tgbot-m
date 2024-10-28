@@ -28,7 +28,7 @@ async def main():
     async with app:
         await app.send_message("me", "登录成功") 
     print("登录成功")
-    command = ["supervisorctl", "restart", "main"]
+    command = ["supervisorctl", "start", "main"]
     result = subprocess.run(command, capture_output=True, text=True)
     if result.returncode == 0:
         print("重启main成功")
