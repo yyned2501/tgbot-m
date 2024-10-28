@@ -19,7 +19,7 @@ def merge_and_overwrite(base: dict, update: dict):
 
 
 shutil.copyfile("config_example/launch.yaml", "config/launch_example.yaml")
-if os.path.exists("config/launch.yaml"):
+if not os.path.exists("config/launch.yaml"):
     shutil.copyfile("config_example/launch.yaml", "config/launch.yaml")
 
 
