@@ -129,9 +129,6 @@ async def zhuque_ydx_check(client: Client, message: Message):
                     re_mess = f"**[ 胜 ]** 连胜:**[ {db.win_times} ]**, 下注:**[ {dx_list[db.dx]} ]** 金额 {db.rel_betbonus} , 本次盈利: {db.rel_betbonus * 0.99}, 本轮追投盈利: {thisround_winbouns} ,**[本轮共计追投 {add_bet_times} 次]** , [{re_message}]"
                     logger.info(re_mess)
                     db.rel_betbonus = 0
-                    await app.send_message(
-                        setting["GB_VAR"]["GROUP_ID"]["PRIVATE_ID"], re_mess
-                    )
                 else:
                     db.sum_losebonus += db.rel_betbonus
                     db.lose_times += 1
@@ -139,9 +136,9 @@ async def zhuque_ydx_check(client: Client, message: Message):
                     re_mess = f"**[ 负 ]** 连负:**[ {db.lose_times} ]**, 下注:**[ {dx_list[db.dx]} ]** 金额 {db.rel_betbonus} , 本次亏损: {db.rel_betbonus} , 本轮追投累计亏损 {db.sum_losebonus} , [{re_message}]"
                     logger.info(re_mess)
                     db.rel_betbonus = 0
-                    await app.send_message(
-                        setting["GB_VAR"]["GROUP_ID"]["PRIVATE_ID"], re_mess
-                    )
+                await app.send_message(
+                    setting["zhuque"]["ydx_model"]["push_chat_id"], re_mess
+                )
                 if db.kp_switch == 1:
                     await asyncio.sleep(1)
                     await app.send_message(TARGET, f"/ydx")
@@ -181,7 +178,10 @@ async def zhuque_ydx_bet(client: Client, message: Message):
                 remaining_bouns = int(db.sum_losebonus / rate) + db.start_bonus * (
                     db.lose_times + 1
                 )
-                if remaining_bouns // setting["zhuque"]["ydx_model"]["max_bet_bonus"] > 0:
+                if (
+                    remaining_bouns // setting["zhuque"]["ydx_model"]["max_bet_bonus"]
+                    > 0
+                ):
                     remaining_bouns = db.start_bonus
                     db.sum_losebonus = 0
                 # 对应按钮金额
