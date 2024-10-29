@@ -31,6 +31,7 @@ zhuque:
     push_chat_id: "me"
   ydx_model:
     push_chat_id: "me"
+    max_bet_bonus: 50000000
     mode_D_rate: 0.75
 
 redleaves:

@@ -181,10 +181,20 @@ async def zhuque_ydx_bet(client: Client, message: Message):
                 remaining_bouns = int(db.sum_losebonus / rate) + db.start_bonus * (
                     db.lose_times + 1
                 )
-                if remaining_bouns // 10000000 > 0:
+                if remaining_bouns // setting["zhuque"]["ydx_model"]["max_bet_bonus"] > 0:
                     remaining_bouns = db.start_bonus
+                    db.sum_losebonus = 0
                 # 对应按钮金额
-                bet_values = [5000000, 1000000, 250000, 50000, 20000, 2000, 500]
+                bet_values = [
+                    50000000,
+                    5000000,
+                    1000000,
+                    250000,
+                    50000,
+                    20000,
+                    2000,
+                    500,
+                ]
                 bet_counts = []
                 # 计算每个下注金额按钮点击次数
                 logger.info(f"remaining_bouns= {remaining_bouns}")
