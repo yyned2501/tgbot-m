@@ -17,7 +17,7 @@ dx_list = ["小", "大"]
 bs_list = ["s", "b"]
 
 
-@app.on_message(filters.chat(TARGET) & filters.command("zqydx") & filters.me)
+@app.on_message(filters.command("zqydx") & filters.me)
 async def zhuque_ydx_switch(client: Client, message: Message):
     async with ASession() as session:
         async with session.begin():
