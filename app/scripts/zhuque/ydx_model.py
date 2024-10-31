@@ -3,6 +3,7 @@ import random
 
 from pyrogram import filters, Client
 from pyrogram.types.messages_and_media import Message
+from sqlalchemy import desc, select
 
 from app import app, logger
 from app.config import setting
@@ -173,6 +174,13 @@ async def zhuque_ydx_bet(client: Client, message: Message):
                     if db.lose_times > 0:
                         if random.random() < setting_rate:
                             db.dx = 1 - db.dx
+                elif db.bet_mode == "E":
+                    # 按10轮前的大小下注
+                    result = await session.execute(
+                        select(YdxHistory).order_by(desc(YdxHistory.id)).limit(10)
+                    )
+                    dx = result.scalars().all()[-1]
+                    db.dx = dx.dx
 
                 # 计算下注金额
                 remaining_bouns = int(db.sum_losebonus / rate) + db.start_bonus * (
