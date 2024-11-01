@@ -104,7 +104,6 @@ async def zhuque_ydx_check(client: Client, message: Message):
                         logger.warning("结算id与记录不一致，重置历史记录")
                         db.high_times = 0
                         db.low_times = 0
-                        db.rel_betbonus = 0
                         db.lose_times = 0
                         db.win_times = 0
                         db.sum_losebonus = 0
