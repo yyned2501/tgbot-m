@@ -181,7 +181,7 @@ async def zhuque_ydx_bet(client: Client, message: Message):
                     elif db.lose_times > 0:
                         db.dx = dx.dx
 
-                remaining_bouns = db.rel_betbonus * (2 if db.lose_times > 0 else 0.5)
+                remaining_bouns = int(db.rel_betbonus * (2 if db.lose_times > 0 else 0.5))
 
                 if remaining_bouns > setting["zhuque"]["ydx_model"]["max_bet_bonus"]:
                     remaining_bouns = db.rel_betbonus
