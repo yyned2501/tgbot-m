@@ -191,6 +191,8 @@ async def zhuque_ydx_bet(client: Client, message: Message):
                     remaining_bouns = db.rel_betbonus
                 if remaining_bouns < db.start_bonus:
                     remaining_bouns = db.start_bonus
+                db.rel_betbonus = 0
+
                 # 对应按钮金额
                 bet_values = [
                     50000000,
@@ -209,7 +211,6 @@ async def zhuque_ydx_bet(client: Client, message: Message):
                     count = remaining_bouns // value
                     bet_counts.append(count)
                     remaining_bouns -= count * value
-
                 # 嵌套循环点击下注
                 for i, count in enumerate(bet_counts):
                     if count > 0:
