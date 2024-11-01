@@ -185,16 +185,15 @@ async def zhuque_ydx_bet(client: Client, message: Message):
                     elif db.lose_times > 0:
                         db.dx = dx.dx
 
-                # 计算下注金额
-                remaining_bouns = int(db.sum_losebonus / rate) + db.start_bonus * (
-                    db.lose_times + 1
-                )
+                remaining_bouns = db.rel_betbonus * 2 if db.lose_times > 0 else 0.5
+
                 if (
                     remaining_bouns // setting["zhuque"]["ydx_model"]["max_bet_bonus"]
                     > 0
                 ):
+                    remaining_bouns = db.rel_betbonus
+                if remaining_bouns < db.start_bonus:
                     remaining_bouns = db.start_bonus
-                    db.sum_losebonus = 0
                 # 对应按钮金额
                 bet_values = [
                     50000000,
