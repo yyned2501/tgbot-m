@@ -122,21 +122,17 @@ async def zhuque_ydx_check(client: Client, message: Message):
                 elif db.low_times >= 1:
                     re_message = f"庄盘连 “小” **{db.low_times}** 次"
                 if dx == db.dx:
-                    thisround_winbouns = db.rel_betbonus * rate - db.sum_losebonus
                     db.sum_losebonus = 0
-                    add_bet_times = db.lose_times + 1
                     db.win_times += 1
                     db.lose_times = 0
-                    re_mess = f"**[ 胜 ]** 连胜:**[ {db.win_times} ]**, 下注:**[ {dx_list[db.dx]} ]** 金额 {db.rel_betbonus} , 本次盈利: {db.rel_betbonus * 0.99}, 本轮追投盈利: {thisround_winbouns} ,**[本轮共计追投 {add_bet_times} 次]** , [{re_message}]"
+                    re_mess = f"**[ 胜 ]** 连胜:**[ {db.win_times} ]**, 下注:**[ {dx_list[db.dx]} ]** 金额 {db.rel_betbonus} , 本次盈利: {db.rel_betbonus * 0.99}, [{re_message}]"
                     logger.info(re_mess)
-                    # db.rel_betbonus = 0
                 else:
                     db.sum_losebonus += db.rel_betbonus
                     db.lose_times += 1
                     db.win_times = 0
-                    re_mess = f"**[ 负 ]** 连负:**[ {db.lose_times} ]**, 下注:**[ {dx_list[db.dx]} ]** 金额 {db.rel_betbonus} , 本次亏损: {db.rel_betbonus} , 本轮追投累计亏损 {db.sum_losebonus} , [{re_message}]"
+                    re_mess = f"**[ 负 ]** 连负:**[ {db.lose_times} ]**, 下注:**[ {dx_list[db.dx]} ]** 金额 {db.rel_betbonus} , 本次亏损: {db.rel_betbonus}, [{re_message}]"
                     logger.info(re_mess)
-                    # db.rel_betbonus = 0
                 await app.send_message(
                     setting["zhuque"]["ydx_model"]["push_chat_id"], re_mess
                 )
