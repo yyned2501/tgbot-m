@@ -180,7 +180,10 @@ async def zhuque_ydx_bet(client: Client, message: Message):
                         select(YdxHistory).order_by(desc(YdxHistory.id)).limit(10)
                     )
                     dx = result.scalars().all()[-1]
-                    db.dx = dx.dx
+                    if db.lose_times > 3:
+                        db.dx = 1 - dx.dx
+                    elif db.lose_times > 0:
+                        db.dx = dx.dx
 
                 # 计算下注金额
                 remaining_bouns = int(db.sum_losebonus / rate) + db.start_bonus * (
