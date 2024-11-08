@@ -165,30 +165,28 @@ async def zhuque_ydx_bet(client: Client, message: Message):
                     # 追小
                     db.dx = 0
                 elif db.bet_mode == "C":
-                    # 双败追胜
-                    if (db.lose_times > 0) and db.lose_times % 2 == 0:
+                    # 追胜
+                    if db.lose_times > 0:
                         db.dx = 1 - db.dx
                 elif db.bet_mode == "D":
-                    # 单败追连75%切
-                    setting_rate = setting["zhuque"]["ydx_model"]["mode_D_rate"]
-                    if db.lose_times > 0:
-                        if random.random() < setting_rate:
-                            db.dx = 1 - db.dx
-                elif db.bet_mode == "E":
                     # 按10轮前的大小下注
                     result = await session.execute(
                         select(YdxHistory).order_by(desc(YdxHistory.id)).limit(10)
                     )
                     dx = result.scalars().all()[-1]
-                    if db.lose_times > 3:
-                        db.dx = 1 - dx.dx
-                    elif db.lose_times > 0:
-                        db.dx = dx.dx
+                    db.dx = dx.dx
+                elif db.bet_mode == "E":
+                    # 按10轮前的大小下反注
+                    result = await session.execute(
+                        select(YdxHistory).order_by(desc(YdxHistory.id)).limit(10)
+                    )
+                    dx = result.scalars().all()[-1]
+                    db.dx = 1 - dx.dx
                 elif db.bet_mode == "EAAA":
                     # 仅A2模式 n1=9, n2=12, subcat2
                     # 小类别2
                     # prediction = 1 if sum_result == 1 else 0
-                    
+
                     result9 = await session.execute(
                         select(YdxHistory).order_by(desc(YdxHistory.id)).limit(9)
                     )
@@ -197,14 +195,22 @@ async def zhuque_ydx_bet(client: Client, message: Message):
                     result12 = await session.execute(
                         select(YdxHistory).order_by(desc(YdxHistory.id)).limit(12)
                     )
-                    dx12 = result12.scalars().all()[-1]   
-                    
+                    dx12 = result12.scalars().all()[-1]
+
                     dxsum = dx9.dx + dx12.dx
                     dxpres = 0
                     if dxsum == 1:
                         dxpres = 1
-                    
+
                     db.dx = dxpres
+                elif db.bet_mode == "YA":
+                    # pytorch 模型
+                    result = await session.execute(
+                        select(YdxHistory).order_by(desc(YdxHistory.id)).limit(50)
+                    )
+                    data = [
+                        ydx_history.dx async for ydx_history in result.scalars()
+                    ].reverse()
 
                 # 计算下注金额
                 remaining_bouns = int(db.sum_losebonus / rate) + db.start_bonus * (
