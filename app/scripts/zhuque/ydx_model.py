@@ -213,17 +213,17 @@ async def zhuque_ydx_bet(client: Client, message: Message):
                         select(YdxHistory).order_by(desc(YdxHistory.id)).limit(50)
                     )
                     data = [ydx_history.dx for ydx_history in result.scalars()]
-                    print(data)
+                    logger.info(data)
                     data.reverse()
-                    print(data)
+                    logger.info(data)
                     model_dx = [1, 0, data[-1], data[-10], 1 - data[-10]]
-                    print(model_dx)
+                    logger.info(model_dx)
                     dummy_input = np.array([data], dtype=np.int64)
                     res = compiled_model_onnx(dummy_input)
                     output_data = res[0]
-                    print(output_data)
+                    logger.info(output_data)
                     max_index = np.argmax(output_data, axis=1)
-                    print(max_index)
+                    logger.info(max_index)
                     dx = model_dx[max_index]
 
                 # 计算下注金额
