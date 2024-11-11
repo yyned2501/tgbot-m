@@ -222,8 +222,7 @@ async def zhuque_ydx_bet(client: Client, message: Message):
                         dummy_input = np.array(data, dtype=np.float32)
                         res = compiled_model_onnx(dummy_input)
                         output_data = res[0]
-                        max_index = np.argmax(output_data, axis=0)
-                        ov_index = max_index[0]
+                        ov_index = np.argmax(output_data, axis=0)
                         logger.info(f"选择模式{ov_index}")
                     db.dx = model_dx[ov_index]
 
