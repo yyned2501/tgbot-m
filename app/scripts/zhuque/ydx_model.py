@@ -224,6 +224,7 @@ async def zhuque_ydx_bet(client: Client, message: Message):
                         output_data = res[0]
                         max_index = np.argmax(output_data, axis=1)
                         ov_index = max_index[0]
+                        logger.info(f"选择模式{ov_index}")
                     dx = model_dx[ov_index]
 
                 # 计算下注金额
