@@ -1,9 +1,10 @@
 import asyncio
-import random
 
 from pyrogram import filters, Client
 from pyrogram.types.messages_and_media import Message
 from sqlalchemy import desc, select
+import numpy as np
+import openvino as ov
 
 from app import app, logger
 from app.config import setting
@@ -16,6 +17,9 @@ TARGET = -1001833464786
 rate = 0.99
 dx_list = ["小", "大"]
 bs_list = ["s", "b"]
+core = ov.Core()
+model_onnx = core.read_model(model="app/onnxes/model.onnx")
+compiled_model_onnx = core.compile_model(model=model_onnx, device_name="AUTO")
 
 
 @app.on_message(filters.command("zqydx") & filters.me)
@@ -211,6 +215,12 @@ async def zhuque_ydx_bet(client: Client, message: Message):
                     data = [
                         ydx_history.dx async for ydx_history in result.scalars()
                     ].reverse()
+                    model_dx = [1, 0, data[-1], data[-10], 1 - data[-10]]
+                    dummy_input = np.array([data], dtype=np.int64)
+                    res = compiled_model_onnx(dummy_input)
+                    output_data = res[0]
+                    max_index = np.argmax(output_data, axis=1)
+                    dx = model_dx[max_index]
 
                 # 计算下注金额
                 remaining_bouns = int(db.sum_losebonus / rate) + db.start_bonus * (
