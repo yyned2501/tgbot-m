@@ -213,7 +213,7 @@ async def zhuque_ydx_bet(client: Client, message: Message):
                         select(YdxHistory).order_by(desc(YdxHistory.id)).limit(50)
                     )
                     data = [
-                        ydx_history.dx async for ydx_history in result.scalars()
+                        ydx_history.dx for ydx_history in result.scalars()
                     ].reverse()
                     model_dx = [1, 0, data[-1], data[-10], 1 - data[-10]]
                     dummy_input = np.array([data], dtype=np.int64)
