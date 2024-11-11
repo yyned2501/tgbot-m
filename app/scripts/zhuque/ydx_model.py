@@ -208,6 +208,389 @@ async def zhuque_ydx_bet(client: Client, message: Message):
                         dxpres = 1
 
                     db.dx = dxpres
+                elif db.bet_mode == "EW10":
+                    
+                    # 计算 r15和r27的乘积为t1，r9与r15的乘积为t2，r1与r2的乘积t3
+                    # w12，如果和t1+t2+t3=1或3，预测为0，否则预测为1
+                    
+                    # 计算 r15和r27的乘积为t1，r9与r15的乘积为t2，r1与r3的乘积t3
+                    # w10，如果和t1+t2+t3=1或2，预测为0，否则预测为1
+                    
+                    # w7：如果 w10 * w12 等于 1，预测为 w10，否则预测为 w12
+                    # w8：如果 w10 * w12 等于 1，预测为 w12，否则预测为 w10
+                    
+                    result9 = await session.execute(
+                        select(YdxHistory).order_by(desc(YdxHistory.id)).limit(9)
+                    )
+                    dx9 = result9.scalars().all()[-1]
+
+                    result15 = await session.execute(
+                        select(YdxHistory).order_by(desc(YdxHistory.id)).limit(15)
+                    )
+                    dx15 = result15.scalars().all()[-1]   
+                    
+                    result27 = await session.execute(
+                        select(YdxHistory).order_by(desc(YdxHistory.id)).limit(27)
+                    )
+                    dx27 = result27.scalars().all()[-1]   
+
+                    result1 = await session.execute(
+                        select(YdxHistory).order_by(desc(YdxHistory.id)).limit(1)
+                    )
+                    dx1 = result1.scalars().all()[-1]   
+
+                    result2 = await session.execute(
+                        select(YdxHistory).order_by(desc(YdxHistory.id)).limit(2)
+                    )
+                    dx2 = result2.scalars().all()[-1]   
+
+                    result3 = await session.execute(
+                        select(YdxHistory).order_by(desc(YdxHistory.id)).limit(3)
+                    )
+                    dx3 = result3.scalars().all()[-1]   
+
+                    t1 = dx15.dx * dx27.dx
+                    t2 = dx15.dx * dx9.dx
+                    t3 = dx1.dx * dx2.dx
+                    dxsum = t1+t2+t3
+                    w12 = 1
+                    if dxsum == 1 or dxsum == 3:
+                        w12 = 0
+                        
+                    w10 = 1
+                    t3 = dx1.dx * dx3.dx
+                    dxsum = t1+t2+t3
+                    if dxsum == 1 or dxsum == 2:
+                        w10 = 0
+                        
+                    # w7：如果 w10 * w12 等于 1，预测为 w10，否则预测为 w12
+                    # w8：如果 w10 * w12 等于 1，预测为 w12，否则预测为 w10
+                    
+                    dxpres = w10
+                    
+                    db.dx = dxpres
+                    
+                elif db.bet_mode == "EW8":
+                    
+                    # 计算 r15和r27的乘积为t1，r9与r15的乘积为t2，r1与r2的乘积t3
+                    # w12，如果和t1+t2+t3=1或3，预测为0，否则预测为1
+                    
+                    # 计算 r15和r27的乘积为t1，r9与r15的乘积为t2，r1与r3的乘积t3
+                    # w10，如果和t1+t2+t3=1或2，预测为0，否则预测为1
+                    
+                    # w7：如果 w10 * w12 等于 1，预测为 w10，否则预测为 w12
+                    # w8：如果 w10 * w12 等于 1，预测为 w12，否则预测为 w10
+                    
+                    result9 = await session.execute(
+                        select(YdxHistory).order_by(desc(YdxHistory.id)).limit(9)
+                    )
+                    dx9 = result9.scalars().all()[-1]
+
+                    result15 = await session.execute(
+                        select(YdxHistory).order_by(desc(YdxHistory.id)).limit(15)
+                    )
+                    dx15 = result15.scalars().all()[-1]   
+                    
+                    result27 = await session.execute(
+                        select(YdxHistory).order_by(desc(YdxHistory.id)).limit(27)
+                    )
+                    dx27 = result27.scalars().all()[-1]   
+
+                    result1 = await session.execute(
+                        select(YdxHistory).order_by(desc(YdxHistory.id)).limit(1)
+                    )
+                    dx1 = result1.scalars().all()[-1]   
+
+                    result2 = await session.execute(
+                        select(YdxHistory).order_by(desc(YdxHistory.id)).limit(2)
+                    )
+                    dx2 = result2.scalars().all()[-1]   
+
+                    result3 = await session.execute(
+                        select(YdxHistory).order_by(desc(YdxHistory.id)).limit(3)
+                    )
+                    dx3 = result3.scalars().all()[-1]   
+
+                    t1 = dx15.dx * dx27.dx
+                    t2 = dx15.dx * dx9.dx
+                    t3 = dx1.dx * dx2.dx
+                    dxsum = t1+t2+t3
+                    w12 = 1
+                    if dxsum == 1 or dxsum == 3:
+                        w12 = 0
+                        
+                    w10 = 1
+                    t3 = dx1.dx * dx3.dx
+                    dxsum = t1+t2+t3
+                    if dxsum == 1 or dxsum == 2:
+                        w10 = 0
+                        
+                    # w12
+                    # w10
+                    # w7：如果 w10 * w12 等于 1，预测为 w10，否则预测为 w12
+                    # w8：如果 w10 * w12 等于 1，预测为 w12，否则预测为 w10
+                    
+                    w8 = w10
+                    
+                    if w10 * w12 == 1:
+                        w8 = w12
+                    
+                    db.dx = w8
+
+
+                elif db.bet_mode == "EW5":
+                    
+                    # 计算 r15和r27的乘积为t1，r9与r12的乘积为t2，r1与r2的乘积t3
+                    # w5，如果和t1+t2+t3=2，预测为1，否则预测为0
+                    
+                    result9 = await session.execute(
+                        select(YdxHistory).order_by(desc(YdxHistory.id)).limit(9)
+                    )
+                    dx9 = result9.scalars().all()[-1]
+                    
+                    result12 = await session.execute(
+                        select(YdxHistory).order_by(desc(YdxHistory.id)).limit(12)
+                    )
+                    dx12 = result12.scalars().all()[-1]
+                    
+                    result15 = await session.execute(
+                        select(YdxHistory).order_by(desc(YdxHistory.id)).limit(15)
+                    )
+                    dx15 = result15.scalars().all()[-1]   
+                    
+                    result27 = await session.execute(
+                        select(YdxHistory).order_by(desc(YdxHistory.id)).limit(27)
+                    )
+                    dx27 = result27.scalars().all()[-1]   
+                    
+                    result1 = await session.execute(
+                        select(YdxHistory).order_by(desc(YdxHistory.id)).limit(1)
+                    )
+                    dx1 = result1.scalars().all()[-1]   
+                    
+                    result2 = await session.execute(
+                        select(YdxHistory).order_by(desc(YdxHistory.id)).limit(2)
+                    )
+                    dx2 = result2.scalars().all()[-1]   
+                    
+                    t1 = dx15.dx * dx27.dx
+                    t2 = dx12.dx * dx9.dx
+                    t3 = dx1.dx * dx2.dx
+                    
+                    dxsum = t1+t2+t3
+                    w5 = 0
+                    if dxsum == 2:
+                        w5 = 1
+                        
+                    db.dx = w5
+
+                elif db.bet_mode == "EW507":
+                    
+                    # 计算 r15和r27的乘积为t1，r9与r15的乘积为t2，r1与r2的乘积t3
+                    # w507，如果和t1+t2+t3=2，预测为t3xt2，否则预测为t1xt2xt3
+                    
+                    result9 = await session.execute(
+                        select(YdxHistory).order_by(desc(YdxHistory.id)).limit(9)
+                    )
+                    dx9 = result9.scalars().all()[-1]
+
+                    result12 = await session.execute(
+                        select(YdxHistory).order_by(desc(YdxHistory.id)).limit(12)
+                    )
+                    dx12 = result12.scalars().all()[-1]
+
+                    result15 = await session.execute(
+                        select(YdxHistory).order_by(desc(YdxHistory.id)).limit(15)
+                    )
+                    dx15 = result15.scalars().all()[-1]   
+                    
+                    result27 = await session.execute(
+                        select(YdxHistory).order_by(desc(YdxHistory.id)).limit(27)
+                    )
+                    dx27 = result27.scalars().all()[-1]   
+
+                    result1 = await session.execute(
+                        select(YdxHistory).order_by(desc(YdxHistory.id)).limit(1)
+                    )
+                    dx1 = result1.scalars().all()[-1]   
+
+                    result2 = await session.execute(
+                        select(YdxHistory).order_by(desc(YdxHistory.id)).limit(2)
+                    )
+                    dx2 = result2.scalars().all()[-1]   
+
+                    result3 = await session.execute(
+                        select(YdxHistory).order_by(desc(YdxHistory.id)).limit(3)
+                    )
+                    dx3 = result3.scalars().all()[-1]   
+
+                    t1 = dx15.dx * dx27.dx
+                    t2 = dx15.dx * dx9.dx
+                    t3 = dx1.dx * dx2.dx
+                    dxsum = t1+t2+t3
+                    
+                    w507 = t1*t2*t3
+                    
+                    if dxsum == 2:
+                        w507 = t2*t3
+                        
+                    db.dx = w507
+
+                elif db.bet_mode == "EW508":
+                    
+                    # 计算 r15和r27的乘积为t1，r9与r15的乘积为t2，r1与r2的乘积t3
+                    # w508，如果和t1+t2+t3=2，预测为t3xt2，否则预测为t1xt2
+                    
+                    result9 = await session.execute(
+                        select(YdxHistory).order_by(desc(YdxHistory.id)).limit(9)
+                    )
+                    dx9 = result9.scalars().all()[-1]
+
+                    result12 = await session.execute(
+                        select(YdxHistory).order_by(desc(YdxHistory.id)).limit(12)
+                    )
+                    dx12 = result12.scalars().all()[-1]
+
+                    result15 = await session.execute(
+                        select(YdxHistory).order_by(desc(YdxHistory.id)).limit(15)
+                    )
+                    dx15 = result15.scalars().all()[-1]   
+                    
+                    result27 = await session.execute(
+                        select(YdxHistory).order_by(desc(YdxHistory.id)).limit(27)
+                    )
+                    dx27 = result27.scalars().all()[-1]   
+
+                    result1 = await session.execute(
+                        select(YdxHistory).order_by(desc(YdxHistory.id)).limit(1)
+                    )
+                    dx1 = result1.scalars().all()[-1]   
+
+                    result2 = await session.execute(
+                        select(YdxHistory).order_by(desc(YdxHistory.id)).limit(2)
+                    )
+                    dx2 = result2.scalars().all()[-1]   
+
+                    result3 = await session.execute(
+                        select(YdxHistory).order_by(desc(YdxHistory.id)).limit(3)
+                    )
+                    dx3 = result3.scalars().all()[-1]   
+
+                    t1 = dx15.dx * dx27.dx
+                    t2 = dx15.dx * dx9.dx
+                    t3 = dx1.dx * dx2.dx
+                    dxsum = t1+t2+t3
+                    
+                    w508 = t1*t2
+                    
+                    if dxsum == 2:
+                        w508 = t2*t3
+                        
+                    db.dx = w508
+
+                elif db.bet_mode == "EW509":
+                    
+                    # 计算 r15和r27的乘积为t1，r9与r15的乘积为t2，r1与r2的乘积t3
+                    # w509，如果和t1+t2+t3=2，预测为t3xt2，否则预测为t1xt3
+                    
+                    result9 = await session.execute(
+                        select(YdxHistory).order_by(desc(YdxHistory.id)).limit(9)
+                    )
+                    dx9 = result9.scalars().all()[-1]
+
+                    result12 = await session.execute(
+                        select(YdxHistory).order_by(desc(YdxHistory.id)).limit(12)
+                    )
+                    dx12 = result12.scalars().all()[-1]
+
+                    result15 = await session.execute(
+                        select(YdxHistory).order_by(desc(YdxHistory.id)).limit(15)
+                    )
+                    dx15 = result15.scalars().all()[-1]   
+                    
+                    result27 = await session.execute(
+                        select(YdxHistory).order_by(desc(YdxHistory.id)).limit(27)
+                    )
+                    dx27 = result27.scalars().all()[-1]   
+
+                    result1 = await session.execute(
+                        select(YdxHistory).order_by(desc(YdxHistory.id)).limit(1)
+                    )
+                    dx1 = result1.scalars().all()[-1]   
+
+                    result2 = await session.execute(
+                        select(YdxHistory).order_by(desc(YdxHistory.id)).limit(2)
+                    )
+                    dx2 = result2.scalars().all()[-1]   
+
+                    result3 = await session.execute(
+                        select(YdxHistory).order_by(desc(YdxHistory.id)).limit(3)
+                    )
+                    dx3 = result3.scalars().all()[-1]   
+
+                    t1 = dx15.dx * dx27.dx
+                    t2 = dx15.dx * dx9.dx
+                    t3 = dx1.dx * dx2.dx
+                    dxsum = t1+t2+t3
+                    
+                    w509 = t1*t3
+                    
+                    if dxsum == 2:
+                        w509 = t2*t3
+                        
+                    db.dx = w509
+
+                elif db.bet_mode == "EW510":
+                    
+                    # 计算 r15和r27的乘积为t1，r9与r15的乘积为t2，r1与r2的乘积t3
+                    # w510，如果和t1+t2+t3=2，预测为t3xt2，否则预测为t1
+                    
+                    result9 = await session.execute(
+                        select(YdxHistory).order_by(desc(YdxHistory.id)).limit(9)
+                    )
+                    dx9 = result9.scalars().all()[-1]
+
+                    result12 = await session.execute(
+                        select(YdxHistory).order_by(desc(YdxHistory.id)).limit(12)
+                    )
+                    dx12 = result12.scalars().all()[-1]
+
+                    result15 = await session.execute(
+                        select(YdxHistory).order_by(desc(YdxHistory.id)).limit(15)
+                    )
+                    dx15 = result15.scalars().all()[-1]   
+                    
+                    result27 = await session.execute(
+                        select(YdxHistory).order_by(desc(YdxHistory.id)).limit(27)
+                    )
+                    dx27 = result27.scalars().all()[-1]   
+
+                    result1 = await session.execute(
+                        select(YdxHistory).order_by(desc(YdxHistory.id)).limit(1)
+                    )
+                    dx1 = result1.scalars().all()[-1]   
+
+                    result2 = await session.execute(
+                        select(YdxHistory).order_by(desc(YdxHistory.id)).limit(2)
+                    )
+                    dx2 = result2.scalars().all()[-1]   
+
+                    result3 = await session.execute(
+                        select(YdxHistory).order_by(desc(YdxHistory.id)).limit(3)
+                    )
+                    dx3 = result3.scalars().all()[-1]   
+
+                    t1 = dx15.dx * dx27.dx
+                    t2 = dx15.dx * dx9.dx
+                    t3 = dx1.dx * dx2.dx
+                    dxsum = t1+t2+t3
+                    
+                    w510 = t1
+                    
+                    if dxsum == 2:
+                        w510 = t2*t3
+                        
+                    db.dx = w510
                 elif db.bet_mode == "YA":
 
                     # ov 模型
