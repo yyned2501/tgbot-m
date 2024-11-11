@@ -8,3 +8,4 @@ test*
 *.session*
 *.log
 *.db
+kernel*
