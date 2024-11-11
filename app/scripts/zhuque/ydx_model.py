@@ -20,6 +20,7 @@ bs_list = ["s", "b"]
 core = ov.Core()
 model_onnx = core.read_model(model="app/onnxes/model.onnx")
 compiled_model_onnx = core.compile_model(model=model_onnx, device_name="AUTO")
+ov_index = 0
 
 
 @app.on_message(filters.command("zqydx") & filters.me)
@@ -208,23 +209,22 @@ async def zhuque_ydx_bet(client: Client, message: Message):
 
                     db.dx = dxpres
                 elif db.bet_mode == "YA":
-                    # pytorch 模型
+
+                    # ov 模型
+                    global ov_index
                     result = await session.execute(
                         select(YdxHistory).order_by(desc(YdxHistory.id)).limit(50)
                     )
                     data = [ydx_history.dx for ydx_history in result.scalars()]
-                    logger.info(data)
                     data.reverse()
-                    logger.info(data)
                     model_dx = [1, 0, data[-1], data[-10], 1 - data[-10]]
-                    logger.info(model_dx)
-                    dummy_input = np.array([data], dtype=np.int64)
-                    res = compiled_model_onnx(dummy_input)
-                    output_data = res[0]
-                    logger.info(output_data)
-                    max_index = np.argmax(output_data, axis=1)
-                    logger.info(max_index)
-                    dx = model_dx[max_index]
+                    if db.lose_times % 2 == 0:
+                        dummy_input = np.array([data], dtype=np.int64)
+                        res = compiled_model_onnx(dummy_input)
+                        output_data = res[0]
+                        max_index = np.argmax(output_data, axis=1)
+                        ov_index = max_index[0]
+                    dx = model_dx[ov_index]
 
                 # 计算下注金额
                 remaining_bouns = int(db.sum_losebonus / rate) + db.start_bonus * (
