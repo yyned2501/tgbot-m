@@ -48,12 +48,11 @@ def E(db: ZqYdx, history: list[YdxHistory]):
     db.dx = 1 - dx.dx
 
 
-@register_function("YA")
-def YA(db: ZqYdx, history: list[YdxHistory]):
+def Y(db: ZqYdx, history: list[YdxHistory], onnx_file):
     global ov_index
     model_dx = [1, 0, history[0].dx, history[9].dx, 1 - history[9].dx]
     if db.lose_times % 2 == 0:
-        model_onnx = core.read_model(model="app/onnxes/zqydxA.onnx")
+        model_onnx = core.read_model(model=onnx_file)
         compiled_model_onnx = core.compile_model(model=model_onnx, device_name="AUTO")
         data = [ydx_history.dx for ydx_history in history]
         data.reverse()
@@ -63,29 +62,27 @@ def YA(db: ZqYdx, history: list[YdxHistory]):
         ov_index = np.argmax(output_data, axis=0)
         logger.info(f"选择模式{ov_index}")
     db.dx = model_dx[ov_index]
+
+
+@register_function("YA")
+def YA(db: ZqYdx, history: list[YdxHistory]):
+    return Y(db, history, "app/onnxes/zqydxA.onnx")
 
 
 @register_function("YB")
 def YB(db: ZqYdx, history: list[YdxHistory]):
-    global ov_index
-    model_dx = [1, 0, history[0].dx, history[9].dx, 1 - history[9].dx]
-    if db.lose_times % 2 == 0:
-        model_onnx = core.read_model(model="app/onnxes/zqydxB.onnx")
-        compiled_model_onnx = core.compile_model(model=model_onnx, device_name="AUTO")
-        data = [ydx_history.dx for ydx_history in history]
-        data.reverse()
-        dummy_input = np.array(data, dtype=np.float32)
-        res = compiled_model_onnx(dummy_input)
-        output_data = res[0]
-        ov_index = np.argmax(output_data, axis=0)
-        logger.info(f"选择模式{ov_index}")
-    db.dx = model_dx[ov_index]
+    return Y(db, history, "app/onnxes/zqydxB.onnx")
+
+
+@register_function("YC")
+def YC(db: ZqYdx, history: list[YdxHistory]):
+    return Y(db, history, "app/onnxes/zqydxC.onnx")
 
 
 def mode(func_name, *args, **kwargs):
     func = _function_registry.get(func_name)
     if callable(func):
-        func(*args, **kwargs)
+        return func(*args, **kwargs)
     else:
-        logger.error(f"不存在模式 {func_name} ,默认使用模式YA")
-        mode("YA", *args, **kwargs)
+        logger.error(f"不存在模式 {func_name} ,默认使用模式C")
+        return mode("C", *args, **kwargs)
