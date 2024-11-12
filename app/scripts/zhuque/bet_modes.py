@@ -66,7 +66,7 @@ def YA(db: ZqYdx, history: list[YdxHistory]):
 
 
 @register_function("YB")
-def YA(db: ZqYdx, history: list[YdxHistory]):
+def YB(db: ZqYdx, history: list[YdxHistory]):
     global ov_index
     model_dx = [1, 0, history[0].dx, history[9].dx, 1 - history[9].dx]
     if db.lose_times % 2 == 0:
