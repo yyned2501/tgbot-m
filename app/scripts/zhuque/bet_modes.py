@@ -5,8 +5,7 @@ import numpy as np
 from app import logger
 
 core = ov.Core()
-model_onnx = core.read_model(model="app/onnxes/zqydx.onnx")
-compiled_model_onnx = core.compile_model(model=model_onnx, device_name="AUTO")
+
 ov_index = 0
 
 
@@ -54,6 +53,25 @@ def YA(db: ZqYdx, history: list[YdxHistory]):
     global ov_index
     model_dx = [1, 0, history[0].dx, history[9].dx, 1 - history[9].dx]
     if db.lose_times % 2 == 0:
+        model_onnx = core.read_model(model="app/onnxes/zqydxA.onnx")
+        compiled_model_onnx = core.compile_model(model=model_onnx, device_name="AUTO")
+        data = [ydx_history.dx for ydx_history in history]
+        data.reverse()
+        dummy_input = np.array(data, dtype=np.float32)
+        res = compiled_model_onnx(dummy_input)
+        output_data = res[0]
+        ov_index = np.argmax(output_data, axis=0)
+        logger.info(f"选择模式{ov_index}")
+    db.dx = model_dx[ov_index]
+
+
+@register_function("YB")
+def YA(db: ZqYdx, history: list[YdxHistory]):
+    global ov_index
+    model_dx = [1, 0, history[0].dx, history[9].dx, 1 - history[9].dx]
+    if db.lose_times % 2 == 0:
+        model_onnx = core.read_model(model="app/onnxes/zqydxB.onnx")
+        compiled_model_onnx = core.compile_model(model=model_onnx, device_name="AUTO")
         data = [ydx_history.dx for ydx_history in history]
         data.reverse()
         dummy_input = np.array(data, dtype=np.float32)

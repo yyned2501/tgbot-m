@@ -162,6 +162,8 @@ async def zhuque_ydx_bet(client: Client, message: Message):
                     select(YdxHistory).order_by(desc(YdxHistory.id)).limit(50)
                 )
                 history = history_result.scalars().all()
+
+                # 按模式设置大小
                 mode(db.bet_mode, db, history)
 
                 # 计算下注金额
