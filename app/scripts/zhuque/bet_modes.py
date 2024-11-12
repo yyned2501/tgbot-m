@@ -51,6 +51,7 @@ def E(db: ZqYdx, history: list[YdxHistory]):
 
 @register_function("YA")
 def YA(db: ZqYdx, history: list[YdxHistory]):
+    global ov_index
     model_dx = [1, 0, history[0].dx, history[9].dx, 1 - history[9].dx]
     if db.lose_times % 2 == 0:
         data = [ydx_history.dx for ydx_history in history]
@@ -68,4 +69,5 @@ def mode(func_name, *args, **kwargs):
     if callable(func):
         func(*args, **kwargs)
     else:
-        print(f"Function {func_name} not found or not callable")
+        logger.error(f"不存在模式 {func_name} ,默认使用模式YA")
+        mode("YA", *args, **kwargs)
