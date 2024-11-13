@@ -28,12 +28,15 @@ mysql:
 
 zhuque:
   redpocket:
-    push_chat_id: "me"
+    push_chat_id: me
   ydx_model:
-    push_chat_id: "me"
+    push_chat_id: me
     max_bet_bonus: 50000000
-    mode_D_rate: 0.75
+
+agsv:
+  redpocket:
+    push_chat_id: me
 
 redleaves:
   redpocket:
-    push_chat_id: "me"
+    push_chat_id: me
