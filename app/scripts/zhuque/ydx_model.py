@@ -90,7 +90,7 @@ async def zhuque_ydx_switch(client: Client, message: Message):
                     if len(message.command) >= 3:
                         bet_round = message.command[2]
                         if bet_round.isdigit():
-                            bet_round = int(bonus)
+                            bet_round = int(bet_round)
                             if 5 <= bet_round < 12:
                                 db.bet_round = bet_round
                             else:
