@@ -27,7 +27,8 @@ mysql:
   password: xxx
 
 zhuque:
-  
+  x-csrf-token: ""
+  cookie: ""
   redpocket:
     push_chat_id: me
   ydx_model:
