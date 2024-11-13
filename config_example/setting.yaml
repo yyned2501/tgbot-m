@@ -27,6 +27,7 @@ mysql:
   password: xxx
 
 zhuque:
+  
   redpocket:
     push_chat_id: me
   ydx_model:

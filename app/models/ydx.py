@@ -1,27 +1,43 @@
 import logging
-import random
 import datetime
 
 from sqlalchemy import (
-    ForeignKey,
     String,
     Integer,
-    Float,
-    BigInteger,
-    Text,
-    TIMESTAMP,
-    SmallInteger,
     DateTime,
     func,
 )
-from sqlalchemy import select
-from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models.base import Base
+from app.libs.zhuque_requests import get_info
 
 
 logger = logging.getLogger("main")
+
+
+def test_round(my_bonus, n):
+    max_bonus = min(50000000, my_bonus)
+    min_bonus = 500
+    m = int(my_bonus / (2 ** (n + 1)))
+    for i in range(m):
+        startbonus = m - i
+        if startbonus < min_bonus:
+            break
+        rele_bonus = 0
+        sum_bonus = 0
+        for i in range(n + 2):
+            bonus = sum_bonus / 0.99 + startbonus * (i + 1)
+            last_bonus = rele_bonus
+            rele_bonus = bonus // min_bonus * min_bonus
+            last_sum_bonus = sum_bonus
+            sum_bonus += rele_bonus
+            if sum_bonus > my_bonus or rele_bonus > max_bonus:
+                if i > n:
+                    print(i, startbonus, last_bonus, last_sum_bonus)
+                    return startbonus
+                break
 
 
 class ZqYdx(Base):
@@ -34,11 +50,12 @@ class ZqYdx(Base):
     bet_switch: Mapped[int] = mapped_column(Integer)
     bet_mode: Mapped[str] = mapped_column(String(8))
     kp_switch: Mapped[int] = mapped_column(Integer)
-    rel_betbonus: Mapped[int] = mapped_column(Integer)
+    betbonus: Mapped[int] = mapped_column(Integer)
     lose_times: Mapped[int] = mapped_column(Integer)
     win_times: Mapped[int] = mapped_column(Integer)
     sum_losebonus: Mapped[int] = mapped_column(Integer)
     message_id: Mapped[int] = mapped_column(Integer, nullable=True)
+    bet_round: Mapped[int] = mapped_column(Integer, nullable=True)
     update_time: Mapped[datetime.datetime] = mapped_column(DateTime)
 
     @classmethod
@@ -51,14 +68,24 @@ class ZqYdx(Base):
             bet_switch=0,
             bet_mode="A",
             kp_switch=0,
-            rel_betbonus=0,
+            betbonus=0,
             lose_times=0,
             win_times=0,
             sum_losebonus=0,
+            bet_round=0,
             update_time=func.now(),
         )
         session.add(self)
         return self
+
+    async def set_start_bonus(self):
+        info = await get_info()
+        if info:
+            bonus = info["data"]["bonus"]
+            start_bonus = test_round(bonus, self.bet_round)
+            if start_bonus:
+                start_bonus = min(start_bonus, 500)
+                self.start_bonus = start_bonus
 
 
 class YdxHistory(Base):
