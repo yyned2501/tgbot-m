@@ -84,7 +84,7 @@ class ZqYdx(Base):
             bonus = info["data"]["bonus"]
             start_bonus = test_round(bonus, self.bet_round)
             if start_bonus:
-                start_bonus = min(start_bonus, 500)
+                start_bonus = max(start_bonus, 500)
                 self.start_bonus = start_bonus
 
 
