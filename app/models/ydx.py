@@ -20,7 +20,7 @@ logger = logging.getLogger("main")
 def test_round(my_bonus, n):
     max_bonus = min(50000000, my_bonus)
     min_bonus = 500
-    m = int(my_bonus / (2 ** (n + 1)))
+    m = int(min(my_bonus,1e8) / (2 ** (n + 1)))
     for i in range(m):
         startbonus = m - i
         if startbonus < min_bonus:
