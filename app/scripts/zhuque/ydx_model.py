@@ -150,7 +150,7 @@ async def zhuque_ydx_check(client: Client, message: Message):
                         logger.info(re_mess)
                         db.betbonus = 0
                         if db.bet_round:
-                            db.set_start_bonus()
+                            await db.set_start_bonus()
                     else:
                         db.sum_losebonus += db.betbonus
                         db.lose_times += 1
@@ -163,7 +163,7 @@ async def zhuque_ydx_check(client: Client, message: Message):
                     )
                 else:
                     if db.bet_round:
-                        db.set_start_bonus()
+                        await db.set_start_bonus()
                 if db.kp_switch == 1:
                     await asyncio.sleep(1)
                     await app.send_message(TARGET, f"/ydx")
