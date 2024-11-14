@@ -79,6 +79,11 @@ def YC(db: ZqYdx, history: list[YdxHistory]):
     return Y(db, history, "app/onnxes/zqydxC.onnx")
 
 
+@register_function("YD")
+def YD(db: ZqYdx, history: list[YdxHistory]):
+    return Y(db, history, "app/onnxes/zqydx_8_5195_1731557900.onnx")
+
+
 def mode(func_name, *args, **kwargs):
     func = _function_registry.get(func_name)
     if callable(func):
