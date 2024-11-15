@@ -66,22 +66,22 @@ def Y(db: ZqYdx, history: list[YdxHistory], onnx_file):
 
 @register_function("YA")
 def YA(db: ZqYdx, history: list[YdxHistory]):
-    return Y(db, history, "app/onnxes/zqydxA.onnx")
+    return Y(db, history, "app/onnxes/zqydx_8_5235_1731573720.onnx")
 
 
 @register_function("YB")
 def YB(db: ZqYdx, history: list[YdxHistory]):
-    return Y(db, history, "app/onnxes/zqydxB.onnx")
+    return Y(db, history, "app/onnxes/zqydx_8_5205_1731569820.onnx")
 
 
 @register_function("YC")
 def YC(db: ZqYdx, history: list[YdxHistory]):
-    return Y(db, history, "app/onnxes/zqydxC.onnx")
+    return Y(db, history, "app/onnxes/zqydx_8_5195_1731557900.onnx")
 
 
 @register_function("YD")
 def YD(db: ZqYdx, history: list[YdxHistory]):
-    return Y(db, history, "app/onnxes/zqydx_8_5195_1731557900.onnx")
+    return Y(db, history, "app/onnxes/zqydx_9_5135.onnx")
 
 
 def mode(func_name, *args, **kwargs):
