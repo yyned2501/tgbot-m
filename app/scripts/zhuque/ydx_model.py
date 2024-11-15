@@ -111,14 +111,17 @@ async def zhuque_ydx_switch(client: Client, message: Message):
 async def zhuque_ydx_check(client: Client, message: Message):
     match = message.matches[0]
     Lottery_Point = match.group(1)
-    if db.kp_switch == 1:
-        await asyncio.sleep(1)
-        await app.send_message(TARGET, f"/ydx")
+
     async with ASession() as session:
         async with session.begin():
             db = await session.get(ZqYdx, 1) or ZqYdx.init(session)
             dx = dx_list.index(Lottery_Point)
             session.add(YdxHistory(dx=dx))
+
+            if db.kp_switch == 1:
+                await asyncio.sleep(1)
+                await app.send_message(TARGET, f"/ydx")
+            
             if db.bet_switch == 1:
                 if db.message_id and message.reply_to_message_id:
                     if db.message_id != message.reply_to_message_id:
