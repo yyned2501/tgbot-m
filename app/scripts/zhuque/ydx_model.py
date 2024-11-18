@@ -9,7 +9,7 @@ from app.config import setting
 from app.filters import custom_filters
 from app.models import ASession
 from app.models.ydx import YdxHistory, ZqYdx
-from app.scripts.zhuque.ex.bet_modes import mode
+from app.scripts.zhuque.ex.bet_modes import mode, test
 from app.libs.zhuque_requests import get_info
 
 TARGET = -1001833464786
@@ -102,6 +102,9 @@ async def zhuque_ydx_switch(client: Client, message: Message):
                         await asyncio.sleep(5)
                         await message.delete()
 
+                elif message.command[1] == "test":
+                    pass
+
 
 @app.on_message(
     filters.chat(TARGET)
@@ -121,7 +124,7 @@ async def zhuque_ydx_check(client: Client, message: Message):
             if db.kp_switch == 1:
                 await asyncio.sleep(1)
                 await app.send_message(TARGET, f"/ydx")
-            
+
             if db.bet_switch == 1:
                 if db.message_id and message.reply_to_message_id:
                     if db.message_id != message.reply_to_message_id:
@@ -170,7 +173,6 @@ async def zhuque_ydx_check(client: Client, message: Message):
                 else:
                     if db.bet_round:
                         await db.set_start_bonus()
-                
 
 
 @app.on_message(

@@ -76,12 +76,12 @@ def YB(db: ZqYdx, history: list[YdxHistory]):
 
 @register_function("YC")
 def YC(db: ZqYdx, history: list[YdxHistory]):
-    return Y(db, history, "app/onnxes/1731900013_zqydx_8_4955.onnx")
+    return Y(db, history, "app/onnxes/zqydx_1731934128_8_5200.onnx")
 
 
 @register_function("YD")
 def YD(db: ZqYdx, history: list[YdxHistory]):
-    return Y(db, history, "app/onnxes/1731912004_zqydx_9_5084.onnx")
+    return Y(db, history, "app/onnxes/zqydx_1731937279_8_1_5115.onnx")
 
 
 def mode(func_name, *args, **kwargs):
@@ -91,3 +91,10 @@ def mode(func_name, *args, **kwargs):
     else:
         logger.error(f"不存在模式 {func_name} ,默认使用模式C")
         return mode("C", *args, **kwargs)
+
+def test(db: ZqYdx, history: list[YdxHistory]):
+    loss_count = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    data = [ydx_history.dx for ydx_history in history]
+    turn_loss_count = 0
+    for dx in history:
+        pass
