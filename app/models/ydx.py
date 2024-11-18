@@ -12,15 +12,16 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models.base import Base
 from app.libs.zhuque_requests import get_info
+from app.config import setting
 
 
 logger = logging.getLogger("main")
 
 
 def test_round(my_bonus, n):
-    max_bonus = min(50000000, my_bonus)
+    max_bonus = min(setting["zhuque"]["ydx_model"]["max_bet_bonus"], my_bonus)
     min_bonus = 500
-    m = int(min(my_bonus,1e8) / (2 ** (n + 1)))
+    m = int(min(my_bonus, 1e8) / (2 ** (n + 1)))
     for i in range(m):
         startbonus = m - i
         if startbonus < min_bonus:
