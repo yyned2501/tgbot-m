@@ -62,7 +62,8 @@ class ZqYdx(Base):
     async def set_start_bonus(self):
         info = await get_info()
         if info:
-            self.user_bonus = info["data"]["bonus"]
+            self.user_bonus = int(info["data"]["bonus"])
+            self.max_bet_bonus = int(self.user_bonus / 4)
         self.test_round()
 
     def test_round(self):
@@ -86,7 +87,8 @@ class ZqYdx(Base):
                         logger.info(
                             f"{i}, {startbonus}, {last_bonus}, {last_sum_bonus}"
                         )
-                        return startbonus
+                        self.start_bonus = startbonus
+                        return
                     break
 
 
