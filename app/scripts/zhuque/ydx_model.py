@@ -98,12 +98,27 @@ async def zhuque_ydx_switch(client: Client, message: Message):
                                 await asyncio.sleep(5)
                                 await message.delete()
                                 return
-                        await message.edit(f"兜底{db.bet_round} 轮！！！！。。。")
+                        await message.edit(f"兜底 {db.bet_round} 轮！！！！。。。")
                         await asyncio.sleep(5)
                         await message.delete()
 
-                elif message.command[1] == "test":
-                    pass
+                elif message.command[1] == "mbb":
+                    if len(message.command) >= 3:
+                        max_bet_bonus = message.command[2]
+                        if max_bet_bonus.isdigit():
+                            max_bet_bonus = int(max_bet_bonus)
+                            if 500 <= bet_round <= 50000000:
+                                db.max_bet_bonus = max_bet_bonus
+                            else:
+                                await message.edit(f"最大单次下注应在500-5000w内")
+                                await asyncio.sleep(5)
+                                await message.delete()
+                                return
+                        await message.edit(
+                            f"最大下注 {db.max_bet_bonus} ！！！！。。。"
+                        )
+                        await asyncio.sleep(5)
+                        await message.delete()
 
 
 @app.on_message(
@@ -201,10 +216,7 @@ async def zhuque_ydx_bet(client: Client, message: Message):
                 remaining_bouns = int(db.sum_losebonus / rate) + db.start_bonus * (
                     db.lose_times + 1
                 )
-                if (
-                    remaining_bouns // setting["zhuque"]["ydx_model"]["max_bet_bonus"]
-                    > 0
-                ):
+                if remaining_bouns // db.max_bet_bonus > 0:
                     remaining_bouns = db.start_bonus
                     db.sum_losebonus = 0
                 # 对应按钮金额
