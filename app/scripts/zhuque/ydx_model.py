@@ -107,7 +107,7 @@ async def zhuque_ydx_switch(client: Client, message: Message):
                         max_bet_bonus = message.command[2]
                         if max_bet_bonus.isdigit():
                             max_bet_bonus = int(max_bet_bonus)
-                            if 500 <= bet_round <= 50000000:
+                            if 500 <= max_bet_bonus <= 50000000:
                                 db.max_bet_bonus = max_bet_bonus
                             else:
                                 await message.edit(f"最大单次下注应在500-5000w内")
