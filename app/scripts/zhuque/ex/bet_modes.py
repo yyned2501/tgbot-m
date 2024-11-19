@@ -66,17 +66,17 @@ def Y(db: ZqYdx, history: list[YdxHistory], onnx_file):
 
 @register_function("YA")
 def YA(db: ZqYdx, history: list[YdxHistory]):
-    return Y(db, history, "app/onnxes/1731573720_zqydx_8_5235.onnx")
+    return Y(db, history, "app/onnxes/zqydx_1731934128_8_5200.onnx")
 
 
 @register_function("YB")
 def YB(db: ZqYdx, history: list[YdxHistory]):
-    return Y(db, history, "app/onnxes/1731653091_zqydx_8_5180.onnx")
+    return Y(db, history, "app/onnxes/zqydx_1731935810_8_1_5070.onnx")
 
 
 @register_function("YC")
 def YC(db: ZqYdx, history: list[YdxHistory]):
-    return Y(db, history, "app/onnxes/zqydx_1731934128_8_5200.onnx")
+    return Y(db, history, "app/onnxes/zqydx_1731937136_8_1_5050.onnx")
 
 
 @register_function("YD")
