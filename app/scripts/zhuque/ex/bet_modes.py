@@ -109,22 +109,22 @@ def mode(func_name, *args, **kwargs):
 
 @register_function("SA")
 def SA(db: ZqYdx, history: list[YdxHistory]):
-    return Y(db, history, "app/onnxes/zqydx_s_1731987416_7_2_4995.onnx")
+    return S(db, history, "app/onnxes/zqydx_s_1731987416_7_2_4995.onnx")
 
 
 @register_function("SB")
 def SB(db: ZqYdx, history: list[YdxHistory]):
-    return Y(db, history, "app/onnxes/zqydx_s_1731990097_7_2_5000.onnx")
+    return S(db, history, "app/onnxes/zqydx_s_1731990097_7_2_5000.onnx")
 
 
 @register_function("SC")
 def SC(db: ZqYdx, history: list[YdxHistory]):
-    return Y(db, history, "app/onnxes/zqydx_s_1731993071_7_1_4995.onnx")
+    return S(db, history, "app/onnxes/zqydx_s_1731993071_7_1_4995.onnx")
 
 
 @register_function("SD")
 def SD(db: ZqYdx, history: list[YdxHistory]):
-    return Y(db, history, "app/onnxes/zqydx_s_1731999972_6_10_4950.onnx")
+    return S(db, history, "app/onnxes/zqydx_s_1731999972_6_10_4950.onnx")
 
 
 def test(db: ZqYdx, history: list[YdxHistory]):
