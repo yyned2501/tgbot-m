@@ -216,9 +216,12 @@ async def zhuque_ydx_bet(client: Client, message: Message):
                 remaining_bouns = int(db.sum_losebonus / rate) + db.start_bonus * (
                     db.lose_times + 1
                 )
-                if remaining_bouns // db.max_bet_bonus > 0:
+                if remaining_bouns > db.max_bet_bonus:
+                    await app.send_message(TARGET, f"没兜住")
+                    await db.set_start_bonus()
                     remaining_bouns = db.start_bonus
                     db.sum_losebonus = 0
+                    db.lose_times = 0
                 # 对应按钮金额
                 bet_values = [
                     50000000,
