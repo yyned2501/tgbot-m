@@ -63,13 +63,34 @@ class ZqYdx(Base):
         info = await get_info()
         if info:
             self.user_bonus = int(info["data"]["bonus"])
-            self.max_bet_bonus = int(self.user_bonus / 4)
+            self.max_bet_bonus = min(int(self.user_bonus / 4), 5e7)
         self.test_round()
 
     def test_round(self):
-        max_bonus = min(self.max_bet_bonus, self.user_bonus)
+        max_bonus = min(self.max_bet_bonus, self.user_bonus, 5e7)
         min_bonus = 500
-        m = int(min(self.user_bonus, 1e8) / (2 ** (self.bet_round + 1)))
+        m = min(
+            (
+                int(
+                    min(self.user_bonus, 1e8)
+                    / (2 ** (self.bet_round + 2) - self.bet_round - 2)
+                    / 0.99**self.bet_round
+                )
+                // 500
+                + 1
+            )
+            * 500,
+            (
+                int(
+                    min(max_bonus, 1e8)
+                    / (2 ** (self.bet_round + 1) - 1)
+                    / 0.99 ** (self.bet_round - 1)
+                )
+                // 500
+                + 1
+            )
+            * 500,
+        )
         for i in range(m):
             startbonus = m - i
             if startbonus < min_bonus:
