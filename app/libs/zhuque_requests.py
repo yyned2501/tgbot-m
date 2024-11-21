@@ -4,7 +4,7 @@ import aiohttp
 from app.config import setting
 from app import logger
 
-
+timeout = aiohttp.ClientTimeout(total=5)
 cookie_headers = {
     "x-csrf-token": setting["zhuque"]["x-csrf-token"],
     "cookie": setting["zhuque"]["cookie"],
@@ -41,7 +41,7 @@ async def post(session: aiohttp.ClientSession, url, data=None, referer=None):
 async def get_info():
     url = "https://zhuque.in/api/user/getMainInfo"
     referer = "https://zhuque.in/user/info"
-    async with aiohttp.ClientSession() as session:
+    async with aiohttp.ClientSession(timeout=timeout) as session:
         info = await get(session, url, referer=referer)
         print(info["data"]["bonus"])
         return info
