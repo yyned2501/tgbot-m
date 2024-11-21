@@ -42,9 +42,11 @@ async def get_info():
     url = "https://zhuque.in/api/user/getMainInfo"
     referer = "https://zhuque.in/user/info"
     async with aiohttp.ClientSession(timeout=timeout) as session:
-        info = await get(session, url, referer=referer)
-        print(info["data"]["bonus"])
-        return info
+        try:
+            info = await get(session, url, referer=referer)
+            return info
+        except:
+            return None
 
 
 if __name__ == "__main__":
