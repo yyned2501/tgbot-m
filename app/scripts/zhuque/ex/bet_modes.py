@@ -70,27 +70,27 @@ def mode(func_name, *args, **kwargs):
 
 @register_function("SA")
 def SA(db: ZqYdx, data: list[int]):
-    return S(db, data, "app/onnxes/zqydx_s4_1732170956_8_1_5044.pkl")
+    return S(db, data, "app/onnxes/zqydx_s4_1732170956_8_1_5044.onnx")
 
 
 @register_function("SB")
 def SB(db: ZqYdx, data: list[int]):
-    return S(db, data, "app/onnxes/zqydx_s4_1732171032_7_7_4975.pkl")
+    return S(db, data, "app/onnxes/zqydx_s4_1732171032_7_7_4975.onnx")
 
 
 @register_function("SC")
 def SC(db: ZqYdx, data: list[int]):
-    return S(db, data, "app/onnxes/zqydx_s4_1732172143_7_4_5080.pkl")
+    return S(db, data, "app/onnxes/zqydx_s4_1732172143_7_4_5080.onnx")
 
 
 @register_function("SD")
 def SD(db: ZqYdx, data: list[int]):
-    return S(db, data, "app/onnxes/zqydx_s4_1732172462_7_3_4985.pkl")
+    return S(db, data, "app/onnxes/zqydx_s4_1732172462_7_3_4985.onnx")
 
 
 @register_function("SE")
 def SE(db: ZqYdx, data: list[int]):
-    return S(db, data, "app/onnxes/zqydx_s4_1732173455_7_3_5050.pkl")
+    return S(db, data, "app/onnxes/zqydx_s4_1732173455_7_3_5050.onnx")
 
 
 def test(db: ZqYdx, history: list[YdxHistory]):
