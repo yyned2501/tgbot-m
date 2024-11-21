@@ -216,8 +216,6 @@ async def zhuque_ydx_check(client: Client, message: Message):
 async def zhuque_ydx_bet(client: Client, message: Message):
     async with ASession() as session:
         async with session.begin():
-            db = await session.get(ZqYdx, 1) or ZqYdx.init(session)
-            # 保存新历史数据
             history_result = await session.execute(
                 select(YdxHistory).order_by(desc(YdxHistory.id)).limit(50)
             )
@@ -226,6 +224,9 @@ async def zhuque_ydx_bet(client: Client, message: Message):
                 message, [ydx_history.dx for ydx_history in history]
             )
             session.add_all([YdxHistory(dx=dx) for dx in save_list])
+        async with session.begin():
+            db = await session.get(ZqYdx, 1) or ZqYdx.init(session)
+            # 保存新历史数据
             if db.bet_switch == 1:
                 if db.message_id:
                     logger.warning("检测到上局未结束，5秒后重新检测...")
