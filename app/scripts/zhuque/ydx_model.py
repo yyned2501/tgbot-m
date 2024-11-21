@@ -18,6 +18,27 @@ dx_list = ["小", "大"]
 bs_list = ["s", "b"]
 
 
+def new_history_list(message: Message, data: list[int]):
+    lines = message.text.strip().split("\n")
+    single_line_list = []
+    start = 0
+    for line in lines[1:5]:
+        line = line.strip("[]").split()
+        line = [int(num) for num in line]
+        single_line_list.extend(line)
+    saved_index = len(single_line_list)
+    if ld := len(data) < 40:
+        start = saved_index - ld
+    for i in range(start, saved_index):
+        if (t := single_line_list[i:]) == data[: len(t)]:
+            saved_index = i
+            break
+    save_list = single_line_list[:saved_index]
+    save_list.reverse()
+    logger.info(f"保存数据{save_list}")
+    return save_list
+
+
 @app.on_message(filters.command("zqydx") & filters.me)
 async def zhuque_ydx_switch(client: Client, message: Message):
     async with ASession() as session:
@@ -134,7 +155,6 @@ async def zhuque_ydx_check(client: Client, message: Message):
         async with session.begin():
             db = await session.get(ZqYdx, 1) or ZqYdx.init(session)
             dx = dx_list.index(Lottery_Point)
-            session.add(YdxHistory(dx=dx))
 
             if db.kp_switch == 1:
                 await asyncio.sleep(1)
@@ -197,7 +217,15 @@ async def zhuque_ydx_bet(client: Client, message: Message):
     async with ASession() as session:
         async with session.begin():
             db = await session.get(ZqYdx, 1) or ZqYdx.init(session)
-
+            # 保存新历史数据
+            history_result = await session.execute(
+                select(YdxHistory).order_by(desc(YdxHistory.id)).limit(50)
+            )
+            history = history_result.scalars().all()
+            save_list = new_history_list(
+                message, [ydx_history.dx for ydx_history in history]
+            )
+            session.add_all([YdxHistory(dx=dx) for dx in save_list])
             if db.bet_switch == 1:
                 if db.message_id:
                     logger.warning("检测到上局未结束，5秒后重新检测...")
@@ -261,11 +289,3 @@ async def zhuque_ydx_bet(client: Client, message: Message):
                                 logger.info(f"破产了")
                                 await app.send_message(TARGET, f"破产了")
                                 return
-
-
-async def listofWinners_check(message: Message, target_username: str) -> bool:
-    for entity in message.entities:
-        if entity.user:
-            if entity.user.username == target_username:
-                return True
-    return False
