@@ -36,7 +36,7 @@ def new_history_list(message: Message, data: list[int]):
     save_list = single_line_list[:saved_index]
     save_list.reverse()
     logger.info(f"保存数据{save_list}")
-    return save_list
+    return save_list, single_line_list
 
 
 @app.on_message(filters.command("zqydx") & filters.me)
@@ -220,7 +220,7 @@ async def zhuque_ydx_bet(client: Client, message: Message):
                 select(YdxHistory).order_by(desc(YdxHistory.id)).limit(50)
             )
             history = history_result.scalars().all()
-            save_list = new_history_list(
+            save_list, data = new_history_list(
                 message, [ydx_history.dx for ydx_history in history]
             )
             session.add_all([YdxHistory(dx=dx) for dx in save_list])
@@ -233,13 +233,8 @@ async def zhuque_ydx_bet(client: Client, message: Message):
                     await asyncio.sleep(5)
                     return await zhuque_ydx_bet(client, message)
                 db.message_id = message.id
-                history_result = await session.execute(
-                    select(YdxHistory).order_by(desc(YdxHistory.id)).limit(50)
-                )
-                history = history_result.scalars().all()
-
                 # 按模式设置大小
-                mode(db.bet_mode, db, history)
+                mode(db.bet_mode, db, data)
 
                 # 计算下注金额
                 remaining_bouns = int(db.sum_losebonus / rate) + db.start_bonus * (

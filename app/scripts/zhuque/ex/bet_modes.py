@@ -21,74 +21,35 @@ def register_function(name):
 
 
 @register_function("A")
-def A(db: ZqYdx, history: list[YdxHistory]):
+def A(db: ZqYdx, data: list[int]):
     db.dx = 1
 
 
 @register_function("B")
-def A(db: ZqYdx, history: list[YdxHistory]):
+def A(db: ZqYdx, data: list[int]):
     db.dx = 0
 
 
 @register_function("C")
-def C(db: ZqYdx, history: list[YdxHistory]):
+def C(db: ZqYdx, data: list[int]):
     if db.lose_times > 0:
         db.dx = 1 - db.dx
 
 
 @register_function("D")
-def D(db: ZqYdx, history: list[YdxHistory]):
-    dx = history[9]
-    db.dx = dx.dx
+def D(db: ZqYdx, data: list[int]):
+    db.dx = data[9]
 
 
 @register_function("E")
-def E(db: ZqYdx, history: list[YdxHistory]):
-    dx = history[9]
-    db.dx = 1 - dx.dx
+def E(db: ZqYdx, data: list[int]):
+    db.dx = 1 - data[9]
 
 
-def Y(db: ZqYdx, history: list[YdxHistory], onnx_file):
-    global ov_index
-    model_dx = [1, 0, history[0].dx, history[9].dx, 1 - history[9].dx]
-    if db.lose_times % 2 == 0:
-        model_onnx = core.read_model(model=onnx_file)
-        compiled_model_onnx = core.compile_model(model=model_onnx, device_name="AUTO")
-        data = [ydx_history.dx for ydx_history in history]
-        data.reverse()
-        dummy_input = np.array(data, dtype=np.float32)
-        res = compiled_model_onnx(dummy_input)
-        output_data = res[0]
-        ov_index = np.argmax(output_data, axis=0)
-        logger.info(f"选择模式{ov_index}")
-    db.dx = model_dx[ov_index]
-
-
-@register_function("YA")
-def YA(db: ZqYdx, history: list[YdxHistory]):
-    return Y(db, history, "app/onnxes/zqydx_1731934128_8_5200.onnx")
-
-
-@register_function("YB")
-def YB(db: ZqYdx, history: list[YdxHistory]):
-    return Y(db, history, "app/onnxes/zqydx_1731935810_8_1_5070.onnx")
-
-
-@register_function("YC")
-def YC(db: ZqYdx, history: list[YdxHistory]):
-    return Y(db, history, "app/onnxes/zqydx_1731937136_8_1_5050.onnx")
-
-
-@register_function("YD")
-def YD(db: ZqYdx, history: list[YdxHistory]):
-    return Y(db, history, "app/onnxes/zqydx_1731937279_8_1_5115.onnx")
-
-
-def S(db: ZqYdx, history: list[YdxHistory], onnx_file):
-    model_dx = [1, 0, history[0].dx, history[9].dx, 1 - history[9].dx]
+def S(db: ZqYdx, data: list[int], onnx_file):
+    model_dx = [1, 0, data[0], data[9], 1 - data[9]]
     model_onnx = core.read_model(model=onnx_file)
     compiled_model_onnx = core.compile_model(model=model_onnx, device_name="AUTO")
-    data = [ydx_history.dx for ydx_history in history]
     data.reverse()
     dummy_input = np.array(data, dtype=np.float32)
     res = compiled_model_onnx(dummy_input)
@@ -108,28 +69,28 @@ def mode(func_name, *args, **kwargs):
 
 
 @register_function("SA")
-def SA(db: ZqYdx, history: list[YdxHistory]):
-    return S(db, history, "app/onnxes/zqydx_s_1731993071_7_1_4995.onnx")
+def SA(db: ZqYdx, data: list[int]):
+    return S(db, data, "app/onnxes/zqydx_s4_1732170956_8_1_5044.pkl")
 
 
 @register_function("SB")
-def SB(db: ZqYdx, history: list[YdxHistory]):
-    return S(db, history, "app/onnxes/zqydx_s_1731999972_6_10_4950.onnx")
+def SB(db: ZqYdx, data: list[int]):
+    return S(db, data, "app/onnxes/zqydx_s4_1732171032_7_7_4975.pkl")
 
 
 @register_function("SC")
-def SC(db: ZqYdx, history: list[YdxHistory]):
-    return S(db, history, "app/onnxes/zqydx_s_1732067442_7_3_4895.onnx")
+def SC(db: ZqYdx, data: list[int]):
+    return S(db, data, "app/onnxes/zqydx_s4_1732172143_7_4_5080.pkl")
 
 
 @register_function("SD")
-def SD(db: ZqYdx, history: list[YdxHistory]):
-    return S(db, history, "app/onnxes/zqydx_s_1732068579_7_3_4950.onnx")
+def SD(db: ZqYdx, data: list[int]):
+    return S(db, data, "app/onnxes/zqydx_s4_1732172462_7_3_4985.pkl")
 
 
 @register_function("SE")
-def SE(db: ZqYdx, history: list[YdxHistory]):
-    return S(db, history, "app/onnxes/zqydx_s_1732071597_7_2_4920.onnx")
+def SE(db: ZqYdx, data: list[int]):
+    return S(db, data, "app/onnxes/zqydx_s4_1732173455_7_3_5050.pkl")
 
 
 def test(db: ZqYdx, history: list[YdxHistory]):
