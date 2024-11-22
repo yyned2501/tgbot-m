@@ -242,7 +242,7 @@ async def zhuque_ydx_bet(client: Client, message: Message):
                     logger.warning("检测到上局未结束，5秒后重新检测...")
                     scheduler.add_job(
                         zhuque_ydx_bet,
-                        "interval",
+                        "date",
                         next_run_time=datetime.datetime.now()
                         + datetime.timedelta(seconds=5),
                         args=(client, message),
