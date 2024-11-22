@@ -9,8 +9,7 @@ from app.config import setting
 from app.filters import custom_filters
 from app.models import ASession
 from app.models.ydx import YdxHistory, ZqYdx
-from app.scripts.zhuque.ex.bet_modes import mode, test
-from app.libs.zhuque_requests import get_info
+from app.scripts.zhuque.ex.bet_modes import mode, get_funcs
 
 TARGET = -1001833464786
 rate = 0.99
@@ -139,6 +138,12 @@ async def zhuque_ydx_switch(client: Client, message: Message):
                             f"最大下注 {db.max_bet_bonus} ！！！！。。。"
                         )
                         await asyncio.sleep(5)
+                        await message.delete()
+                    elif message.command[1] == "mds":
+                        funcs_dict = get_funcs()
+                        r = "有以下模式可以选择：```\n" + "\n".join([k for k in funcs_dict]) + "```"
+                        await message.edit(r)
+                        await asyncio.sleep(10)
                         await message.delete()
 
 

@@ -1,3 +1,4 @@
+import os
 from app.models.ydx import ZqYdx, YdxHistory
 import openvino as ov
 import numpy as np
@@ -64,8 +65,8 @@ def mode(func_name, *args, **kwargs):
     if callable(func):
         return func(*args, **kwargs)
     else:
-        logger.error(f"不存在模式 {func_name} ,默认使用模式C")
-        return mode("C", *args, **kwargs)
+        logger.error(f"不存在模式 {func_name} ,默认使用模式S1")
+        return mode("S1", *args, **kwargs)
 
 
 @register_function("SA")
@@ -75,17 +76,17 @@ def SA(db: ZqYdx, data: list[int]):
 
 @register_function("SB")
 def SB(db: ZqYdx, data: list[int]):
-    return S(db, data, "app/onnxes/zqydx_s4_1732171032_7_7_4975.onnx")
+    return S(db, data, "app/onnxes/zqydx_s4_1732186029_7_5_5024.onnx")
 
 
 @register_function("SC")
 def SC(db: ZqYdx, data: list[int]):
-    return S(db, data, "app/onnxes/zqydx_s4_1732172143_7_4_5080.onnx")
+    return S(db, data, "app/onnxes/zqydx_s4_1732186930_7_3_5004.onnx")
 
 
 @register_function("SD")
 def SD(db: ZqYdx, data: list[int]):
-    return S(db, data, "app/onnxes/zqydx_s4_1732172462_7_3_4985.onnx")
+    return S(db, data, "app/onnxes/zqydx_s4_1732189871_7_3_5014.onnx")
 
 
 @register_function("SE")
@@ -93,9 +94,17 @@ def SE(db: ZqYdx, data: list[int]):
     return S(db, data, "app/onnxes/zqydx_s4_1732173455_7_3_5050.onnx")
 
 
-def test(db: ZqYdx, history: list[YdxHistory]):
+n = 1
+for root, dirs, files in os.walk("app/onnxes"):
+    for file_name in files:
+        model = f"{root}/{file_name}"
+        _function_registry[f"S{n}"] = lambda db, data: S(db, data, model)
+        n += 1
+
+
+def get_funcs():
+    return _function_registry
+
+
+def test(db: ZqYdx, data: list[int]):
     loss_count = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-    data = [ydx_history.dx for ydx_history in history]
-    turn_loss_count = 0
-    for dx in history:
-        pass
