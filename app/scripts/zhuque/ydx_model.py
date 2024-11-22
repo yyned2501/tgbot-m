@@ -1,10 +1,11 @@
 import asyncio
+import datetime
 
 from pyrogram import filters, Client
 from pyrogram.types.messages_and_media import Message
 from sqlalchemy import desc, select
 
-from app import app, logger
+from app import app, logger, scheduler
 from app.config import setting
 from app.filters import custom_filters
 from app.models import ASession
@@ -139,12 +140,16 @@ async def zhuque_ydx_switch(client: Client, message: Message):
                         )
                         await asyncio.sleep(5)
                         await message.delete()
-                    elif message.command[1] == "mds":
-                        funcs_dict = get_funcs()
-                        r = "有以下模式可以选择：```\n" + "\n".join([k for k in funcs_dict]) + "```"
-                        await message.edit(r)
-                        await asyncio.sleep(10)
-                        await message.delete()
+                elif message.command[1] == "mds":
+                    funcs_dict = get_funcs()
+                    r = (
+                        "有以下模式可以选择：```\n"
+                        + "\n".join([k for k in funcs_dict])
+                        + "```"
+                    )
+                    await message.edit(r)
+                    await asyncio.sleep(10)
+                    await message.delete()
 
 
 @app.on_message(
@@ -235,8 +240,14 @@ async def zhuque_ydx_bet(client: Client, message: Message):
             if db.bet_switch == 1:
                 if db.message_id:
                     logger.warning("检测到上局未结束，5秒后重新检测...")
-                    await asyncio.sleep(5)
-                    return await zhuque_ydx_bet(client, message)
+                    scheduler.add_job(
+                        zhuque_ydx_bet,
+                        "interval",
+                        next_run_time=datetime.datetime.now()
+                        + datetime.timedelta(seconds=5),
+                        args=(client, message),
+                    )
+                    return None
                 db.message_id = message.id
                 # 按模式设置大小
                 mode(db.bet_mode, db, data)
