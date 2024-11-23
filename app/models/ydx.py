@@ -63,7 +63,7 @@ class ZqYdx(Base):
         info = await get_info()
         if info:
             self.user_bonus = int(info["data"]["bonus"])
-            self.max_bet_bonus = min(int(self.user_bonus / 4), 5e7)
+            self.max_bet_bonus = min(int(self.user_bonus / 4//500*500), 5e7)
         self.test_round()
 
     def test_round(self):
