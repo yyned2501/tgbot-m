@@ -238,16 +238,16 @@ async def zhuque_ydx_bet(client: Client, message: Message):
             db = await session.get(ZqYdx, 1) or ZqYdx.init(session)
             # 保存新历史数据
             if db.bet_switch == 1:
-                if db.message_id:
-                    logger.warning("检测到上局未结束，5秒后重新检测...")
-                    scheduler.add_job(
-                        zhuque_ydx_bet,
-                        "date",
-                        next_run_time=datetime.datetime.now()
-                        + datetime.timedelta(seconds=5),
-                        args=(client, message),
-                    )
-                    return None
+                #if db.message_id:
+                 #   logger.warning("检测到上局未结束，5秒后重新检测...")
+                  #  scheduler.add_job(
+                    #    zhuque_ydx_bet,
+                     #   "date",
+                    #    next_run_time=datetime.datetime.now()
+                     #   + datetime.timedelta(seconds=5),
+                    #    args=(client, message),
+                #    )
+                #    return None
                 db.message_id = message.id
                 # 按模式设置大小
                 mode(db.bet_mode, db, data)
