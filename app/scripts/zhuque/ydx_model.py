@@ -307,7 +307,8 @@ async def zhuque_ydx_bet(client: Client, message: Message):
                     )
                     return None
                 db.message_id = message.id
-                ex_bet["message_id"] = message.id
+                if ex_bet["bonus"] != 0:
+                    ex_bet["message_id"] = message.id
                 # 按模式设置大小
                 mode(db.bet_mode, db, data)
 
