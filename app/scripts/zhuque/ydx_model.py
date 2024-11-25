@@ -252,11 +252,13 @@ async def zhuque_ydx_check(client: Client, message: Message):
                 if ex_bet.get("message_id"):
                     if ex_bet.get("message_id") == message.reply_to_message_id:
                         re_mess = "跟" if ex_bet["bonus"] > 0 else "反"
-                        if dx == db.dx and ex_bet["bonus"] > 0:
+                        if (dx == db.dx and ex_bet["bonus"] > 0) or (
+                            dx != db.dx and ex_bet["bonus"] < 0
+                        ):
                             ex_bet["win"] += 1
                             re_mess = f"{re_mess}投胜"
                             ex_bet["win_bonus"] += abs(ex_bet["bonus"]) * 0.99
-                        elif dx != db.dx and ex_bet["bonus"] < 0:
+                        else:
                             ex_bet["lose"] += 1
                             re_mess = f"{re_mess}投负"
                             ex_bet["win_bonus"] -= abs(ex_bet["bonus"])
