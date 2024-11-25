@@ -256,7 +256,7 @@ async def zhuque_ydx_check(client: Client, message: Message):
                             ex_bet["win"] += 1
                             re_mess = f"{re_mess}投胜"
                             ex_bet["win_bonus"] += abs(ex_bet["bonus"]) * 0.99
-                        else:
+                        elif dx != db.dx and ex_bet["bonus"] < 0:
                             ex_bet["lose"] += 1
                             re_mess = f"{re_mess}投负"
                             ex_bet["win_bonus"] -= abs(ex_bet["bonus"])
