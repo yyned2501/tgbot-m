@@ -155,9 +155,11 @@ async def zhuque_ydx_switch(client: Client, message: Message):
                     if len(message.command) >= 3:
                         global ex_bet
                         bonus = message.command[2]
-                        if bonus.isdigit():
+                        try:
                             bonus = int(bonus)
                             ex_bet["bonus"] = bonus
+                        except:
+                            pass
                         if len(message.command) >= 4:
                             aim = message.command[3]
                             if aim.isdigit():
