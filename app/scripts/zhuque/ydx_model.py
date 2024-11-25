@@ -248,9 +248,11 @@ async def zhuque_ydx_check(client: Client, message: Message):
                     await app.send_message(
                         setting["zhuque"]["ydx_model"]["push_chat_id"], re_mess
                     )
-                if ex_bet["bonus"] != 0:
+                else:
+                    if db.bet_round:
+                        await db.set_start_bonus()
+                if ex_bet.get("message_id"):
                     if ex_bet.get("message_id") == message.reply_to_message_id:
-                        del ex_bet["message_id"]
                         re_mess = "跟" if ex_bet["bonus"] > 0 else "反"
                         if dx == db.dx and ex_bet["bonus"] > 0:
                             ex_bet["win"] += 1
@@ -272,9 +274,7 @@ async def zhuque_ydx_check(client: Client, message: Message):
                         await app.send_message(
                             setting["zhuque"]["ydx_model"]["push_chat_id"], re_mess
                         )
-                else:
-                    if db.bet_round:
-                        await db.set_start_bonus()
+                    del ex_bet["message_id"]
 
 
 @app.on_message(
