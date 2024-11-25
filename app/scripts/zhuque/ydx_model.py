@@ -166,9 +166,9 @@ async def zhuque_ydx_switch(client: Client, message: Message):
                                 aim = int(aim)
                                 ex_bet["aim"] = aim
                         if bonus > 0:
-                            r = "跟投"
+                            r = f"跟投 {bonus}"
                         elif bonus < 0:
-                            r = "反投"
+                            r = f"反投 {-bonus}"
                         elif bonus == 0:
                             ex_bet = {
                                 "bonus": 0,
@@ -178,9 +178,7 @@ async def zhuque_ydx_switch(client: Client, message: Message):
                                 "win_bonus": 0,
                             }
                             r = "跟投停止"
-                        await message.edit(
-                            f"{r} {ex_bet['bonus']} 净胜 {ex_bet['aim']} 次！！！。。。"
-                        )
+                        await message.edit(f"{r} 净胜 {ex_bet['aim']} 次！！！。。。")
                         await asyncio.sleep(5)
                         await message.delete()
 
