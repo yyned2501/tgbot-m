@@ -274,7 +274,7 @@ async def zhuque_ydx_check(client: Client, message: Message):
                         await app.send_message(
                             setting["zhuque"]["ydx_model"]["push_chat_id"], re_mess
                         )
-                    del ex_bet["message_id"]
+                    
 
 
 @app.on_message(
