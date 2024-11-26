@@ -82,11 +82,11 @@ def get_funcs():
 
 
 def test(db: ZqYdx, data: list[int]):
-
     data.reverse()
     n = 1
     ret = {}
     for root, dirs, files in os.walk("app/onnxes"):
+        files.reverse()
         for file_name in files:
             loss_count = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
             turn_loss_count = 0
@@ -122,6 +122,7 @@ def test(db: ZqYdx, data: list[int]):
                     -1,
                 )
                 ret[model_name] = {
+                    "file": file_name,
                     "loss_count": loss_count[: max_nonzero_index + 1],
                     "max_nonzero_index": max_nonzero_index,
                     "win_rate": win_count / total_count,
