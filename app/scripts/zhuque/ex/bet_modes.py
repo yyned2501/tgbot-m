@@ -69,11 +69,15 @@ def mode(func_name, *args, **kwargs):
         return mode("S1", *args, **kwargs)
 
 
+def create_model_function(model):
+    return lambda db, data: S(db, data, model)
+
+
 n = 1
 for root, dirs, files in os.walk("app/onnxes"):
     for file_name in files:
         model = f"{root}/{file_name}"
-        _function_registry[f"S{n}"] = lambda db, data: S(db, data, model)
+        _function_registry[f"S{n}"] = create_model_function(model)
         n += 1
 
 
