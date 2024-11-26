@@ -69,33 +69,9 @@ def mode(func_name, *args, **kwargs):
         return mode("S1", *args, **kwargs)
 
 
-@register_function("SA")
-def SA(db: ZqYdx, data: list[int]):
-    return S(db, data, "app/onnxes/zqydx_s4_1732170956_8_1_5044.onnx")
-
-
-@register_function("SB")
-def SB(db: ZqYdx, data: list[int]):
-    return S(db, data, "app/onnxes/zqydx_s4_1732186029_7_5_5024.onnx")
-
-
-@register_function("SC")
-def SC(db: ZqYdx, data: list[int]):
-    return S(db, data, "app/onnxes/zqydx_s4_1732186930_7_3_5004.onnx")
-
-
-@register_function("SD")
-def SD(db: ZqYdx, data: list[int]):
-    return S(db, data, "app/onnxes/zqydx_s4_1732189871_7_3_5014.onnx")
-
-
-@register_function("SE")
-def SE(db: ZqYdx, data: list[int]):
-    return S(db, data, "app/onnxes/zqydx_s4_1732173455_7_3_5050.onnx")
-
-
 n = 1
 for root, dirs, files in os.walk("app/onnxes"):
+    files.reverse()
     for file_name in files:
         model = f"{root}/{file_name}"
         _function_registry[f"S{n}"] = lambda db, data: S(db, data, model)
