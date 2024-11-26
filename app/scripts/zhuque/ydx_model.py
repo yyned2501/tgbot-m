@@ -148,7 +148,7 @@ async def zhuque_ydx_switch(client: Client, message: Message):
                         history_result = await session.execute(
                             select(YdxHistory)
                             .order_by(desc(YdxHistory.id))
-                            .limit(count + 41)
+                            .limit(count + 40)
                         )
                         history = history_result.scalars().all()
                         data = [ydx_history.dx for ydx_history in history]
