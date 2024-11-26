@@ -98,6 +98,7 @@ def test(db: ZqYdx, data: list[int]):
             win_count = 0
             total_count = 0
             mode = 0
+            logger.info(file_name)
             if file_name.startswith("zqydx_s4"):
                 model = f"{root}/{file_name}"
                 model_name = f"S{n}"
@@ -114,7 +115,7 @@ def test(db: ZqYdx, data: list[int]):
                     mode = np.argmax(res[0], axis=0)
                     logger.info(f"{mode}")
                     total_count += 1
-                    logger.info(model_dx[mode])
+                    logger.info(f"{i}:{d}:{mode}:{model_dx[mode]}:{data[i + 1]} ")
                     if i < len(data) - 1:
                         if data[i + 1] == model_dx[mode]:
                             loss_count[turn_loss_count] += 1
