@@ -82,16 +82,17 @@ def get_funcs():
 
 
 def test(db: ZqYdx, data: list[int]):
-    loss_count = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-    turn_loss_count = 0
-    win_count = 0
-    total_count = 0
-    mode = 0
+
     data.reverse()
     n = 1
     ret = {}
     for root, dirs, files in os.walk("app/onnxes"):
         for file_name in files:
+            loss_count = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+            turn_loss_count = 0
+            win_count = 0
+            total_count = 0
+            mode = 0
             if file_name.startswith("zqydx_s4"):
                 model = f"{root}/{file_name}"
                 model_name = f"S{n}"
