@@ -103,7 +103,7 @@ def test(db: ZqYdx, data: list[int]):
                     model_dx = [1, 0, data[i], data[i - 9], 1 - data[i - 9]]
                     d = data[i - 40 : i]
                     d = np.array(d, dtype=np.float32)
-                    res = compiled_model_onnx(data)
+                    res = compiled_model_onnx(d)
                     mode = np.argmax(res[0], axis=0)
                     total_count += 1
                     if data[i + 1] == model_dx[mode]:
