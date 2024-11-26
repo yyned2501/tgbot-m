@@ -75,6 +75,7 @@ def create_model_function(model):
 
 n = 1
 for root, dirs, files in os.walk("app/onnxes"):
+    files.reverse()
     for file_name in files:
         model = f"{root}/{file_name}"
         _function_registry[f"S{n}"] = create_model_function(model)
