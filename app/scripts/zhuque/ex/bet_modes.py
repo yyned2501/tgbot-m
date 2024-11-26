@@ -71,7 +71,6 @@ def mode(func_name, *args, **kwargs):
 
 n = 1
 for root, dirs, files in os.walk("app/onnxes"):
-    files.reverse()
     for file_name in files:
         model = f"{root}/{file_name}"
         _function_registry[f"S{n}"] = lambda db, data: S(db, data, model)
@@ -92,7 +91,6 @@ def test(db: ZqYdx, data: list[int]):
     n = 1
     ret = {}
     for root, dirs, files in os.walk("app/onnxes"):
-        files.reverse()
         for file_name in files:
             if file_name.startswith("zqydx_s4"):
                 model = f"{root}/{file_name}"

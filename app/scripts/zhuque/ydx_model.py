@@ -143,26 +143,23 @@ async def zhuque_ydx_switch(client: Client, message: Message):
                         await message.delete()
                 elif message.command[1] == "mdtest":
                     if len(message.command) >= 3:
-                        try:
-                            count = int(message.command[2])
-                            await message.edit("测试中...")
-                            history_result = await session.execute(
-                                select(YdxHistory)
-                                .order_by(desc(YdxHistory.id))
-                                .limit(count)
-                            )
-                            history = history_result.scalars().all()
-                            data = [ydx_history.dx for ydx_history in history]
-                            model_rate = test(db, data)
-                            r = "共有以下模型：\n```\n"
-                            for k in model_rate:
-                                r += f"模型{k}：\n历史失败次数:{model_rate[k]["model_rate"]}\n最大失败轮次:{model_rate[k]["max_nonzero_index"]}\n胜率:{model_rate[k]["win_rate"]}\n\n"
-                            r += "```"
-                            await message.edit(r)
-                            await asyncio.sleep(30)
-                            await message.delete()
-                        except:
-                            await message.edit("测试错误...")
+                        count = int(message.command[2])
+                        await message.edit("测试中...")
+                        history_result = await session.execute(
+                            select(YdxHistory)
+                            .order_by(desc(YdxHistory.id))
+                            .limit(count)
+                        )
+                        history = history_result.scalars().all()
+                        data = [ydx_history.dx for ydx_history in history]
+                        model_rate = test(db, data)
+                        r = "共有以下模型：\n```\n"
+                        for k in model_rate:
+                            r += f"模型{k}：\n历史失败次数:{model_rate[k]["model_rate"]}\n最大失败轮次:{model_rate[k]["max_nonzero_index"]}\n胜率:{model_rate[k]["win_rate"]}\n\n"
+                        r += "```"
+                        await message.edit(r)
+                        await asyncio.sleep(30)
+                        await message.delete()
 
                 elif message.command[1] == "exbet":
                     if len(message.command) >= 3:
