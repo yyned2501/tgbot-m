@@ -108,10 +108,13 @@ def test(db: ZqYdx, data: list[int]):
                 for i in range(40, len(data)):
                     model_dx = [1, 0, data[i], data[i - 9], 1 - data[i - 9]]
                     d = data[i - 40 : i]
+                    logger.info(f"{d}")
                     d = np.array(d, dtype=np.float32)
                     res = compiled_model_onnx(d)
                     mode = np.argmax(res[0], axis=0)
+                    logger.info(f"{mode}")
                     total_count += 1
+                    logger.info(model_dx[mode])
                     if i < len(data) - 1:
                         if data[i + 1] == model_dx[mode]:
                             loss_count[turn_loss_count] += 1
