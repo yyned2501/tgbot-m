@@ -106,7 +106,7 @@ def test(db: ZqYdx, data: list[int]):
                 compiled_model_onnx = core.compile_model(
                     model=model_onnx, device_name="AUTO"
                 )
-                for i in range(40, len(data)):
+                for i in range(40, len(data)+1):
                     model_dx = [1, 0, data[i-1], data[i - 10], 1 - data[i - 10]]
                     logger.info(f"{model_dx}")
                     d = data[i - 40 : i]
@@ -115,8 +115,8 @@ def test(db: ZqYdx, data: list[int]):
                     mode = np.argmax(res[0], axis=0)
                     total_count += 1
                     logger.info(f"{d}")
-                    if i < len(data) - 1:
-                        logger.info(f"模型{model},预测{model_dx[mode]}，结果{data[i + 1]}")
+                    if i < len(data):
+                        logger.info(f"模型{mode},预测{model_dx[mode]}，结果{data[i]}")
                         if data[i] == model_dx[mode]:
                             loss_count[turn_loss_count] += 1
                             win_count += 1
