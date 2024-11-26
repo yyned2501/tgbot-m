@@ -16,7 +16,7 @@ TARGET = -1001833464786
 rate = 0.99
 dx_list = ["小", "大"]
 bs_list = ["s", "b"]
-ex_bet = {"bonus": 0, "win": 0, "lose": 0, "aim": 0, "win_bonus": 0}
+ex_bet = {"bonus": 0, "win": 0, "lose": 0, "aim": 0, "win_bonus": 0, "betbonus": 0}
 
 
 def new_history_list(message: Message, data: list[int]):
@@ -170,17 +170,21 @@ async def zhuque_ydx_switch(client: Client, message: Message):
                         elif bonus < 0:
                             r = f"反投 {-bonus}"
                         elif bonus == 0:
-                            ex_bet = {
-                                "bonus": 0,
-                                "win": 0,
-                                "lose": 0,
-                                "aim": 0,
-                                "win_bonus": 0,
-                            }
-                            r = "跟投停止"
-                        await message.edit(f"{r} 净胜 {ex_bet['aim']} 次！！！。。。")
-                        await asyncio.sleep(5)
-                        await message.delete()
+                            r = f"本次跟投 {ex_bet["win"]}-{ex_bet["lose"]} 累计盈亏：{(ex_bet["win_bonus"]):.02f} 跟投停止。"
+                            ex_bet["bonus"] = 0
+                            ex_bet["aim"] = 0
+                            ex_bet["win"] = 0
+                            ex_bet["lose"] = 0
+                            ex_bet["win_bonus"] = 0
+                            await message.edit(f"{r}")
+                            await asyncio.sleep(5)
+                            await message.delete()
+                        if ex_bet["bonus"] != 0:
+                            await message.edit(
+                                f"{r} 净胜 {ex_bet['aim']} 次！！！。。。"
+                            )
+                            await asyncio.sleep(5)
+                            await message.delete()
 
 
 @app.on_message(
@@ -250,10 +254,13 @@ async def zhuque_ydx_check(client: Client, message: Message):
                     if db.bet_round:
                         await db.set_start_bonus()
                 if ex_bet.get("message_id"):
-                    if ex_bet.get("message_id") == message.reply_to_message_id:
-                        re_mess = "跟" if ex_bet["bonus"] > 0 else "反"
-                        if (dx == db.dx and ex_bet["bonus"] > 0) or (
-                            dx != db.dx and ex_bet["bonus"] < 0
+                    if (
+                        ex_bet.get("message_id") == message.reply_to_message_id
+                        and ex_bet["betbonus"] != 0
+                    ):
+                        re_mess = "跟" if ex_bet["betbonus"] > 0 else "反"
+                        if (dx == db.dx and ex_bet["betbonus"] > 0) or (
+                            dx != db.dx and ex_bet["betbonus"] < 0
                         ):
                             ex_bet["win"] += 1
                             re_mess = f"{re_mess}投胜"
@@ -263,18 +270,16 @@ async def zhuque_ydx_check(client: Client, message: Message):
                             re_mess = f"{re_mess}投负"
                             ex_bet["win_bonus"] -= abs(ex_bet["bonus"])
                         re_mess = f"**[ {re_mess} ]** {ex_bet["win"]}-{ex_bet["lose"]} 累计盈亏：{(ex_bet["win_bonus"]):.02f}"
+                        ex_bet["betbonus"] = 0
                         if ex_bet["win"] - ex_bet["lose"] >= ex_bet["aim"]:
-                            ex_bet = {
-                                "bonus": 0,
-                                "win": 0,
-                                "lose": 0,
-                                "aim": 0,
-                                "win_bonus": 0,
-                            }
+                            ex_bet["bonus"] = 0
+                            ex_bet["aim"] = 0
+                            ex_bet["win"] = 0
+                            ex_bet["lose"] = 0
+                            ex_bet["win_bonus"] = 0
                         await app.send_message(
                             setting["zhuque"]["ydx_model"]["push_chat_id"], re_mess
                         )
-                    
 
 
 @app.on_message(
@@ -309,6 +314,7 @@ async def zhuque_ydx_bet(client: Client, message: Message):
                 db.message_id = message.id
                 if ex_bet["bonus"] != 0:
                     ex_bet["message_id"] = message.id
+                    ex_bet["betbonus"] = ex_bet["bonus"]
                 # 按模式设置大小
                 mode(db.bet_mode, db, data)
 
