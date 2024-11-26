@@ -99,7 +99,7 @@ def test(db: ZqYdx, data: list[int]):
                 compiled_model_onnx = core.compile_model(
                     model=model_onnx, device_name="AUTO"
                 )
-                for i in range(40, len(data)):
+                for i in range(40, len(data) - 1):
                     model_dx = [1, 0, data[i], data[i - 9], 1 - data[i - 9]]
                     d = data[i - 40 : i]
                     d = np.array(d, dtype=np.float32)
