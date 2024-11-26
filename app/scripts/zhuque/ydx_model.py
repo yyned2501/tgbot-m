@@ -264,11 +264,11 @@ async def zhuque_ydx_check(client: Client, message: Message):
                         ):
                             ex_bet["win"] += 1
                             re_mess = f"{re_mess}投胜"
-                            ex_bet["win_bonus"] += abs(ex_bet["bonus"]) * 0.99
+                            ex_bet["win_bonus"] += abs(ex_bet["betbonus"]) * 0.99
                         else:
                             ex_bet["lose"] += 1
                             re_mess = f"{re_mess}投负"
-                            ex_bet["win_bonus"] -= abs(ex_bet["bonus"])
+                            ex_bet["win_bonus"] -= abs(ex_bet["betbonus"])
                         re_mess = f"**[ {re_mess} ]** {ex_bet["win"]}-{ex_bet["lose"]} 累计盈亏：{(ex_bet["win_bonus"]):.02f}"
                         ex_bet["betbonus"] = 0
                         if ex_bet["win"] - ex_bet["lose"] >= ex_bet["aim"]:
