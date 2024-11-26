@@ -10,7 +10,7 @@ from app.config import setting
 from app.filters import custom_filters
 from app.models import ASession
 from app.models.ydx import YdxHistory, ZqYdx
-from app.scripts.zhuque.ex.bet_modes import mode, get_funcs
+from app.scripts.zhuque.ex.bet_modes import mode, test
 
 TARGET = -1001833464786
 rate = 0.99
@@ -141,16 +141,29 @@ async def zhuque_ydx_switch(client: Client, message: Message):
                         )
                         await asyncio.sleep(5)
                         await message.delete()
-                elif message.command[1] == "mds":
-                    funcs_dict = get_funcs()
-                    r = (
-                        "有以下模式可以选择：```\n"
-                        + "\n".join([k for k in funcs_dict])
-                        + "```"
-                    )
-                    await message.edit(r)
-                    await asyncio.sleep(10)
-                    await message.delete()
+                elif message.command[1] == "mdtest":
+                    if len(message.command) >= 3:
+                        try:
+                            count = int(message.command[2])
+                            await message.edit("测试中...")
+                            history_result = await session.execute(
+                                select(YdxHistory)
+                                .order_by(desc(YdxHistory.id))
+                                .limit(count)
+                            )
+                            history = history_result.scalars().all()
+                            data = [ydx_history.dx for ydx_history in history]
+                            model_rate = test(db, data)
+                            r = "共有以下模型：\n```\n"
+                            for k in model_rate:
+                                r += f"模型{k}：\n历史失败次数:{model_rate[k]["model_rate"]}\n最大失败轮次:{model_rate[k]["max_nonzero_index"]}\n胜率:{model_rate[k]["win_rate"]}\n\n"
+                            r += "```"
+                            await message.edit(r)
+                            await asyncio.sleep(30)
+                            await message.delete()
+                        except:
+                            await message.edit("测试错误...")
+
                 elif message.command[1] == "exbet":
                     if len(message.command) >= 3:
                         global ex_bet
