@@ -125,4 +125,5 @@ def test(db: ZqYdx, data: list[int]):
                     "max_nonzero_index": max_nonzero_index,
                     "win_rate": win_count / total_count,
                 }
+                n += 1
     return ret

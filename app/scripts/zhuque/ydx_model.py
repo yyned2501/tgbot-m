@@ -148,14 +148,14 @@ async def zhuque_ydx_switch(client: Client, message: Message):
                         history_result = await session.execute(
                             select(YdxHistory)
                             .order_by(desc(YdxHistory.id))
-                            .limit(count)
+                            .limit(count + 41)
                         )
                         history = history_result.scalars().all()
                         data = [ydx_history.dx for ydx_history in history]
                         models = test(db, data)
-                        r = "共有以下模型：\n```\n"
+                        r = "共有以下模型：\n```"
                         for k in models:
-                            r += f"模型{k}：\n历史失败次数:{models[k]["loss_count"]}\n最大失败轮次:{models[k]["max_nonzero_index"]}\n胜率:{models[k]["win_rate"]}\n\n"
+                            r += f"模型{k}：\n历史失败次数:{models[k]["loss_count"]}\n最大失败轮次:{models[k]["max_nonzero_index"]}\n胜率:{models[k]["win_rate"]:.02%}\n\n"
                         r += "```"
                         await message.edit(r)
                         await asyncio.sleep(30)
