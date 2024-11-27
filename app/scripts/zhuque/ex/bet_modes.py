@@ -105,14 +105,14 @@ def test(db: ZqYdx, data: list[int]):
                 compiled_model_onnx = core.compile_model(
                     model=model_onnx, device_name="AUTO"
                 )
-                for i in range(40, len(data)+1):
-                    model_dx = [1, 0, data[i-1], data[i - 10], 1 - data[i - 10]]
+                for i in range(40, len(data) + 1):
+                    model_dx = [1, 0, data[i - 1], data[i - 10], 1 - data[i - 10]]
                     d = data[i - 40 : i]
                     d = np.array(d, dtype=np.float32)
                     res = compiled_model_onnx(d)
                     mode = np.argmax(res[0], axis=0)
-                    total_count += 1
                     if i < len(data):
+                        total_count += 1
                         if data[i] == model_dx[mode]:
                             loss_count[turn_loss_count] += 1
                             win_count += 1
@@ -132,6 +132,7 @@ def test(db: ZqYdx, data: list[int]):
                     "loss_count": loss_count[: max_nonzero_index + 1],
                     "max_nonzero_index": max_nonzero_index,
                     "win_rate": win_count / total_count,
+                    "win_count": 2 * win_count - total_count,
                     "turn_loss_count": turn_loss_count,
                     "guess": model_dx[mode],
                 }
