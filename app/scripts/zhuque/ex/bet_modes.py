@@ -107,7 +107,6 @@ def test(db: ZqYdx, data: list[int]):
                 )
                 for i in range(40, len(data)+1):
                     model_dx = [1, 0, data[i-1], data[i - 10], 1 - data[i - 10]]
-                    logger.info(f"{model_dx}")
                     d = data[i - 40 : i]
                     d = np.array(d, dtype=np.float32)
                     res = compiled_model_onnx(d)
