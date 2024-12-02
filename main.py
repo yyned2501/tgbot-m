@@ -1,10 +1,11 @@
 from pyrogram import idle
 
-from app import app, models, scripts
+from app import app, scheduler, models, scripts
 
 
 async def main():
     await app.start()
+    scheduler.start()
     await models.create_all()
     await idle()
     await app.stop()

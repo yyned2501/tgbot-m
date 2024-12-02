@@ -9,7 +9,6 @@ from app.config import setting
 
 os.environ["TZ"] = "Asia/Shanghai"
 scheduler = AsyncIOScheduler()
-scheduler.start()
 
 if setting["proxy"]["enable"]:
     logger.info("proxy start")
