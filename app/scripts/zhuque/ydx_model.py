@@ -44,7 +44,7 @@ def new_history_list(message: Message, data: list[int]):
 async def zhuque_ydx_switch(client: Client, message: Message):
     async with ASSession() as session:
         async with session.begin():
-            db = await session.get(ZqYdx, 1) or ZqYdx.init(session)
+            db = await session.get(ZqYdx, 1) or ZqYdx.init()
             if message.command[0] == "zqydx":
                 if message.command[1] == "on":
                     db.bet_switch = 1

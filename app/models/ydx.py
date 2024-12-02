@@ -8,8 +8,8 @@ from sqlalchemy import (
     func,
 )
 from sqlalchemy.orm import Mapped, mapped_column
-from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.models import ASSession
 from app.models.base import Base
 from app.libs.zhuque_requests import get_info
 
@@ -38,7 +38,7 @@ class ZqYdx(Base):
     update_time: Mapped[datetime.datetime] = mapped_column(DateTime)
 
     @classmethod
-    def init(cls, session: AsyncSession):
+    def init(cls):
         self = cls(
             start_bonus=500,
             high_times=0,
@@ -56,7 +56,7 @@ class ZqYdx(Base):
             max_bet_bonus=50000000,
             update_time=func.now(),
         )
-        session.add(self)
+        ASSession.add(self)
         return self
 
     async def set_start_bonus(self):
@@ -64,7 +64,7 @@ class ZqYdx(Base):
             info = await get_info()
             if info:
                 self.user_bonus = int(info["data"]["bonus"])
-                self.max_bet_bonus = min(int(self.user_bonus / 4//500*500), 5e7)
+                self.max_bet_bonus = min(int(self.user_bonus / 4 // 500 * 500), 5e7)
             self.test_round()
 
     def test_round(self):
