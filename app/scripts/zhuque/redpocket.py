@@ -1,11 +1,10 @@
 import asyncio
-import json
 import re
 from pyrogram import filters, Client
 from pyrogram.types.messages_and_media import Message
 
-from app import app, logger
-from app.models import ASession
+from app import app
+from app.models import ASSession
 from app.models.redpocket import Redpocket
 from app.filters import custom_filters
 from app.config import setting
@@ -35,15 +34,14 @@ async def get_redpocket_gen(client: Client, message: Message):
             match = re.search(r"已获得 (\d+) 灵石", m)
             if match:
                 bonus = int(match.group(1))
-                async with ASession() as session:
-                    async with session.begin():
-                        redpocket = await Redpocket.add("zhuque", bonus, session)
-                        ret_str = f"""```朱雀红包 {content} 领取成功
+                async with ASSession.begin():
+                    redpocket = await Redpocket.add("zhuque", bonus)
+                    ret_str = f"""```朱雀红包 {content} 领取成功
 成功领取口令红包 {bonus} 灵石
 今日领取口令红包 {redpocket.today_bonus} 灵石
 累计领取口令红包 {redpocket.total_bonus} 灵石```"""
-                        await client.send_message(
-                            setting["zhuque"]["redpocket"]["push_chat_id"], ret_str
-                        )
+                    await client.send_message(
+                        setting["zhuque"]["redpocket"]["push_chat_id"], ret_str
+                    )
                 return
         await asyncio.sleep(1)

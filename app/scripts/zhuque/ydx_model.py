@@ -8,7 +8,7 @@ from sqlalchemy import desc, select
 from app import app, logger, scheduler
 from app.config import setting
 from app.filters import custom_filters
-from app.models import ASession
+from app.models import ASSession
 from app.models.ydx import YdxHistory, ZqYdx
 from app.scripts.zhuque.ex.bet_modes import mode, test
 
@@ -42,7 +42,7 @@ def new_history_list(message: Message, data: list[int]):
 
 @app.on_message(filters.command("zqydx") & filters.me)
 async def zhuque_ydx_switch(client: Client, message: Message):
-    async with ASession() as session:
+    async with ASSession() as session:
         async with session.begin():
             db = await session.get(ZqYdx, 1) or ZqYdx.init(session)
             if message.command[0] == "zqydx":
@@ -206,7 +206,7 @@ async def zhuque_ydx_check(client: Client, message: Message):
     match = message.matches[0]
     Lottery_Point = match.group(1)
     global ex_bet
-    async with ASession() as session:
+    async with ASSession() as session:
         async with session.begin():
             db = await session.get(ZqYdx, 1) or ZqYdx.init(session)
             dx = dx_list.index(Lottery_Point)
@@ -296,7 +296,7 @@ async def zhuque_ydx_check(client: Client, message: Message):
     filters.chat(TARGET) & custom_filters.zhuque_bot & filters.regex(r"创建时间")
 )
 async def zhuque_ydx_bet(client: Client, message: Message):
-    async with ASession() as session:
+    async with ASSession() as session:
         async with session.begin():
             history_result = await session.execute(
                 select(YdxHistory).order_by(desc(YdxHistory.id)).limit(50)

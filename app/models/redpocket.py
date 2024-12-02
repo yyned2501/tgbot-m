@@ -12,10 +12,10 @@ from sqlalchemy import (
 )
 from sqlalchemy import select
 from sqlalchemy.orm import Mapped, mapped_column
-from sqlalchemy.ext.asyncio import AsyncSession
+
 
 from app.models.base import Base
-
+from app.models import ASSession
 
 logger = logging.getLogger("main")
 
@@ -38,7 +38,8 @@ class Redpocket(Base):
     update_time: Mapped[datetime.datetime] = mapped_column(DateTime)
 
     @classmethod
-    async def add(cls, site: str, bonus: float, session: AsyncSession):
+    async def add(cls, site: str, bonus: float):
+        session = ASSession()
         self = (
             await session.execute(select(Redpocket).filter(Redpocket.site == site))
         ).scalar_one_or_none()
@@ -61,9 +62,7 @@ class User(Base):
     id: Mapped[int] = mapped_column(BigInteger, primary_key=True)
     name: Mapped[str] = mapped_column(String(30))
 
-    async def get_bonus_sum_for_site(
-        self, session: AsyncSession, site_name: str
-    ) -> int:
+    async def get_bonus_sum_for_site(self, site_name: str) -> int:
         """
         获取当前用户在指定站点的bonus总和。
 
@@ -71,6 +70,7 @@ class User(Base):
         :param site_name: 站点名称
         :return: bonus的总和
         """
+        session = ASSession()
         bonus_sum_select = select(
             func.sum(Transform.bonus).filter(
                 Transform.user_id == self.id, Transform.site == site_name

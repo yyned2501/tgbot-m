@@ -1,7 +1,11 @@
-from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
+import asyncio
+from sqlalchemy.ext.asyncio import (
+    create_async_engine,
+    async_sessionmaker,
+    async_scoped_session,
+)
 
 from app.models.base import Base
-
 from app.config import setting
 
 if setting["database"] == "mysql":
@@ -10,7 +14,9 @@ else:
     async_connection_string = f"sqlite+aiosqlite:///tgbot.db"
 
 async_engine = create_async_engine(async_connection_string)
-ASession = async_sessionmaker(bind=async_engine)
+ASSession = async_scoped_session(
+    async_sessionmaker(bind=async_engine), asyncio.current_task
+)
 
 
 async def create_all():
