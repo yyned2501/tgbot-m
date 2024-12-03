@@ -231,7 +231,6 @@ async def zhuque_ydx_bet(client: Client, message: Message):
                 select(YdxHistory).order_by(desc(YdxHistory.id)).limit(50)
             )
             history = history_result.scalars().all()
-            save_list, data = new_history_list(
+            data = new_history_list(
                 message, [ydx_history.dx for ydx_history in history]
             )
-            session.add_all([YdxHistory(dx=dx) for dx in save_list])
