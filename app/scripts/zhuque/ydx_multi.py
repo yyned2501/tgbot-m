@@ -200,16 +200,34 @@ async def zhuque_ydx_switch(client: Client, message: Message):
                 await message.edit(r)
                 await asyncio.sleep(30)
                 await message.delete()
+
         elif message.command[1] == "models":
-            if len(message.command) == 2:
-                models = await session.execute(select(ZqYdxMulti))
-                r = f"``所有运行模型转态："
-                for model in models.scalars():
-                    r += f"\n{"[**ON**]" if model.bet_switch == 1 else "[OFF]"}模型{model.model_name}"
-                    if model.fit_model == "D":
-                        r += f"[倍投]\n当前连败次数:{model.lose_times}|累计下注金额:{model.sum_losebonus}|累计盈利:{model.win_bonus}"
-                    elif model.fit_model == "+":
-                        r += f"[跟投]\n胜:{model.win}|负:{model.lose}|累计盈利:{model.win_bonus}"
-                    elif model.fit_model == "-":
-                        r += f"[反投]\n胜:{model.win}|负:{model.lose}|累计盈利:{model.win_bonus}"
-                r += "```"
+            logger.info(message.command)
+            # if len(message.command) == 2:
+            models = await session.execute(select(ZqYdxMulti))
+            r = f"``所有运行模型转态："
+            for model in models.scalars():
+                r += f"\n{"[**ON**]" if model.bet_switch == 1 else "[OFF]"}模型{model.model_name}"
+                if model.fit_model == "D":
+                    r += f"[倍投]\n当前连败次数:{model.lose_times}|累计下注金额:{model.sum_losebonus}|累计盈利:{model.win_bonus}"
+                elif model.fit_model == "+":
+                    r += f"[跟投]\n胜:{model.win}|负:{model.lose}|累计盈利:{model.win_bonus}"
+                elif model.fit_model == "-":
+                    r += f"[反投]\n胜:{model.win}|负:{model.lose}|累计盈利:{model.win_bonus}"
+            r += "```"
+
+
+@app.on_message(
+    filters.chat(TARGET) & custom_filters.zhuque_bot & filters.regex(r"创建时间")
+)
+async def zhuque_ydx_bet(client: Client, message: Message):
+    async with ASSession() as session:
+        async with session.begin():
+            history_result = await session.execute(
+                select(YdxHistory).order_by(desc(YdxHistory.id)).limit(50)
+            )
+            history = history_result.scalars().all()
+            save_list, data = new_history_list(
+                message, [ydx_history.dx for ydx_history in history]
+            )
+            session.add_all([YdxHistory(dx=dx) for dx in save_list])
