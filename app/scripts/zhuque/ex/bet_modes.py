@@ -144,7 +144,7 @@ def test(db: ZqYdx, data: list[int]):
 async def create_models():
     session = ASSession()
     models_dict = {}
-    with session.begin():
+    async with session.begin():
         models = await session.execute(select(ZqYdxMulti))
         for model in models.scalars():
             if model.model_name not in _function_registry:
