@@ -1,9 +1,12 @@
 import os
-from app.models.ydx import ZqYdx, YdxHistory
+
+from sqlalchemy import select
+from app.models.ydx import ZqYdx, ZqYdxMulti
 import openvino as ov
 import numpy as np
 
 from app import logger
+from app.models import ASSession
 
 core = ov.Core()
 
@@ -136,3 +139,18 @@ def test(db: ZqYdx, data: list[int]):
                 }
                 n += 1
     return ret
+
+
+async def create_models():
+    session = ASSession()
+    models_dict = {}
+    with session.begin():
+        models = await session.execute(select(ZqYdxMulti))
+        for model in models.scalars():
+            if model.model_name not in _function_registry:
+                await session.delete(model)
+            else:
+                models_dict[model.model_name] = model
+        for model_name in _function_registry:
+            if model_name not in models_dict:
+                session.add(ZqYdxMulti(model_name=model_name))

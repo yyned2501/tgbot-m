@@ -118,3 +118,42 @@ class YdxHistory(Base):
     __tablename__ = "zqydx_history"
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     dx: Mapped[int] = mapped_column(Integer)
+
+
+class ZqYdxBase(Base):
+    __tablename__ = "zqydx_base"
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    kp_switch: Mapped[int] = mapped_column(Integer)
+    message_id: Mapped[int] = mapped_column(Integer, nullable=True)
+    bet_switch: Mapped[int] = mapped_column(Integer)
+    start_bonus: Mapped[int] = mapped_column(Integer)
+    bet_round: Mapped[int] = mapped_column(Integer, nullable=True)
+    user_bonus: Mapped[int] = mapped_column(Integer)
+    max_bet_bonus: Mapped[int] = mapped_column(Integer)
+
+    @classmethod
+    def init(cls):
+        self = cls(
+            start_bonus=500,
+            kp_switch=0,
+            bet_switch=0,
+            user_bonus=0,
+            max_bet_bonus=10000000,
+        )
+        ASSession.add(self)
+        return self
+
+
+class ZqYdxMulti(Base):
+    __tablename__ = "zqydx_models"
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    model_name = Mapped[str] = mapped_column(String(8))
+    bonus: Mapped[int] = mapped_column(Integer, default=500)
+    bet_switch: Mapped[int] = mapped_column(Integer, default=1)
+    fit_model: Mapped[str] = mapped_column(String(8), default="D")
+    win: Mapped[int] = mapped_column(Integer, default=0)
+    lose: Mapped[int] = mapped_column(Integer, default=0)
+    lose_times: Mapped[int] = mapped_column(Integer, default=0)
+    bet_bonus: Mapped[int] = mapped_column(Integer, default=0)
+    sum_losebonus: Mapped[int] = mapped_column(Integer, default=0)
+    win_bonus: Mapped[int] = mapped_column(Integer, default=0)

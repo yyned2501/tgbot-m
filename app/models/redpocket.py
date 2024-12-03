@@ -64,11 +64,12 @@ class User(Base):
 
     async def get_bonus_sum_for_site(self, site_name: str) -> int:
         """
-        获取当前用户在指定站点的bonus总和。
+        获取当前用户在指定站点的 bonus 总和。
 
-        :param session: SQLAlchemy session对象
         :param site_name: 站点名称
-        :return: bonus的总和
+        :type site_name: str
+        :return: 站点 bonus 的总和，如果不存在则返回 0
+        :rtype: int
         """
         session = ASSession()
         bonus_sum_select = select(
