@@ -215,6 +215,9 @@ async def zhuque_ydx_switch(client: Client, message: Message):
                 elif model.fit_model == "-":
                     r += f"[反投]\n胜:{model.win}|负:{model.lose}|累计盈利:{model.win_bonus}"
             r += "```"
+            await message.edit(r)
+            await asyncio.sleep(30)
+            await message.delete()
 
 
 @app.on_message(
