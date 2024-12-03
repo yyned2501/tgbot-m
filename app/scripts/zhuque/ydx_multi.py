@@ -205,7 +205,7 @@ async def zhuque_ydx_switch(client: Client, message: Message):
             logger.info(message.command)
             # if len(message.command) == 2:
             models = await session.execute(select(ZqYdxMulti))
-            r = f"```所有运行模型转态："
+            r = f"**所有运行模型转态**："
             for model in models.scalars():
                 r += f"\n{"[**ON**]" if model.bet_switch == 1 else "[OFF]"}模型{model.model_name}"
                 if model.fit_model == "D":
@@ -215,8 +215,7 @@ async def zhuque_ydx_switch(client: Client, message: Message):
                 elif model.fit_model == "-":
                     r += f"[反投]\n胜:{model.win}|负:{model.lose}|累计盈利:{model.win_bonus}"
                 r += "\n"
-            r += "```"
-            await message.edit(r)
+            await message.edit(r[:-1])
             await asyncio.sleep(30)
             await message.delete()
 
