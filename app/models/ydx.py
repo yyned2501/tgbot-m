@@ -147,7 +147,7 @@ class ZqYdxBase(Base):
 class ZqYdxMulti(Base):
     __tablename__ = "zqydx_models"
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
-    model_name = Mapped[str] = mapped_column(String(8))
+    model_name: Mapped[str] = mapped_column(String(8))
     bonus: Mapped[int] = mapped_column(Integer, default=500)
     bet_switch: Mapped[int] = mapped_column(Integer, default=1)
     fit_model: Mapped[str] = mapped_column(String(8), default="D")
