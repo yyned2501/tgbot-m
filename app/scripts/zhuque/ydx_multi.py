@@ -19,7 +19,7 @@ bs_list = ["s", "b"]
 ex_bet = {"bonus": 0, "win": 0, "lose": 0, "aim": 0, "win_bonus": 0, "betbonus": 0}
 
 
-async def new_history_list(message: Message, data: list[int]):
+def new_history_list(message: Message, data: list[int]):
     """
     通过秋人提供的40个数据来生成历史数据列表
 
@@ -202,7 +202,6 @@ async def zhuque_ydx_switch(client: Client, message: Message):
                 await message.delete()
 
         elif message.command[1] == "models":
-            logger.info(message.command)
             # if len(message.command) == 2:
             models = await session.execute(select(ZqYdxMulti))
             r = f"**所有运行模型转态**："
