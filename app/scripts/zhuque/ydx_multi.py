@@ -19,7 +19,7 @@ bs_list = ["s", "b"]
 ex_bet = {"bonus": 0, "win": 0, "lose": 0, "aim": 0, "win_bonus": 0, "betbonus": 0}
 
 
-def new_history_list(message: Message, data: list[int]):
+async def new_history_list(message: Message):
     """
     通过秋人提供的40个数据来生成历史数据列表
 
@@ -37,19 +37,31 @@ def new_history_list(message: Message, data: list[int]):
         line = line.strip("[]").split()
         line = [int(num) for num in line]
         single_line_list.extend(line)
-    saved_index = len(single_line_list)
-    if ld := len(data) < 40:
-        start = saved_index - ld
-    for i in range(start, saved_index):
-        if (t := single_line_list[i:]) == data[: len(t)]:
-            saved_index = i
-            break
-    save_list = single_line_list[:saved_index]
-    save_list.reverse()
-    logger.info(f"保存数据{save_list}")
-    if len(save_list) > 0:
-        session = ASSession()
-        session.add_all([YdxHistory(dx=dx) for dx in save_list])
+    session = ASSession()
+    async with session.begin():
+        history_result = await session.execute(
+            select(YdxHistory).order_by(desc(YdxHistory.id)).limit(40)
+        )
+        history = history_result.scalars().all()
+        last_saved_time = history[0].create_time
+        if datetime.datetime.now() - last_saved_time > datetime.timedelta(minutes=1):
+            data = [ydx_history.dx for ydx_history in history]
+            saved_index = len(single_line_list)
+            if ld := len(data) < 40:
+                start = saved_index - ld
+            for i in range(start, saved_index):
+                if (t := single_line_list[i:]) == data[: len(t)]:
+                    saved_index = i
+                    break
+            save_list = single_line_list[:saved_index]
+            save_list.reverse()
+            logger.info(f"保存数据{save_list}")
+            if len(save_list) > 0:
+                session.add_all([YdxHistory(dx=dx) for dx in save_list])
+        else:
+            logger.error(
+                "记录上次记录时间与当前时间小于1分钟，防止数据错误，不记录数据。"
+            )
     return single_line_list
 
 
@@ -223,12 +235,4 @@ async def zhuque_ydx_switch(client: Client, message: Message):
     filters.chat(TARGET) & custom_filters.zhuque_bot & filters.regex(r"创建时间")
 )
 async def zhuque_ydx_bet(client: Client, message: Message):
-    async with ASSession() as session:
-        async with session.begin():
-            history_result = await session.execute(
-                select(YdxHistory).order_by(desc(YdxHistory.id)).limit(50)
-            )
-            history = history_result.scalars().all()
-            data = new_history_list(
-                message, [ydx_history.dx for ydx_history in history]
-            )
+    await new_history_list(message)
