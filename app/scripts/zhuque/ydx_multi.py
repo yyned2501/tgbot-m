@@ -87,7 +87,7 @@ async def ydx(client: Client, message: Message, bonus: int):
     ]
     bet_counts = []
 
-    logger.info(f"remaining_bouns= {bonus}")
+    logger.info(f"remaining_bouns={bonus}")
     if bonus < 0:
         bonus = -bonus
         bet_dx = 1 - bet_dx
@@ -337,6 +337,7 @@ async def zhuque_ydx_check(client: Client, message: Message):
                 r = f"[负{model.losing_streak}]"
             r += f"[{model.win}-{model.lose}] 模型 {model.name} : 下注 {model.bet_bonus} 累计盈亏：{model.win_bonus}\n"
             res_mess += r
+            model.bet_bonus = 0
     if res_mess:
         await app.send_message(setting["zhuque"]["ydx_model"]["push_chat_id"], res_mess)
         async with session.begin():
