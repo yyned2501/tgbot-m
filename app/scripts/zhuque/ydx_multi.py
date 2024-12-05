@@ -265,7 +265,7 @@ async def zhuque_ydx_bet(client: Client, message: Message):
                 bet_bonus_sum = 0
                 running_d_models = await session.execute(
                     select(ZqYdxMulti).filter(
-                        (ZqYdxMulti.bet_switch) == 1 and (ZqYdxMulti.fit_model == "D")
+                        ZqYdxMulti.bet_switch == 1, ZqYdxMulti.fit_model == "D"
                     )
                 )
                 running_d_models_list = running_d_models.scalars().all()
@@ -282,7 +282,7 @@ async def zhuque_ydx_bet(client: Client, message: Message):
                     bet_bonus_sum += model.bet_bonus
                 running_ex_models = await session.execute(
                     select(ZqYdxMulti).filter(
-                        (ZqYdxMulti.bet_switch == 1) and (ZqYdxMulti.fit_model != "D")
+                        ZqYdxMulti.bet_switch == 1, ZqYdxMulti.fit_model != "D"
                     )
                 )
                 for model in running_ex_models.scalars():
@@ -326,7 +326,7 @@ async def zhuque_ydx_check(client: Client, message: Message):
                 model.winning_streak += 1
                 model.losing_streak = 0
                 model.sum_losebonus = 0
-                model.win_bonus += abs(model.bet_bonus) * 0.99
+                model.win_bonus += int(abs(model.bet_bonus) * 0.99)
                 r = f"[胜{model.winning_streak}]"
             else:
                 model.lose += 1
@@ -341,5 +341,5 @@ async def zhuque_ydx_check(client: Client, message: Message):
         await app.send_message(setting["zhuque"]["ydx_model"]["push_chat_id"], res_mess)
         async with session.begin():
             base = await session.get(ZqYdxBase, 1) or ZqYdxBase.init(session)
-            if base.bet_round:
+            if base.bet_switch and base.bet_round:
                 await base.set_start_bonus()
