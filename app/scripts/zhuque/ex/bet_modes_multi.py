@@ -56,7 +56,7 @@ def S(data: list[int], onnx_file):
     res = compiled_model_onnx(dummy_input)
     output_data = res[0]
     ov_index = np.argmax(output_data, axis=0)
-    # logger.info(f"使用模型{onnx_file}预测，选择模式{ov_index}")
+    logger.info(f"使用模型{onnx_file}预测，选择模式{ov_index}")
     return model_dx[ov_index]
 
 
