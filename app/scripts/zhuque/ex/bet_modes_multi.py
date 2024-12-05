@@ -23,31 +23,6 @@ def register_function(name):
     return decorator
 
 
-@register_function("A")
-def A(data: list[int]):
-    return 1
-
-
-@register_function("B")
-def A(data: list[int]):
-    return 0
-
-
-@register_function("C")
-def C(data: list[int]):
-    return data[0]
-
-
-@register_function("D")
-def D(data: list[int]):
-    return data[9]
-
-
-@register_function("E")
-def E(data: list[int]):
-    return 1 - data[9]
-
-
 def S(data: list[int], onnx_file):
     model_dx = [1, 0, data[0], data[9], 1 - data[9]]
     compiled_model_onnx = _compiled_model_onnx[onnx_file]
