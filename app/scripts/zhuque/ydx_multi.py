@@ -252,11 +252,13 @@ async def zhuque_ydx_bet(client: Client, message: Message):
         await asyncio.sleep(5)
         async with session.begin():
             base = await session.get(ZqYdxBase, 1) or ZqYdxBase.init(session)
+            if base.bet_switch == 0:
+                return
             if not base.message_id:
                 bet_bonus_sum = 0
                 running_d_models = await session.execute(
                     select(ZqYdxMulti).filter(
-                        ZqYdxMulti.bet_switch == 1 and ZqYdxMulti.fit_model == "D"
+                        (ZqYdxMulti.bet_switch) == 1 and (ZqYdxMulti.fit_model == "D")
                     )
                 )
                 running_d_models_list = running_d_models.scalars().all()
@@ -273,7 +275,7 @@ async def zhuque_ydx_bet(client: Client, message: Message):
                     bet_bonus_sum += model.bet_bonus
                 running_ex_models = await session.execute(
                     select(ZqYdxMulti).filter(
-                        ZqYdxMulti.bet_switch == 1 and ZqYdxMulti.fit_model != "D"
+                        (ZqYdxMulti.bet_switch == 1) and (ZqYdxMulti.fit_model != "D")
                     )
                 )
                 for model in running_ex_models.scalars():
