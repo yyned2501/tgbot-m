@@ -139,7 +139,12 @@ async def zhuque_ydx_switch(client: Client, message: Message):
                     )
                     base.message_id = None
                     await session.execute(
-                        update(ZqYdxMulti).values(lose_times=0, sum_losebonus=0)
+                        update(ZqYdxMulti).values(
+                            bet_bonus=0,
+                            winning_streak=0,
+                            losing_streak=0,
+                            sum_losebonus=0,
+                        )
                     )
             await asyncio.sleep(5)
             await message.delete()
