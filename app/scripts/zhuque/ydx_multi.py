@@ -290,7 +290,7 @@ async def zhuque_ydx_switch(client: Client, message: Message):
                             await message.edit(
                                 f"模型{model.name}修改为{"跟" if command[0] == "+" else "反"}投{model.bonus}模式"
                             )
-                await asyncio.sleep(30)
+                await asyncio.sleep(5)
                 await message.delete()
 
 
