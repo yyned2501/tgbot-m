@@ -26,12 +26,12 @@ def register_function(name):
 def S(data: list[int], onnx_file):
     model_dx = [1, 0, data[0], data[9], 1 - data[9]]
     compiled_model_onnx = _compiled_model_onnx[onnx_file]
-    logger.info(data)
+    logger.debug(data)
     dummy_input = np.array(data, dtype=np.float32)
     res = compiled_model_onnx(dummy_input)
     output_data = res[0]
     ov_index = np.argmax(output_data, axis=0)
-    logger.info(f"使用模型{onnx_file}预测，选择模式{ov_index}")
+    logger.debug(f"使用模型{onnx_file}预测，选择模式{ov_index}")
     return model_dx[ov_index]
 
 
@@ -63,6 +63,7 @@ for root, dirs, files in os.walk("app/onnxes"):
             model = f"{root}/{file_name}"
             _function_registry[f"O{o}"] = create_model_function(model)
             o += 1
+
 
 def get_funcs():
     return _function_registry
