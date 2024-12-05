@@ -24,7 +24,7 @@ def register_function(name):
 
 
 def S(data: list[int], onnx_file):
-    model_dx = [1, 0, data[0], data[9], 1 - data[9]]
+    model_dx = [1, 0, data[-1], data[-10], 1 - data[-10]]
     compiled_model_onnx = _compiled_model_onnx[onnx_file]
     logger.debug(data)
     dummy_input = np.array(data, dtype=np.float32)
