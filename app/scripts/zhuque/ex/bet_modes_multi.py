@@ -27,11 +27,12 @@ def S(data: list[int], onnx_file):
     model_dx = [1, 0, data[0], data[9], 1 - data[9]]
     compiled_model_onnx = _compiled_model_onnx[onnx_file]
     data.reverse()
+    logger.info(data)
     dummy_input = np.array(data, dtype=np.float32)
     res = compiled_model_onnx(dummy_input)
     output_data = res[0]
     ov_index = np.argmax(output_data, axis=0)
-    logger.debug(f"使用模型{onnx_file}预测，选择模式{ov_index}")
+    logger.info(f"使用模型{onnx_file}预测，选择模式{ov_index}")
     return model_dx[ov_index]
 
 
