@@ -11,7 +11,7 @@ from app.config import setting
 if setting["database"] == "mysql":
     async_connection_string = f"mysql+aiomysql://{setting["mysql"]["user"]}:{setting["mysql"]["password"]}@{setting["mysql"]["host"]}/{setting["mysql"]["db"]}"
 else:
-    async_connection_string = f"sqlite+aiosqlite:///tgbot.db"
+    async_connection_string = f"sqlite+aiosqlite:///sessions/tgbot.db"
 
 async_engine = create_async_engine(async_connection_string)
 ASSession = async_scoped_session(
