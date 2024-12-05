@@ -26,8 +26,6 @@ def register_function(name):
 def S(data: list[int], onnx_file):
     model_dx = [1, 0, data[0], data[9], 1 - data[9]]
     compiled_model_onnx = _compiled_model_onnx[onnx_file]
-    data = [i for i in data]
-    data.reverse()
     logger.info(data)
     dummy_input = np.array(data, dtype=np.float32)
     res = compiled_model_onnx(dummy_input)
@@ -81,7 +79,6 @@ def test(db: ZqYdx, data: list[int]):
         total_count = 0
         for i in range(40, len(data) + 1):
             data_i = data[i - 40 : i]
-            data_i.reverse()
             dx = mode(model, data_i)
             if i < len(data):
                 total_count += 1

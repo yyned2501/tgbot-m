@@ -62,6 +62,7 @@ async def new_history_list(message: Message):
             logger.error(
                 "记录上次记录时间与当前时间小于1分钟，防止数据错误，不记录数据。"
             )
+    single_line_list.reverse()
     return single_line_list
 
 
