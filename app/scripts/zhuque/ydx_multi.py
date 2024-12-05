@@ -237,11 +237,11 @@ async def zhuque_ydx_switch(client: Client, message: Message):
                 for model in models.scalars():
                     r += f"\n{"[**ON**]" if model.bet_switch == 1 else "[OFF]"}模型{model.name}"
                     if model.fit_model == "D":
-                        r += f"[倍投]\n当前连败次数:{model.losing_streak}|累计下注金额:{model.sum_losebonus}|累计盈利:{model.win_bonus}"
+                        r += f"[倍投]\n当前连败次数:{model.losing_streak}|本次下注金额:{model.bet_bonus}|累计盈利:{model.win_bonus}"
                     elif model.fit_model == "+":
-                        r += f"[跟投]\n胜:{model.win}|负:{model.lose}|累计盈利:{model.win_bonus}"
+                        r += f"[跟投]\n胜:{model.win}|负:{model.lose}|本次下注金额:{model.bet_bonus}|累计盈利:{model.win_bonus}"
                     elif model.fit_model == "-":
-                        r += f"[反投]\n胜:{model.win}|负:{model.lose}|累计盈利:{model.win_bonus}"
+                        r += f"[反投]\n胜:{model.win}|负:{model.lose}|本次下注金额:{model.bet_bonus}|累计盈利:{model.win_bonus}"
                     r += "\n"
                 await message.edit(r[:-1])
                 await asyncio.sleep(30)
@@ -267,8 +267,10 @@ async def zhuque_ydx_switch(client: Client, message: Message):
                         ).scalar_one()
                         if command == "ON":
                             model.bet_switch = 1
+                            await message.edit(f"模型{model.name}启动")
                         elif command == "OFF":
                             model.bet_switch = 0
+                            await message.edit(f"模型{model.name}停止")
                         elif command == "CLEAR":
                             model.lose = 0
                             model.win = 0
@@ -277,12 +279,19 @@ async def zhuque_ydx_switch(client: Client, message: Message):
                             model.bet_bonus = 0
                             model.sum_losebonus = 0
                             model.win_bonus = 0
+                            await message.edit(f"模型{model.name}清理历史数据")
                         elif command == "D":
                             model.fit_model = command
+                            await message.edit(f"模型{model.name}修改为倍投模式")
                         elif command[0] == "+" or command[0] == "-":
                             bonus = int(command[1:])
                             model.fit_model = command[0]
                             model.bonus = bonus
+                            await message.edit(
+                                f"模型{model.name}修改为{"跟" if command[0] == "+" else "反"}投{model.bonus}模式"
+                            )
+                await asyncio.sleep(30)
+                await message.delete()
 
 
 @app.on_message(
