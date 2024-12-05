@@ -10,7 +10,7 @@ from app.config import setting
 from app.filters import custom_filters
 from app.models import ASSession
 from app.models.ydx import YdxHistory, ZqYdxBase, ZqYdxMulti
-from app.scripts.zhuque.ex.bet_modes_multi import mode, test
+from app.scripts.zhuque.ex.bet_modes_multi import mode, test, get_funcs
 
 TARGET = -1001833464786
 rate = 0.99
@@ -231,21 +231,58 @@ async def zhuque_ydx_switch(client: Client, message: Message):
                 await message.delete()
 
         elif message.command[1] == "models":
-            # if len(message.command) == 2:
-            models = await session.execute(select(ZqYdxMulti))
-            r = f"**所有运行模型转态**："
-            for model in models.scalars():
-                r += f"\n{"[**ON**]" if model.bet_switch == 1 else "[OFF]"}模型{model.name}"
-                if model.fit_model == "D":
-                    r += f"[倍投]\n当前连败次数:{model.losing_streak}|累计下注金额:{model.sum_losebonus}|累计盈利:{model.win_bonus}"
-                elif model.fit_model == "+":
-                    r += f"[跟投]\n胜:{model.win}|负:{model.lose}|累计盈利:{model.win_bonus}"
-                elif model.fit_model == "-":
-                    r += f"[反投]\n胜:{model.win}|负:{model.lose}|累计盈利:{model.win_bonus}"
-                r += "\n"
-            await message.edit(r[:-1])
-            await asyncio.sleep(30)
-            await message.delete()
+            if len(message.command) == 2:
+                models = await session.execute(select(ZqYdxMulti))
+                r = f"**所有运行模型转态**："
+                for model in models.scalars():
+                    r += f"\n{"[**ON**]" if model.bet_switch == 1 else "[OFF]"}模型{model.name}"
+                    if model.fit_model == "D":
+                        r += f"[倍投]\n当前连败次数:{model.losing_streak}|累计下注金额:{model.sum_losebonus}|累计盈利:{model.win_bonus}"
+                    elif model.fit_model == "+":
+                        r += f"[跟投]\n胜:{model.win}|负:{model.lose}|累计盈利:{model.win_bonus}"
+                    elif model.fit_model == "-":
+                        r += f"[反投]\n胜:{model.win}|负:{model.lose}|累计盈利:{model.win_bonus}"
+                    r += "\n"
+                await message.edit(r[:-1])
+                await asyncio.sleep(30)
+                await message.delete()
+            else:
+                """
+                /zqydx models a on
+                /zqydx models a off
+                /zqydx models a d
+                /zqydx models a +100000
+                /zqydx models a -100000
+                /zqydx models a clear
+                """
+                if len(message.command) == 4:
+                    model_name = message.command[2].upper()
+                    command = message.command[3].upper()
+                    funcs = get_funcs()
+                    if model_name in funcs:
+                        model = (
+                            await session.execute(
+                                select(ZqYdxMulti).where(ZqYdxMulti.name == model_name)
+                            )
+                        ).scalar_one()
+                        if command == "ON":
+                            model.bet_switch = 1
+                        elif command == "OFF":
+                            model.bet_switch = 0
+                        elif command == "CLEAR":
+                            model.lose = 0
+                            model.win = 0
+                            model.losing_streak = 0
+                            model.winning_streak = 0
+                            model.bet_bonus = 0
+                            model.sum_losebonus = 0
+                            model.win_bonus = 0
+                        elif command == "D":
+                            model.fit_model = command
+                        elif command[0] == "+" or command[0] == "-":
+                            bonus = int(command[1:])
+                            model.fit_model = command[0]
+                            model.bonus = bonus
 
 
 @app.on_message(
@@ -338,6 +375,10 @@ async def zhuque_ydx_check(client: Client, message: Message):
             r += f"[{model.win}-{model.lose}] 模型 {model.name} : 下注 {model.bet_bonus} 累计盈亏：{model.win_bonus}\n"
             res_mess += r
             model.bet_bonus = 0
+            if model.bet_switch == 0:
+                model.losing_streak = 0
+                model.winning_streak = 0
+                model.sum_losebonus = 0
     if res_mess:
         await app.send_message(setting["zhuque"]["ydx_model"]["push_chat_id"], res_mess)
         async with session.begin():
