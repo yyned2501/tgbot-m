@@ -87,7 +87,7 @@ async def ydx(client: Client, message: Message, bonus: int):
     ]
     bet_counts = []
 
-    logger.info(f"remaining_bouns={bonus}")
+    logger.info(f"下注{bonus}")
     if bonus < 0:
         bonus = -bonus
         bet_dx = 1 - bet_dx
@@ -101,7 +101,7 @@ async def ydx(client: Client, message: Message, bonus: int):
             bet_value = bet_values[i]
             callback_data = f'{{"t":"{bs_list[bet_dx]}","b":{
                 int(bet_value)},"action":"ydxxz"}}'
-            logger.info(
+            logger.debug(
                 f"bet_value= {bet_value} count= {count} callback_data= {callback_data}"
             )
             for _ in range(count):

@@ -18,7 +18,7 @@ async def get(session: aiohttp.ClientSession, url, data=None, referer=None):
     async with session.get(url, headers=headers, data=data) as response:
         if response.status == 200:
             ret = await response.json()
-            logger.info(ret)
+            logger.debug(ret)
             return ret
         else:
             logger.error(f"Error: {response.status} {await response.text()}")
@@ -31,7 +31,7 @@ async def post(session: aiohttp.ClientSession, url, data=None, referer=None):
     async with session.post(url, headers=headers, data=data) as response:
         if response.status == 200:
             ret = await response.json()
-            logger.info(ret)
+            logger.debug(ret)
             return ret
         else:
             logger.error(f"Error: {response.status} {await response.text()}")
