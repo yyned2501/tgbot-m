@@ -147,10 +147,10 @@ async def create_models():
     async with session.begin():
         models = await session.execute(select(ZqYdxMulti))
         for model in models.scalars():
-            if model.model_name not in _function_registry:
+            if model.name not in _function_registry:
                 await session.delete(model)
             else:
-                models_dict[model.model_name] = model
+                models_dict[model.name] = model
         for model_name in _function_registry:
             if model_name not in models_dict:
-                session.add(ZqYdxMulti(model_name=model_name))
+                session.add(ZqYdxMulti(name=model_name))

@@ -143,17 +143,72 @@ class ZqYdxBase(Base):
         ASSession.add(self)
         return self
 
+    async def set_start_bonus(self):
+        if self.bet_round:
+            info = await get_info()
+            if info:
+                self.user_bonus = int(info["data"]["bonus"])
+                self.max_bet_bonus = min(int(self.user_bonus / 4 // 500 * 500), 5e7)
+            self.test_round()
+
+    def test_round(self):
+        max_bonus = min(self.max_bet_bonus, self.user_bonus, 5e7)
+        min_bonus = 500
+        m = min(
+            (
+                int(
+                    min(self.user_bonus, 1e8)
+                    / (2 ** (self.bet_round + 2) - self.bet_round - 2)
+                    / 0.99**self.bet_round
+                )
+                // 500
+                + 1
+            )
+            * 500,
+            (
+                int(
+                    min(max_bonus, 1e8)
+                    / (2 ** (self.bet_round + 1) - 1)
+                    / 0.99 ** (self.bet_round - 1)
+                )
+                // 500
+                + 1
+            )
+            * 500,
+        )
+        for i in range(m):
+            startbonus = m - i
+            if startbonus < min_bonus:
+                break
+            bet_bonus = 0
+            sum_bonus = 0
+            for i in range(self.bet_round + 2):
+                bonus = sum_bonus / 0.99 + startbonus * (i + 1)
+                last_bonus = bet_bonus
+                bet_bonus = bonus // min_bonus * min_bonus
+                last_sum_bonus = sum_bonus
+                sum_bonus += bet_bonus
+                if sum_bonus > self.user_bonus or bet_bonus > max_bonus:
+                    if i > self.bet_round:
+                        logger.info(
+                            f"{i}, {startbonus}, {last_bonus}, {last_sum_bonus}"
+                        )
+                        self.start_bonus = startbonus
+                        return
+                    break
+
 
 class ZqYdxMulti(Base):
     __tablename__ = "zqydx_models"
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
-    model_name: Mapped[str] = mapped_column(String(8))
+    name: Mapped[str] = mapped_column(String(8))
     bonus: Mapped[int] = mapped_column(Integer, default=500)
     bet_switch: Mapped[int] = mapped_column(Integer, default=1)
     fit_model: Mapped[str] = mapped_column(String(8), default="D")
     win: Mapped[int] = mapped_column(Integer, default=0)
     lose: Mapped[int] = mapped_column(Integer, default=0)
-    lose_times: Mapped[int] = mapped_column(Integer, default=0)
+    winning_streak: Mapped[int] = mapped_column(Integer, default=0)
+    losing_streak: Mapped[int] = mapped_column(Integer, default=0)
     bet_bonus: Mapped[int] = mapped_column(Integer, default=0)
     sum_losebonus: Mapped[int] = mapped_column(Integer, default=0)
     win_bonus: Mapped[int] = mapped_column(Integer, default=0)

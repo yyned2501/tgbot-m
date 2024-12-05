@@ -6,6 +6,7 @@ scripts:
     - redpocket
     - dajie
     - ydx_model
+    - ydx_multi
   redleaves:
     - redpocket
   agsv:
