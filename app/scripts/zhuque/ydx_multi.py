@@ -117,7 +117,9 @@ async def check_ydx_message(message: Message, base: ZqYdxBase):
         if base.message_id != message.reply_to_message_id:
             logger.warning("结算id与记录不一致，重置历史记录")
             await session.execute(
-                update(ZqYdxMulti).values(bet_bonue=0, lose_times=0, sum_losebonus=0)
+                update(ZqYdxMulti).values(
+                    bet_bonus=0, winning_streak=0, losing_streak=0, sum_losebonus=0
+                )
             )
 
 
