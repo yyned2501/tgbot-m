@@ -56,7 +56,7 @@ def S(data: list[int], onnx_file):
     res = compiled_model_onnx(dummy_input)
     output_data = res[0]
     ov_index = np.argmax(output_data, axis=0)
-    logger.info(f"使用模型{onnx_file}预测，选择模式{ov_index}")
+    # logger.info(f"使用模型{onnx_file}预测，选择模式{ov_index}")
     return model_dx[ov_index]
 
 
@@ -80,7 +80,6 @@ n = 1
 for root, dirs, files in os.walk("app/onnxes"):
     for file_name in files:
         model = f"{root}/{file_name}"
-
         _function_registry[f"S{n}"] = create_model_function(model)
         n += 1
 
