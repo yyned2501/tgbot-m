@@ -335,7 +335,7 @@ async def zhuque_ydx_bet(client: Client, message: Message):
                     dx = mode(model.name, data)
                     if model.fit_model == "-":
                         dx = 1 - dx
-                    model.bet_bonus = (2 * dx - 1) * bet_bonus
+                    model.bet_bonus = (2 * dx - 1) * model.bonus
                     bet_bonus_sum += model.bet_bonus
                 await ydx(client, message, bet_bonus_sum)
                 base.message_id = message.id
