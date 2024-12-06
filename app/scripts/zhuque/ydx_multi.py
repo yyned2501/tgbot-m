@@ -318,15 +318,22 @@ async def zhuque_ydx_bet(client: Client, message: Message):
                 running_d_models_list = running_d_models.scalars().all()
                 running_d_models_count = len(running_d_models_list)
                 for model in running_d_models_list:
-                    dx = mode(model.name, data)
-                    if model.losing_streak == 0:
-                        model.bonus = int(base.start_bonus / running_d_models_count)
-                    bet_bonus = int(
-                        model.sum_losebonus / 0.99
-                        + (model.losing_streak + 1) * model.bonus
-                    )
-                    model.bet_bonus = (2 * dx - 1) * bet_bonus
-                    bet_bonus_sum += model.bet_bonus
+                    if model.losing_streak > base.bet_round:
+                        model.bet_switch = 0
+                        await client.send_message(
+                            TARGET,
+                            f"模型{model.name}没兜住，自动停止，损失{model.sum_losebonus}",
+                        )
+                    else:
+                        dx = mode(model.name, data)
+                        if model.losing_streak == 0:
+                            model.bonus = int(base.start_bonus / running_d_models_count)
+                        bet_bonus = int(
+                            model.sum_losebonus / 0.99
+                            + (model.losing_streak + 1) * model.bonus
+                        )
+                        model.bet_bonus = (2 * dx - 1) * bet_bonus
+                        bet_bonus_sum += model.bet_bonus
                 running_ex_models = await session.execute(
                     select(ZqYdxMulti).filter(
                         ZqYdxMulti.bet_switch == 1, ZqYdxMulti.fit_model != "D"

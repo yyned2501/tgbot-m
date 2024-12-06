@@ -53,16 +53,18 @@ def create_model_function(model):
 
 s = 1
 o = 1
-for root, dirs, files in os.walk("app/onnxes"):
-    for file_name in files:
-        if file_name.startswith("zqydx_s4"):
-            model = f"{root}/{file_name}"
-            _function_registry[f"S{s}"] = create_model_function(model)
-            s += 1
-        else:
-            model = f"{root}/{file_name}"
-            _function_registry[f"O{o}"] = create_model_function(model)
-            o += 1
+root = "app/onnxes"
+files = os.listdir("app/onnxes")
+files.sort()
+for file_name in files:
+    if file_name.startswith("zqydx_s4"):
+        model = f"{root}/{file_name}"
+        _function_registry[f"S{s}"] = create_model_function(model)
+        s += 1
+    else:
+        model = f"{root}/{file_name}"
+        _function_registry[f"O{o}"] = create_model_function(model)
+        o += 1
 
 
 def get_funcs():
