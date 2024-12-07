@@ -318,7 +318,7 @@ async def zhuque_ydx_bet(client: Client, message: Message):
                 running_d_models_list = running_d_models.scalars().all()
                 running_d_models_count = len(running_d_models_list)
                 for model in running_d_models_list:
-                    if model.losing_streak > base.bet_round:
+                    if model.losing_streak > base.bet_round + 1:
                         model.bet_switch = 0
                         await client.send_message(
                             TARGET,
