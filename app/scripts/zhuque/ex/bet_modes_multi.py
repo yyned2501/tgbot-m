@@ -130,4 +130,4 @@ async def create_models():
                 models_dict[model.name] = model
         for model_name in _function_registry:
             if model_name not in models_dict:
-                session.add(ZqYdxMulti(model_name=model_name))
+                session.add(ZqYdxMulti(name=model_name))
