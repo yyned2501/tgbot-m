@@ -339,7 +339,6 @@ async def zhuque_ydx_bet(client: Client, message: Message):
                 running_d_models_list = running_d_models.scalars().all()
                 running_d_models_count = len(running_d_models_list)
                 for model in running_d_models_list:
-
                     if model.losing_streak > base.bet_round + 1:
                         model.bet_switch = 0
                         model.losing_streak = 0
@@ -374,11 +373,15 @@ async def zhuque_ydx_bet(client: Client, message: Message):
                         ZqYdxMulti.bet_switch == 1, ZqYdxMulti.fit_model == "G"
                     )
                 )
+                running_g_models_list = running_g_models.scalars().all()
+                running_g_models_count = len(running_g_models_list)
                 for model in running_g_models.scalars():
                     dx = mode(model.name, data)
                     gid = model.lose - model.win
                     if gid <= 3:
-                        model.bonus = base.start_bonus
+                        model.bonus = int(
+                            base.user_bonus / 1000 / running_g_models_count
+                        )
                     bet_bonus = int(
                         grids[min(model.lose - model.win, 29)] * model.bonus
                     )
