@@ -36,8 +36,8 @@ def S(data: list[int], onnx_file):
 
 
 def A(data: list[int], onnx_file):
-    a5 = max(int(sum(data[-5:]) / 5 * 2),1)
-    a15 = max(int(sum(data[-15:]) / 5 * 2),1)
+    a5 = max(int(sum(data[-5:]) / 5 * 2), 1)
+    a15 = max(int(sum(data[-15:]) / 5 * 2), 1)
     model_dx = [a5, 1 - a5, a15, 1 - a15]
     compiled_model_onnx = _compiled_model_onnx[onnx_file]
     logger.debug(data)
@@ -86,7 +86,7 @@ def test(db: ZqYdx, data: list[int]):
     n = 1
     ret = {}
     for model in _function_registry:
-        loss_count = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        loss_count = [0 for _ in range(50)]
         turn_loss_count = 0
         win_count = 0
         total_count = 0
