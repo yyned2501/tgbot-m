@@ -380,7 +380,7 @@ async def zhuque_ydx_bet(client: Client, message: Message):
                     gid = model.lose - model.win
                     if gid <= 3:
                         model.bonus = int(
-                            base.user_bonus / 1000 / running_g_models_count
+                            base.user_bonus / 500 / running_g_models_count
                         )
                     bet_bonus = int(
                         grids[min(model.lose - model.win, 29)] * model.bonus
