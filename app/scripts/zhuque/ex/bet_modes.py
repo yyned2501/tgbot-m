@@ -74,18 +74,14 @@ def create_model_function(model):
     return lambda db, data: S(db, data, model)
 
 
-s = 1
-o = 1
-for root, dirs, files in os.walk("app/onnxes"):
-    for file_name in files:
-        if file_name.startswith("zqydx_s4"):
-            model = f"{root}/{file_name}"
-            _function_registry[f"S{s}"] = create_model_function(model)
-            s += 1
-        else:
-            model = f"{root}/{file_name}"
-            _function_registry[f"O{o}"] = create_model_function(model)
-            o += 1
+root = "app/onnxes"
+files = os.listdir("app/onnxes")
+files.sort()
+for file_name in files:
+    if file_name.startswith("zqydx_s"):
+        model_name = file_name.split("_")[1].upper()
+        model = f"{root}/{file_name}"
+        _function_registry[model_name] = create_model_function(model)
 
 
 def get_funcs():
@@ -94,58 +90,48 @@ def get_funcs():
 
 def test(db: ZqYdx, data: list[int]):
     data.reverse()
-    s = 1
-    o = 1
     ret = {}
-    for root, dirs, files in os.walk("app/onnxes"):
-        for file_name in files:
-            loss_count = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-            turn_loss_count = 0
-            win_count = 0
-            total_count = 0
-            mode = 0
-            if file_name.startswith("zqydx_s4"):
-                model = f"{root}/{file_name}"
-                model_name = f"S{s}"
-                s += 1
-            else:
-                model = f"{root}/{file_name}"
-                model_name = f"O{o}"
-                o += 1
-            model_onnx = core.read_model(model=model)
-            compiled_model_onnx = core.compile_model(
-                model=model_onnx, device_name="AUTO"
-            )
-            for i in range(40, len(data) + 1):
-                model_dx = [1, 0, data[i - 1], data[i - 10], 1 - data[i - 10]]
-                d = data[i - 40 : i]
-                d = np.array(d, dtype=np.float32)
-                res = compiled_model_onnx(d)
-                mode = np.argmax(res[0], axis=0)
-                if i < len(data):
-                    total_count += 1
-                    if data[i] == model_dx[mode]:
-                        loss_count[turn_loss_count] += 1
-                        win_count += 1
-                        turn_loss_count = 0
-                    else:
-                        turn_loss_count += 1
-            max_nonzero_index = next(
-                (
-                    index
-                    for index, value in reversed(list(enumerate(loss_count)))
-                    if value != 0
-                ),
-                -1,
-            )
-            ret[model_name] = {
-                "file": file_name,
-                "loss_count": loss_count[: max_nonzero_index + 1],
-                "max_nonzero_index": max_nonzero_index,
-                "win_rate": win_count / total_count,
-                "win_count": 2 * win_count - total_count,
-                "turn_loss_count": turn_loss_count,
-                "guess": model_dx[mode],
-            }
+    for file_name in files:
+        loss_count = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        turn_loss_count = 0
+        win_count = 0
+        total_count = 0
+        mode = 0
+        if file_name.startswith("zqydx_s"):
+            model_name = file_name.split("_")[1].upper()
+            model = f"{root}/{file_name}"
+        model_onnx = core.read_model(model=model)
+        compiled_model_onnx = core.compile_model(model=model_onnx, device_name="AUTO")
+        for i in range(40, len(data) + 1):
+            model_dx = [1, 0, data[i - 1], data[i - 10], 1 - data[i - 10]]
+            d = data[i - 40 : i]
+            d = np.array(d, dtype=np.float32)
+            res = compiled_model_onnx(d)
+            mode = np.argmax(res[0], axis=0)
+            if i < len(data):
+                total_count += 1
+                if data[i] == model_dx[mode]:
+                    loss_count[turn_loss_count] += 1
+                    win_count += 1
+                    turn_loss_count = 0
+                else:
+                    turn_loss_count += 1
+        max_nonzero_index = next(
+            (
+                index
+                for index, value in reversed(list(enumerate(loss_count)))
+                if value != 0
+            ),
+            -1,
+        )
+        ret[model_name] = {
+            "file": file_name,
+            "loss_count": loss_count[: max_nonzero_index + 1],
+            "max_nonzero_index": max_nonzero_index,
+            "win_rate": win_count / total_count,
+            "win_count": 2 * win_count - total_count,
+            "turn_loss_count": turn_loss_count,
+            "guess": model_dx[mode],
+        }
 
     return ret

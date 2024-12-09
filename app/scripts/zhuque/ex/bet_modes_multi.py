@@ -35,6 +35,20 @@ def S(data: list[int], onnx_file):
     return model_dx[ov_index]
 
 
+def A(data: list[int], onnx_file):
+    a5 = int(sum(data[-5:]) / 5 * 2)
+    a15 = int(sum(data[-15:]) / 15 * 2)
+    model_dx = [a5, 1 - a5, a15, 1 - a15]
+    compiled_model_onnx = _compiled_model_onnx[onnx_file]
+    logger.debug(data)
+    dummy_input = np.array(data, dtype=np.float32)
+    res = compiled_model_onnx(dummy_input)
+    output_data = res[0]
+    ov_index = np.argmax(output_data, axis=0)
+    logger.debug(f"使用模型{onnx_file}预测，选择模式{ov_index}")
+    return model_dx[ov_index]
+
+
 def mode(func_name, *args, **kwargs):
     func = _function_registry.get(func_name)
     if callable(func):
@@ -51,20 +65,13 @@ def create_model_function(model):
     return lambda data: S(data, model)
 
 
-s = 1
-o = 1
 root = "app/onnxes"
 files = os.listdir("app/onnxes")
 files.sort()
 for file_name in files:
-    if file_name.startswith("zqydx_s4"):
-        model = f"{root}/{file_name}"
-        _function_registry[f"S{s}"] = create_model_function(model)
-        s += 1
-    else:
-        model = f"{root}/{file_name}"
-        _function_registry[f"O{o}"] = create_model_function(model)
-        o += 1
+    model_name = file_name.split("_")[1].upper()
+    model = f"{root}/{file_name}"
+    _function_registry[model_name] = create_model_function(model)
 
 
 def get_funcs():
