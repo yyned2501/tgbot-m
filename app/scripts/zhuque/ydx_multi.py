@@ -20,7 +20,7 @@ ex_bet = {"bonus": 0, "win": 0, "lose": 0, "aim": 0, "win_bonus": 0, "betbonus":
 grids = [0]
 for i in range(1, 30):
     last_g = grids[i - 1]
-    grids.append(last_g / 0.99 + int(i / 30) + 1)
+    grids.append(last_g / 0.99 + int(i / 10) + 1)
 
 
 def delete_message(message: Message, sleep_sec: int):
