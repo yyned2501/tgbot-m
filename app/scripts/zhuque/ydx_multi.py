@@ -276,6 +276,10 @@ async def zhuque_ydx_switch(client: Client, message: Message):
                         ).scalar_one()
                         if command == "ON":
                             model.bet_switch = 1
+                            model.losing_streak = 0
+                            model.winning_streak = 0
+                            model.bet_bonus = 0
+                            model.sum_losebonus = 0
                             await message.edit(f"模型{model.name}启动")
                         elif command == "OFF":
                             model.bet_switch = 0
@@ -291,7 +295,16 @@ async def zhuque_ydx_switch(client: Client, message: Message):
                             await message.edit(f"模型{model.name}清理历史数据")
                         elif command == "D":
                             model.fit_model = command
+                            model.losing_streak = 0
+                            model.winning_streak = 0
+                            model.bet_bonus = 0
+                            model.sum_losebonus = 0
                             await message.edit(f"模型{model.name}修改为倍投模式")
+                        elif command == "G":
+                            model.fit_model = command
+                            model.lose = 3
+                            model.win = 0
+                            await message.edit(f"模型{model.name}修改为网格模式")
                         elif command[0] == "+" or command[0] == "-":
                             bonus = int(command[1:])
                             model.fit_model = command[0]
