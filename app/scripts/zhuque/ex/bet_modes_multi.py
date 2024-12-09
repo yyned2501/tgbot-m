@@ -36,8 +36,8 @@ def S(data: list[int], onnx_file):
 
 
 def A(data: list[int], onnx_file):
-    a5 = max(int(sum(data[-5:]) / 5 * 2), 1)
-    a15 = max(int(sum(data[-15:]) / 5 * 2), 1)
+    a5 = min(int(sum(data[-5:]) / 5 * 2), 1)
+    a15 = min(int(sum(data[-15:]) / 5 * 2), 1)
     model_dx = [a5, 1 - a5, a15, 1 - a15]
     compiled_model_onnx = _compiled_model_onnx[onnx_file]
     logger.debug(data)
