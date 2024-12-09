@@ -246,6 +246,8 @@ async def zhuque_ydx_switch(client: Client, message: Message):
                     r += f"\n{"[**ON**]" if model.bet_switch == 1 else "[OFF]"}模型{model.name}"
                     if model.fit_model == "D":
                         r += f"[倍投]\n当前连败次数:{model.losing_streak}|本次下注金额:{model.bet_bonus}|累计盈利:{model.win_bonus}"
+                    elif model.fit_model == "G":
+                        r += f"[网格]\n当前网格:{model.lose-model.win}|本次下注金额:{model.bet_bonus}|累计盈利:{model.win_bonus}"
                     elif model.fit_model == "+":
                         r += f"[跟投]\n胜:{model.win}|负:{model.lose}|本次下注金额:{model.bet_bonus}|累计盈利:{model.win_bonus}"
                     elif model.fit_model == "-":
@@ -315,6 +317,7 @@ async def zhuque_ydx_bet(client: Client, message: Message):
                 return
             if not base.message_id:
                 bet_bonus_sum = 0
+                # 倍投下注
                 running_d_models = await session.execute(
                     select(ZqYdxMulti).filter(
                         ZqYdxMulti.bet_switch == 1, ZqYdxMulti.fit_model == "D"
@@ -343,11 +346,13 @@ async def zhuque_ydx_bet(client: Client, message: Message):
                         )
                         model.bet_bonus = (2 * dx - 1) * bet_bonus
                         bet_bonus_sum += model.bet_bonus
+                # 网格下注
                 running_g_models = await session.execute(
                     select(ZqYdxMulti).filter(
                         ZqYdxMulti.bet_switch == 1, ZqYdxMulti.fit_model == "G"
                     )
                 )
+                model.bonus = base.start_bonus
                 for model in running_g_models.scalars():
                     dx = mode(model.name, data)
                     bet_bonus = int(
@@ -355,6 +360,7 @@ async def zhuque_ydx_bet(client: Client, message: Message):
                     )
                     model.bet_bonus = (2 * dx - 1) * bet_bonus
                     bet_bonus_sum += model.bet_bonus
+                # 跟投下注
                 running_ex_models = await session.execute(
                     select(ZqYdxMulti).filter(
                         ZqYdxMulti.bet_switch == 1,
