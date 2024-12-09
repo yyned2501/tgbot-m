@@ -3,7 +3,7 @@ import datetime
 
 from pyrogram import filters, Client
 from pyrogram.types.messages_and_media import Message
-from sqlalchemy import desc, select, update
+from sqlalchemy import desc, or_, select, update
 
 from app import app, logger, scheduler
 from app.config import setting
@@ -17,6 +17,10 @@ rate = 0.99
 dx_list = ["小", "大"]
 bs_list = ["s", "b"]
 ex_bet = {"bonus": 0, "win": 0, "lose": 0, "aim": 0, "win_bonus": 0, "betbonus": 0}
+grids = [0]
+for i in range(1, 30):
+    last_g = grids[i - 1]
+    grids.append(last_g / 0.99 + int(i / 30) + 1)
 
 
 def delete_message(message: Message, sleep_sec: int):
@@ -339,9 +343,22 @@ async def zhuque_ydx_bet(client: Client, message: Message):
                         )
                         model.bet_bonus = (2 * dx - 1) * bet_bonus
                         bet_bonus_sum += model.bet_bonus
+                running_g_models = await session.execute(
+                    select(ZqYdxMulti).filter(
+                        ZqYdxMulti.bet_switch == 1, ZqYdxMulti.fit_model == "G"
+                    )
+                )
+                for model in running_g_models.scalars():
+                    dx = mode(model.name, data)
+                    bet_bonus = int(
+                        grids[min(model.lose - model.win, 29)] * model.bonus
+                    )
+                    model.bet_bonus = (2 * dx - 1) * bet_bonus
+                    bet_bonus_sum += model.bet_bonus
                 running_ex_models = await session.execute(
                     select(ZqYdxMulti).filter(
-                        ZqYdxMulti.bet_switch == 1, ZqYdxMulti.fit_model != "D"
+                        ZqYdxMulti.bet_switch == 1,
+                        or_(ZqYdxMulti.fit_model == "+", ZqYdxMulti.fit_model == "-"),
                     )
                 )
                 for model in running_ex_models.scalars():
@@ -394,6 +411,9 @@ async def zhuque_ydx_check(client: Client, message: Message):
                 model.sum_losebonus += abs(model.bet_bonus)
                 model.win_bonus -= abs(model.bet_bonus)
                 r = f"[负{model.losing_streak}]"
+            if model.fit_model == "G":
+                if model.lose <= model.win:
+                    model.fit_model == "D"
             r += f"[{model.win}-{model.lose}] 模型 {model.name} : 下注 {model.bet_bonus} 累计盈亏：{model.win_bonus}\n"
             res_mess += r
             model.bet_bonus = 0
