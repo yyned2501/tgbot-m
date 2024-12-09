@@ -27,7 +27,7 @@ def delete_message(message: Message, sleep_sec: int):
         _delete_message,
         "date",
         next_run_time=datetime.datetime.now() + datetime.timedelta(seconds=sleep_sec),
-        args=(message),
+        args=(message,),
     )
 
 
