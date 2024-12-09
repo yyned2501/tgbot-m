@@ -421,7 +421,7 @@ async def zhuque_ydx_check(client: Client, message: Message):
                 r = f"[负{model.losing_streak}]"
             if model.fit_model == "G":
                 if model.lose <= model.win:
-                    model.fit_model == "D"
+                    model.fit_model = "D"
             r += f"[{model.win}-{model.lose}] 模型 {model.name} : 下注 {model.bet_bonus} 累计盈亏：{model.win_bonus}\n"
             res_mess += r
             model.bet_bonus = 0
