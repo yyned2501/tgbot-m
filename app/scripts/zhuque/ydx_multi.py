@@ -339,6 +339,7 @@ async def zhuque_ydx_bet(client: Client, message: Message):
                 running_d_models_list = running_d_models.scalars().all()
                 running_d_models_count = len(running_d_models_list)
                 for model in running_d_models_list:
+
                     if model.losing_streak > base.bet_round + 1:
                         model.bet_switch = 0
                         model.losing_streak = 0
@@ -351,6 +352,14 @@ async def zhuque_ydx_bet(client: Client, message: Message):
                         )
                     else:
                         dx = mode(model.name, data)
+                        if model.losing_streak > 6:
+                            delete_message(
+                                await client.send_message(
+                                    TARGET,
+                                    f"滴滴滴模型{model.name}连负[{model.losing_streak}]，模型预测{dx}",
+                                ),
+                                60,
+                            )
                         if model.losing_streak == 0:
                             model.bonus = int(base.start_bonus / running_d_models_count)
                         bet_bonus = int(
