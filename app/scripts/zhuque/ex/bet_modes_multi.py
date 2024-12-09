@@ -58,11 +58,14 @@ def mode(func_name, *args, **kwargs):
         return mode("S1", *args, **kwargs)
 
 
-def create_model_function(model):
+def create_model_function(model, model_name):
     model_onnx = core.read_model(model=model)
     compiled_model_onnx = core.compile_model(model=model_onnx, device_name="AUTO")
     _compiled_model_onnx[model] = compiled_model_onnx
-    return lambda data: S(data, model)
+    if model_name[0] == "S":
+        return lambda data: S(data, model)
+    elif model_name[0] == "A":
+        return lambda data: A(data, model)
 
 
 root = "app/onnxes"
@@ -71,7 +74,7 @@ files.sort()
 for file_name in files:
     model_name = file_name.split("_")[1].upper()
     model = f"{root}/{file_name}"
-    _function_registry[model_name] = create_model_function(model)
+    _function_registry[model_name] = create_model_function(model, model_name)
 
 
 def get_funcs():
