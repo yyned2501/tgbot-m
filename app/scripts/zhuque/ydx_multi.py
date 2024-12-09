@@ -375,7 +375,7 @@ async def zhuque_ydx_bet(client: Client, message: Message):
                 )
                 running_g_models_list = running_g_models.scalars().all()
                 running_g_models_count = len(running_g_models_list)
-                for model in running_g_models.scalars():
+                for model in running_g_models_list:
                     dx = mode(model.name, data)
                     gid = model.lose - model.win
                     if gid <= 3:
