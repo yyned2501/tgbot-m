@@ -352,9 +352,11 @@ async def zhuque_ydx_bet(client: Client, message: Message):
                         ZqYdxMulti.bet_switch == 1, ZqYdxMulti.fit_model == "G"
                     )
                 )
-                model.bonus = base.start_bonus
                 for model in running_g_models.scalars():
                     dx = mode(model.name, data)
+                    gid = model.lose - model.win
+                    if gid <= 3:
+                        model.bonus = base.start_bonus
                     bet_bonus = int(
                         grids[min(model.lose - model.win, 29)] * model.bonus
                     )
