@@ -351,11 +351,11 @@ async def zhuque_ydx_bet(client: Client, message: Message):
                         )
                     else:
                         dx = mode(model.name, data)
-                        if model.losing_streak > 6:
+                        if model.losing_streak > 7:
                             delete_message(
                                 await client.send_message(
                                     TARGET,
-                                    f"滴滴滴模型{model.name}连负[{model.losing_streak}]，模型预测{dx}",
+                                    f"滴滴滴！模型{model.name}连负[{model.losing_streak}]，模型预测{dx}",
                                 ),
                                 60,
                             )
@@ -377,6 +377,14 @@ async def zhuque_ydx_bet(client: Client, message: Message):
                 running_g_models_count = len(running_g_models_list)
                 for model in running_g_models_list:
                     dx = mode(model.name, data)
+                    if model.losing_streak > 7:
+                        delete_message(
+                            await client.send_message(
+                                TARGET,
+                                f"滴滴滴！模型{model.name}连负[{model.losing_streak}]，模型预测{dx}",
+                            ),
+                            60,
+                        )
                     gid = model.lose - model.win
                     if gid <= 3:
                         model.bonus = int(
