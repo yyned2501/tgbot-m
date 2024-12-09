@@ -422,6 +422,11 @@ async def zhuque_ydx_check(client: Client, message: Message):
             if model.fit_model == "G":
                 if model.lose <= model.win:
                     model.fit_model = "D"
+            if model.fit_model == "D":
+                if (model.losing_streak == 0) and (model.lose - model.win >= 10):
+                    model.fit_model = "G"
+                    model.lose = 3
+                    model.win = 0
             r += f"[{model.win}-{model.lose}] 模型 {model.name} : 下注 {model.bet_bonus} 累计盈亏：{model.win_bonus}\n"
             res_mess += r
             model.bet_bonus = 0
