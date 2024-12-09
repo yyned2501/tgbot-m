@@ -19,6 +19,18 @@ bs_list = ["s", "b"]
 ex_bet = {"bonus": 0, "win": 0, "lose": 0, "aim": 0, "win_bonus": 0, "betbonus": 0}
 
 
+def delete_message(message: Message, sleep_sec: int):
+    async def _delete_message(message: Message):
+        await message.delete()
+
+    scheduler.add_job(
+        _delete_message,
+        "date",
+        next_run_time=datetime.datetime.now() + datetime.timedelta(seconds=sleep_sec),
+        args=(message),
+    )
+
+
 async def new_history_list(message: Message):
     """
     通过秋人提供的40个数据来生成历史数据列表
@@ -153,8 +165,7 @@ async def zhuque_ydx_switch(client: Client, message: Message):
         elif message.command[1] == "off":
             base.bet_switch = 0
             await message.edit(f"朱雀自动 “运动鞋” 脱掉！脱掉！。。。")
-            await asyncio.sleep(5)
-            await message.delete()
+            delete_message(message, 5)
 
         elif message.command[1] == "bonus":
             if len(message.command) >= 3:
@@ -165,21 +176,18 @@ async def zhuque_ydx_switch(client: Client, message: Message):
                         base.start_bonus = bonus
                         base.bet_round = None
                         await message.edit(f"底注 {base.start_bonus} 设置成功！。。。")
-                        await asyncio.sleep(5)
-                        await message.delete()
+                        delete_message(message, 5)
 
         elif message.command[1] == "kp":
             if len(message.command) >= 3:
                 if message.command[2] == "on":
                     base.kp_switch = 1
                     await message.edit(f"自动开盘启动！！！！。。。")
-                    await asyncio.sleep(5)
-                    await message.delete()
+                    delete_message(message, 5)
                 elif message.command[2] == "off":
                     base.kp_switch = 0
                     await message.edit(f"自动开盘关闭！！！！。。。")
-                    await asyncio.sleep(5)
-                    await message.delete()
+                    delete_message(message, 5)
 
         elif message.command[1] == "round":
             if len(message.command) >= 3:
@@ -190,12 +198,10 @@ async def zhuque_ydx_switch(client: Client, message: Message):
                         base.bet_round = bet_round
                     else:
                         await message.edit(f"兜底轮次应在5-12次内")
-                        await asyncio.sleep(5)
-                        await message.delete()
+                        delete_message(message, 5)
                         return
                 await message.edit(f"兜底 {base.bet_round} 轮！！！！。。。")
-                await asyncio.sleep(5)
-                await message.delete()
+                delete_message(message, 5)
 
         elif message.command[1] == "mbb":
             if len(message.command) >= 3:
@@ -206,12 +212,10 @@ async def zhuque_ydx_switch(client: Client, message: Message):
                         base.max_bet_bonus = max_bet_bonus
                     else:
                         await message.edit(f"最大单次下注应在500-5000w内")
-                        await asyncio.sleep(5)
-                        await message.delete()
+                        delete_message(message, 5)
                         return
                 await message.edit(f"最大下注 {base.max_bet_bonus} ！！！！。。。")
-                await asyncio.sleep(5)
-                await message.delete()
+                delete_message(message, 5)
 
         elif message.command[1] == "mdtest":
             if len(message.command) >= 3:
@@ -228,8 +232,7 @@ async def zhuque_ydx_switch(client: Client, message: Message):
                     r += f"模型{k}:\n历史失败次数:{models[k]["loss_count"]}\n最大失败轮次:{models[k]["max_nonzero_index"]}\n净胜次数:{models[k]["win_count"]}\n胜率:{models[k]["win_rate"]:.02%}\n当前失败轮次:{models[k]["turn_loss_count"]}\n模型预测:{models[k]["guess"]}\n\n"
                 r += "```"
                 await message.edit(r)
-                await asyncio.sleep(30)
-                await message.delete()
+                delete_message(message, 30)
 
         elif message.command[1] == "models":
             if len(message.command) == 2:
@@ -245,8 +248,7 @@ async def zhuque_ydx_switch(client: Client, message: Message):
                         r += f"[反投]\n胜:{model.win}|负:{model.lose}|本次下注金额:{model.bet_bonus}|累计盈利:{model.win_bonus}"
                     r += "\n"
                 await message.edit(r[:-1])
-                await asyncio.sleep(30)
-                await message.delete()
+                delete_message(message, 5)
             else:
                 """
                 /zqydx models a on
@@ -291,8 +293,7 @@ async def zhuque_ydx_switch(client: Client, message: Message):
                             await message.edit(
                                 f"模型{model.name}修改为{"跟" if command[0] == "+" else "反"}投{model.bonus}模式"
                             )
-                await asyncio.sleep(5)
-                await message.delete()
+                    delete_message(message, 5)
 
 
 @app.on_message(
@@ -320,6 +321,10 @@ async def zhuque_ydx_bet(client: Client, message: Message):
                 for model in running_d_models_list:
                     if model.losing_streak > base.bet_round + 1:
                         model.bet_switch = 0
+                        model.losing_streak = 0
+                        model.winning_streak = 0
+                        model.bet_bonus = 0
+                        model.sum_losebonus = 0
                         await client.send_message(
                             TARGET,
                             f"模型{model.name}没兜住，自动停止，损失{model.sum_losebonus}",
