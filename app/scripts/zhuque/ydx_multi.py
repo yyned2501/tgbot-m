@@ -393,7 +393,12 @@ async def zhuque_ydx_bet(client: Client, message: Message):
                             ),
                             60,
                         )
-                    new_bonus = int(base.user_bonus / 1000 / running_g_models_count)
+                    new_bonus = int(
+                        min(
+                            base.user_bonus / 500 / running_g_models_count,
+                            base.user_bonus / 1000,
+                        )
+                    )
                     if model.sum_losebonus > 0:
                         model.bonus = max(new_bonus, model.bonus)
                     else:
