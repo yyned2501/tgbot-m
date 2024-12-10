@@ -393,11 +393,8 @@ async def zhuque_ydx_bet(client: Client, message: Message):
                             ),
                             60,
                         )
-                    gid = model.lose - model.win
-                    if gid <= 3:
-                        model.bonus = int(
-                            base.user_bonus / 500 / running_g_models_count
-                        )
+                    if model.sum_losebonus <= 0:
+                        model.bonus = base.start_bonus * 4 / running_g_models_count
                     bet_bonus = int(
                         grids[min(model.lose - model.win, 29)] * model.bonus
                     )
@@ -450,7 +447,11 @@ async def zhuque_ydx_check(client: Client, message: Message):
                 model.win += 1
                 model.winning_streak += 1
                 model.losing_streak = 0
-                model.sum_losebonus = 0
+                model.sum_losebonus = (
+                    0
+                    if model.fit_model == "D"
+                    else model.sum_losebonus - int(abs(model.bet_bonus) * 0.99)
+                )
                 model.win_bonus += int(abs(model.bet_bonus) * 0.99)
                 r = f"[胜{model.winning_streak}]"
             else:
