@@ -231,9 +231,16 @@ async def zhuque_ydx_switch(client: Client, message: Message):
                 history = history_result.scalars().all()
                 data = [ydx_history.dx for ydx_history in history]
                 models = test(base, data)
+                dx_guess = []
                 r = f"```测试{count}次模型：\n"
                 for k in models:
+                    dx_guess.append(
+                        models[k]["win_rate"]
+                        if models[k]["guess"] == 1
+                        else 1 - models[k]["win_rate"]
+                    )
                     r += f"模型{k}:\n历史失败次数:{models[k]["loss_count"]}\n最大失败轮次:{models[k]["max_nonzero_index"]}\n净胜次数:{models[k]["win_count"]}\n胜率:{models[k]["win_rate"]:.02%}\n当前失败轮次:{models[k]["turn_loss_count"]}\n模型预测:{models[k]["guess"]}\n\n"
+                r += f"模型综合预测:{sum(dx_guess)/len(dx_guess):.02%} 概率 大"
                 r += "```"
                 await message.edit(r)
                 delete_message(message, 30)
