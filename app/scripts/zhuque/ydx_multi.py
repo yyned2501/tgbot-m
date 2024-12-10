@@ -393,13 +393,16 @@ async def zhuque_ydx_bet(client: Client, message: Message):
                             ),
                             60,
                         )
-                    if model.sum_losebonus <= 0:
-                        model.bonus = int(
-                            min(
-                                base.start_bonus * 4 / running_g_models_count,
-                                base.start_bonus * 2,
-                            )
+                    new_bonus = int(
+                        min(
+                            base.start_bonus * 4 / running_g_models_count,
+                            base.start_bonus * 2,
                         )
+                    )
+                    if model.sum_losebonus > 0:
+                        model.bonus = max(new_bonus, model.bonus)
+                    else:
+                        model.bonus = new_bonus
                     bet_bonus = int(
                         grids[min(model.lose - model.win, 29)] * model.bonus
                     )
