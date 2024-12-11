@@ -19,9 +19,11 @@ bs_list = ["s", "b"]
 ex_bet = {"bonus": 0, "win": 0, "lose": 0, "aim": 0, "win_bonus": 0, "betbonus": 0}
 fit_model_name = {"G": "网格", "D": "倍投", "+": "跟投", "-": "反投"}
 grids = [0]
+grids_need = [0]
 for i in range(1, 30):
     last_g = grids[i - 1]
     grids.append(max(last_g / 0.99 + int(i / 10) + 1, last_g / 0.9))
+    grids_need.append(sum(grids))
 
 
 def delete_message(message: Message, sleep_sec: int):
@@ -395,14 +397,32 @@ async def zhuque_ydx_bet(client: Client, message: Message):
                         )
                     new_bonus = int(
                         min(
-                            base.user_bonus / 500 / running_g_models_count,
-                            base.user_bonus / 1000,
+                            base.user_bonus / 1000 / running_g_models_count,
+                            base.user_bonus / 2000,
                         )
                     )
                     if model.sum_losebonus > 0:
                         model.bonus = max(new_bonus, model.bonus)
                     else:
                         model.bonus = new_bonus
+                    if model.lose - model.win > 10:
+                        aim_bonus = (
+                            (model.lose + model.win) / 8 * model.bonus
+                        )  # 目标设置在网格收益的1/4可以更快盈利，减少长时间不能回本的风险
+                        need_bonus = aim_bonus + model.sum_losebonus
+                        need_grid_index = next(
+                            (
+                                index
+                                for index, value in enumerate(grids_need)
+                                if value >= need_bonus
+                            ),
+                            29,
+                        )
+                        if need_grid_index < model.lose - model.win:
+                            logger.info(
+                                f"计算连胜{need_grid_index}次可以盈利，调整网格，增加胜利局数"
+                            )
+                            model.win = model.lose - need_grid_index
                     bet_bonus = int(
                         grids[min(model.lose - model.win, 29)] * model.bonus
                     )
