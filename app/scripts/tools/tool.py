@@ -18,13 +18,7 @@ LOG_LEVELS = {
 async def get_message(client: Client, message: Message):
     with open("message.json", "w") as f:
         f.write(str(message.reply_to_message))
-    await client.send()
-
-
-@app.on_message(filters.command("getid") & filters.reply)
-async def get_message(client: Client, message: Message):
-    ret = {"userid": message.reply_to_message.from_user.id, "chatid": message.chat.id}
-    await client.send_message("me", f"{ret}")
+    await client.send_document("me", "message.json")
 
 
 @app.on_message(filters.command("setloglevel"))
