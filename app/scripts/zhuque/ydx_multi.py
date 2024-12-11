@@ -401,14 +401,15 @@ async def zhuque_ydx_bet(client: Client, message: Message):
                             base.user_bonus / 2000,
                         )
                     )
-                    if model.sum_losebonus > 0:
+                    aim_bonus = (
+                        (model.lose + model.win) / 4 * model.bonus
+                    )  # 目标设置在网格收益的1/2可以更快盈利，减少长时间不能回本的风险
+                    if aim_bonus + model.sum_losebonus > 0:
                         model.bonus = max(new_bonus, model.bonus)
                     else:
                         model.bonus = new_bonus
                     if model.lose - model.win > 10:
-                        aim_bonus = (
-                            (model.lose + model.win) / 8 * model.bonus
-                        )  # 目标设置在网格收益的1/4可以更快盈利，减少长时间不能回本的风险
+
                         need_bonus = aim_bonus + model.sum_losebonus
                         need_grid_index = next(
                             (
