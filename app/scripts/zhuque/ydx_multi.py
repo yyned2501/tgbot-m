@@ -414,7 +414,7 @@ async def zhuque_ydx_bet(client: Client, message: Message):
                             (
                                 index
                                 for index, value in enumerate(grids_need)
-                                if value >= need_bonus
+                                if value >= need_bonus / model.bonus
                             ),
                             29,
                         )
