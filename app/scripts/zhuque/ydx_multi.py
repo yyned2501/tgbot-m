@@ -395,12 +395,7 @@ async def zhuque_ydx_bet(client: Client, message: Message):
                             ),
                             60,
                         )
-                    new_bonus = int(
-                        min(
-                            base.user_bonus / 1000 / running_g_models_count,
-                            base.user_bonus / 2000,
-                        )
-                    )
+                    new_bonus = int(base.user_bonus / 1000 / running_g_models_count)
                     aim_bonus = (
                         (model.lose + model.win) / 4 * model.bonus
                     )  # 目标设置在网格收益的1/2可以更快盈利，减少长时间不能回本的风险
@@ -408,7 +403,7 @@ async def zhuque_ydx_bet(client: Client, message: Message):
                         model.bonus = max(new_bonus, model.bonus)
                     else:
                         model.bonus = new_bonus
-                    if model.lose - model.win > 10:
+                    if model.lose - model.win >= 25:
 
                         need_bonus = aim_bonus + model.sum_losebonus
                         need_grid_index = next(
@@ -499,9 +494,9 @@ async def zhuque_ydx_check(client: Client, message: Message):
                     model.lose = 0
                     model.win = 0
             if model.fit_model == "D":
-                if (model.losing_streak == 0) and (model.lose - model.win >= 10):
+                if (model.losing_streak == 0) and (model.lose - model.win >= 5):
                     model.fit_model = "G"
-                    model.lose = 3
+                    model.lose = model.lose - model.win
                     model.win = 0
             res_mess += r
             model.bet_bonus = 0
