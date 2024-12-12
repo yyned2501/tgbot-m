@@ -501,6 +501,9 @@ async def zhuque_ydx_check(client: Client, message: Message):
                 if (model.losing_streak == 0) and (model.lose - model.win >= 5):
                     model.fit_model = "G"
                     model.lose = model.lose - model.win
+                    model.sum_losebonus = int(
+                        base.user_bonus / 4000 * grids_need[model.lose]
+                    )
                     model.win = 0
             res_mess += r
             model.bet_bonus = 0
