@@ -3,7 +3,6 @@ import os
 from sqlalchemy import select
 from app.models.ydx import ZqYdxMulti
 import openvino as ov
-import numpy as np
 
 from app import logger
 from app.models import ASSession
@@ -12,7 +11,7 @@ from app.scripts.zhuque.ex.fit_models import A, S, FitModel
 core = ov.Core()
 
 _models: dict[str, FitModel] = {}
-_function_registry: dict[str, function] = {}
+_function_registry = {}
 
 
 def register_function(name):
