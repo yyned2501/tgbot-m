@@ -190,7 +190,7 @@ class ZqYdxBase(Base):
                 sum_bonus += bet_bonus
                 if sum_bonus > self.user_bonus or bet_bonus > max_bonus:
                     if i > self.bet_round:
-                        logger.info(
+                        logger.debug(
                             f"{i}, {startbonus}, {last_bonus}, {last_sum_bonus}"
                         )
                         self.start_bonus = startbonus
