@@ -37,8 +37,12 @@ files.sort()
 for file_name in files:
     model_name = file_name.split("_")[1].upper()
     model_path = f"{root}/{file_name}"
+    fit_model = None
     if model_name[0] == "S":
         fit_model = S(model_path)
+    elif model_name[0] == "A":
+        fit_model = A(model_path)
+    if fit_model:
         _models[model_name] = fit_model
         _function_registry[model_name] = lambda data: fit_model.bet_model(data)
 
