@@ -31,6 +31,10 @@ def mode(func_name, *args, **kwargs):
         return mode("S1", *args, **kwargs)
 
 
+def create_model_function(func):
+    return lambda data: func(data)
+
+
 root = "app/onnxes"
 files = os.listdir("app/onnxes")
 files.sort()
@@ -44,7 +48,7 @@ for file_name in files:
         fit_model = A(model_path)
     if fit_model:
         _models[model_name] = fit_model
-        _function_registry[model_name] = lambda data: fit_model.bet_model(data)
+        _function_registry[model_name] = create_model_function(fit_model.bet_model)
 
 
 def get_funcs():
