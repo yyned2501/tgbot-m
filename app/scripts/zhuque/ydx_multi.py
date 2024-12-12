@@ -312,8 +312,11 @@ async def zhuque_ydx_switch(client: Client, message: Message):
                             await message.edit(f"模型{model.name}修改为倍投模式")
                         elif command == "G":
                             model.fit_model = command
-                            model.lose = 3
                             model.win = 0
+                            model.lose = 5
+                            model.sum_losebonus = int(
+                                base.user_bonus / 4000 * grids_need[model.lose]
+                            )
                             await message.edit(f"模型{model.name}修改为网格模式")
                         elif command[0] == "+" or command[0] == "-":
                             bonus = int(command[1:])
@@ -500,11 +503,11 @@ async def zhuque_ydx_check(client: Client, message: Message):
             if model.fit_model == "D":
                 if (model.losing_streak == 0) and (model.lose - model.win >= 5):
                     model.fit_model = "G"
-                    model.lose = model.lose - model.win
+                    model.win = 0
+                    model.lose = 5
                     model.sum_losebonus = int(
                         base.user_bonus / 4000 * grids_need[model.lose]
                     )
-                    model.win = 0
             res_mess += r
             model.bet_bonus = 0
             if model.bet_switch == 0:
