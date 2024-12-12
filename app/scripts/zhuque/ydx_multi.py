@@ -401,7 +401,6 @@ async def zhuque_ydx_bet(client: Client, message: Message):
                     new_bonus = int(
                         base.user_bonus
                         / grids_need[-1]
-                        / 2
                         / max(running_g_models_count, 2)
                     )
                     aim_bonus = (
