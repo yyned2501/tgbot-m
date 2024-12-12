@@ -448,7 +448,7 @@ async def zhuque_ydx_bet(client: Client, message: Message):
                     await ydx(client, message, bet_bonus_sum)
                     base.message_id = message.id
                 else:
-                    await client.send_message("又又又破产啦！！！！")
+                    await client.send_message(TARGET, "又又又破产啦！！！！")
                     base.bet_switch = 0
                 return
             else:
