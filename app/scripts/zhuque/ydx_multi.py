@@ -395,7 +395,9 @@ async def zhuque_ydx_bet(client: Client, message: Message):
                             ),
                             60,
                         )
-                    new_bonus = int(base.user_bonus / 1000 / running_g_models_count)
+                    new_bonus = int(
+                        base.user_bonus / 1000 / max(running_g_models_count, 2)
+                    )
                     aim_bonus = (
                         (model.lose + model.win) / 4 * model.bonus
                     )  # 目标设置在网格收益的1/2可以更快盈利，减少长时间不能回本的风险
