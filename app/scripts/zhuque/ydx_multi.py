@@ -422,10 +422,11 @@ async def zhuque_ydx_bet(client: Client, message: Message):
                             ),
                             40,
                         )
-                        logger.info(
-                            f"计算连胜{need_grid_index}次可以盈利，调整网格，增加胜利局数"
-                        )
-                        model.win = model.lose - need_grid_index
+                        if need_grid_index < model.lose - model.win:
+                            logger.info(
+                                f"{model.name}计算连胜{need_grid_index}次可以盈利，调整网格，增加胜利局数"
+                            )
+                            model.win = model.lose - need_grid_index
                     bet_bonus = int(
                         grids[min(model.lose - model.win, 29)] * model.bonus
                     )
