@@ -444,8 +444,12 @@ async def zhuque_ydx_bet(client: Client, message: Message):
                         dx = 1 - dx
                     model.bet_bonus = (2 * dx - 1) * model.bonus
                     bet_bonus_sum += model.bet_bonus
-                await ydx(client, message, bet_bonus_sum)
-                base.message_id = message.id
+                if bet_bonus_sum < base.user_bonus:
+                    await ydx(client, message, bet_bonus_sum)
+                    base.message_id = message.id
+                else:
+                    await client.send_message("又又又破产啦！！！！")
+                    base.bet_switch = 0
                 return
             else:
                 logger.warning("检测到上局未结束，5秒后重新检测...")
