@@ -474,7 +474,7 @@ async def zhuque_ydx_check(client: Client, message: Message):
                 model.sum_losebonus = (
                     0
                     if model.fit_model == "D"
-                    else model.sum_losebonus - int(abs(model.bet_bonus) * 0.99)
+                    else (model.sum_losebonus - int(abs(model.bet_bonus) * 0.99))
                 )
                 model.win_bonus += int(abs(model.bet_bonus) * 0.99)
                 r = f"[胜{model.winning_streak}]"
