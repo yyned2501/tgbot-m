@@ -427,7 +427,7 @@ async def zhuque_ydx_bet(client: Client, message: Message):
                             )
                             model.win = model.lose - need_grid_index
                     bet_bonus = int(
-                        grids[min(model.lose - model.win, 29)] * model.bonus
+                        grids[min(model.lose - model.win, 39)] * model.bonus
                     )
                     model.bet_bonus = (2 * dx - 1) * bet_bonus
                     bet_bonus_sum += model.bet_bonus
