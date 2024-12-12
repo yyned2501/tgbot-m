@@ -3,7 +3,7 @@ import datetime
 
 from pyrogram import filters, Client
 from pyrogram.types.messages_and_media import Message
-from sqlalchemy import desc, or_, select, update
+from sqlalchemy import desc, func, or_, select, update
 
 from app import app, logger, scheduler
 from app.config import setting
@@ -470,6 +470,13 @@ async def zhuque_ydx_check(client: Client, message: Message):
         models = await session.execute(
             select(ZqYdxMulti).filter(ZqYdxMulti.bet_bonus != 0)
         )
+        g_count = (
+            await session.execute(
+                select(func.count(ZqYdxMulti.id)).filter(
+                    ZqYdxMulti.bet_bonus != 0, ZqYdxMulti.fit_model == "G"
+                )
+            )
+        ).scalar()
         res_mess = ""
         for model in models.scalars():
             if model.bet_bonus * (2 * dx - 1) > 0:
@@ -494,8 +501,10 @@ async def zhuque_ydx_check(client: Client, message: Message):
             r += f"[{model.win}-{model.lose}] 模型 {model.name} : 下注 {model.bet_bonus} 累计盈亏：{model.win_bonus}\n"
             if model.fit_model == "G":
                 aim_bonus = (model.lose + model.win) / 2 * model.bonus
-                if (aim_bonus + model.sum_losebonus < 0) or (model.lose <= model.win):
-                    # 完成盈利目标或净胜局不为负
+                if (
+                    (aim_bonus + model.sum_losebonus < 0) and g_count and (g_count > 2)
+                ) or (model.lose <= model.win):
+                    # 完成盈利目标切超过两个网格模型在运行或净胜局不为负
                     model.fit_model = "D"
                     model.sum_losebonus = 0
                     model.lose = 0

@@ -10,6 +10,7 @@ from app.scripts.zhuque.ex.fit_models import A, S, FitModel
 
 core = ov.Core()
 
+model_classes: dict[str, type[FitModel]] = {"A": A, "S": S}
 _models: dict[str, FitModel] = {}
 _function_registry = {}
 
@@ -41,12 +42,9 @@ files.sort()
 for file_name in files:
     model_name = file_name.split("_")[1].upper()
     model_path = f"{root}/{file_name}"
-    fit_model = None
-    if model_name[0] == "S":
-        fit_model = S(model_path)
-    elif model_name[0] == "A":
-        fit_model = A(model_path)
-    if fit_model:
+    fit_model_class = model_classes.get(model_name[0])
+    if fit_model_class is not None:
+        fit_model = fit_model_class(model_path)
         _models[model_name] = fit_model
         _function_registry[model_name] = create_model_function(fit_model.bet_model)
 
