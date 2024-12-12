@@ -20,7 +20,7 @@ ex_bet = {"bonus": 0, "win": 0, "lose": 0, "aim": 0, "win_bonus": 0, "betbonus":
 fit_model_name = {"G": "网格", "D": "倍投", "+": "跟投", "-": "反投"}
 grids = [0]
 grids_need = [0]
-for i in range(1, 30):
+for i in range(1, 40):
     last_g = grids[i - 1]
     grids.append(max(last_g / 0.99 + int(i / 10) + 1, last_g / 0.9))
     grids_need.append(sum(grids))
@@ -399,7 +399,10 @@ async def zhuque_ydx_bet(client: Client, message: Message):
                             60,
                         )
                     new_bonus = int(
-                        base.user_bonus / 1000 / max(running_g_models_count, 2)
+                        base.user_bonus
+                        / grids_need[-1]
+                        / 2
+                        / max(running_g_models_count, 2)
                     )
                     aim_bonus = (
                         (model.lose + model.win) / 4 * model.bonus
@@ -417,13 +420,12 @@ async def zhuque_ydx_bet(client: Client, message: Message):
                                 for index, value in enumerate(grids_need)
                                 if value >= need_bonus / model.bonus
                             ),
-                            29,
+                            40,
                         )
-                        if need_grid_index < model.lose - model.win:
-                            logger.info(
-                                f"计算连胜{need_grid_index}次可以盈利，调整网格，增加胜利局数"
-                            )
-                            model.win = model.lose - need_grid_index
+                        logger.info(
+                            f"计算连胜{need_grid_index}次可以盈利，调整网格，增加胜利局数"
+                        )
+                        model.win = model.lose - need_grid_index
                     bet_bonus = int(
                         grids[min(model.lose - model.win, 29)] * model.bonus
                     )
