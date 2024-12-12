@@ -403,8 +403,8 @@ async def zhuque_ydx_bet(client: Client, message: Message):
                         model.bonus = max(new_bonus, model.bonus)
                     else:
                         model.bonus = new_bonus
-                    if model.lose - model.win >= 25:
 
+                    if model.lose - model.win >= 25:
                         need_bonus = aim_bonus + model.sum_losebonus
                         need_grid_index = next(
                             (
@@ -488,7 +488,9 @@ async def zhuque_ydx_check(client: Client, message: Message):
             r += f"[{fit_model_name[model.fit_model]}]"
             r += f"[{model.win}-{model.lose}] 模型 {model.name} : 下注 {model.bet_bonus} 累计盈亏：{model.win_bonus}\n"
             if model.fit_model == "G":
-                if model.lose <= model.win:
+                aim_bonus = (model.lose + model.win) / 2 * model.bonus
+                if (aim_bonus + model.sum_losebonus < 0) or (model.lose <= model.win):
+                    # 完成盈利目标或净胜局不为负
                     model.fit_model = "D"
                     model.sum_losebonus = 0
                     model.lose = 0
