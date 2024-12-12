@@ -233,7 +233,7 @@ async def zhuque_ydx_switch(client: Client, message: Message):
                 )
                 history = history_result.scalars().all()
                 data = [ydx_history.dx for ydx_history in history]
-                models = test(base, data)
+                models = test(data)
                 dx_guess = []
                 r = f"```测试{count}次模型：\n"
                 for k in models:
