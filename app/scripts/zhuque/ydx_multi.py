@@ -313,7 +313,7 @@ async def zhuque_ydx_switch(client: Client, message: Message):
                         elif command == "G":
                             model.fit_model = command
                             model.win = 0
-                            model.lose = 5
+                            model.lose = 3
                             model.sum_losebonus = int(
                                 base.user_bonus / 4000 * grids_need[model.lose]
                             )
@@ -513,7 +513,7 @@ async def zhuque_ydx_check(client: Client, message: Message):
                 if (model.losing_streak == 0) and (model.lose - model.win >= 5):
                     model.fit_model = "G"
                     model.win = 0
-                    model.lose = 5
+                    model.lose = int((model.lose - model.win) / 2)
                     model.sum_losebonus = int(
                         base.user_bonus / 4000 * grids_need[model.lose]
                     )
