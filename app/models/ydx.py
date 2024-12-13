@@ -209,6 +209,8 @@ class ZqYdxMulti(Base):
     lose: Mapped[int] = mapped_column(Integer, default=0)
     winning_streak: Mapped[int] = mapped_column(Integer, default=0)
     losing_streak: Mapped[int] = mapped_column(Integer, default=0)
+    max_withdrawal: Mapped[int] = mapped_column(Integer, default=0)
+    current_withdrawal: Mapped[int] = mapped_column(Integer, default=0)
     bet_bonus: Mapped[int] = mapped_column(Integer, default=0)
     sum_losebonus: Mapped[int] = mapped_column(Integer, default=0)
     win_bonus: Mapped[int] = mapped_column(Integer, default=0)
