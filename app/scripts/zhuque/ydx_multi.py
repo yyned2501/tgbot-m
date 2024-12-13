@@ -246,8 +246,8 @@ async def zhuque_ydx_switch(client: Client, message: Message):
                 r += f"模型综合预测:{sum(dx_guess)/len(dx_guess):.02%} 概率 大"
                 r += "```"
                 # 赋值给模型同步
-                models = await session.execute(select(ZqYdxMulti))
-                for model in models.scalars():
+                models_ = await session.execute(select(ZqYdxMulti))
+                for model in models_.scalars():
                     if models[model.name]["max_withdrawal"] > model.max_withdrawal:
                         model.max_withdrawal = models[model.name]["max_withdrawal"]
                     if (
