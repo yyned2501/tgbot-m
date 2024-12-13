@@ -12,6 +12,35 @@ from app.models.ydx import ZqYdx
 core = ov.Core()
 
 
+class MaxWithdrawalCalculator:
+    def __init__(self):
+        self.s = 0  # 当前累计和
+        self.max_sum = 0  # 累计和的最大值
+        self.min_sum_after_max = float("inf")  # 在最大累计和之后的最小累计和
+        self.max_withdraw = 0  # 最大撤回值
+        self.withdraw = 0
+
+    def add_value(self, value: int) -> int:
+        self.s += value
+
+        # 更新最大累计和
+        if self.s > self.max_sum:
+            self.max_sum = self.s
+            self.min_sum_after_max = self.s  # 重置为当前值，因为找到了新的最大累计和
+
+        # 在达到最大累计和之后，更新最小累计和
+        if self.s < self.min_sum_after_max:
+            self.min_sum_after_max = self.s
+
+            # 计算当前的最大撤回值并更新
+            self.withdraw = self.max_sum - self.min_sum_after_max
+            if self.withdraw > self.max_withdraw:
+                self.max_withdraw = self.withdraw
+
+        # 返回当前的最大撤回值
+        return self.max_withdraw
+
+
 class FitModel(ABC):
     def __init__(self, model_path: str):
         self.model_path = model_path
@@ -37,34 +66,13 @@ class FitModel(ABC):
         ov_index = np.argmax(output_data, axis=0)
         logger.debug(f"使用模型{self.model_path}预测，选择模式{ov_index}")
         return ov_index
-    
-    def max_withdrawal(data: list[int]) -> int:
-        s = 0  # 当前累计和
-        max_sum = 0  # 累计和的最大值
-        min_sum_after_max = float("inf")  # 在最大累计和之后的最小累计和
-        max_withdraw = 0  # 最大撤回值
 
-        for dx in data:
-            s += dx
-
-            # 更新最大累计和
-            if s > max_sum:
-                max_sum = s
-                min_sum_after_max = s
-
-            # 在达到最大累计和之后，更新最小累计和
-            if s < min_sum_after_max:
-                min_sum_after_max = s
-                withdraw = max_sum - min_sum_after_max
-                if withdraw > max_withdraw:
-                    max_withdraw = withdraw
-        
-        return max_withdraw
     def test(self, data: list[int]):
         loss_count = [0 for _ in range(50)]
         turn_loss_count = 0
         win_count = 0
         total_count = 0
+        max_withdrawal = MaxWithdrawalCalculator()
         for i in range(40, len(data) + 1):
             data_i = data[i - 40 : i]
             dx = self.bet_model(data_i)
@@ -74,8 +82,10 @@ class FitModel(ABC):
                     loss_count[turn_loss_count] += 1
                     win_count += 1
                     turn_loss_count = 0
+                    max_withdrawal.add_value(1)
                 else:
                     turn_loss_count += 1
+                    max_withdrawal.add_value(-1)
         max_nonzero_index = next(
             (
                 index
@@ -90,6 +100,7 @@ class FitModel(ABC):
             "win_rate": win_count / total_count,
             "win_count": 2 * win_count - total_count,
             "turn_loss_count": turn_loss_count,
+            "max_withdrawal": max_withdrawal.max_withdraw,
             "guess": dx,
         }
 
