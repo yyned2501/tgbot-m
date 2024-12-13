@@ -1,12 +1,9 @@
 from abc import ABC, abstractmethod
-from typing import overload
-
 
 import numpy as np
 import openvino as ov
 
 from app import logger
-from app.models.ydx import ZqYdx
 
 
 core = ov.Core()
@@ -32,19 +29,20 @@ class MaxWithdrawalCalculator:
         if self.s < self.min_sum_after_max:
             self.min_sum_after_max = self.s
 
-            # 计算当前的最大撤回值并更新
-            self.withdraw = self.max_sum - self.min_sum_after_max
-            if self.withdraw > self.max_withdraw:
-                self.max_withdraw = self.withdraw
+        # 计算当前的撤回值并更新
+        self.withdraw = self.max_sum - self.min_sum_after_max
+        if self.withdraw > self.max_withdraw:
+            self.max_withdraw = self.withdraw
 
         # 返回当前的最大撤回值
         return self.max_withdraw
 
 
-class FitModel(ABC):
+class BetModel(ABC):
     def __init__(self, model_path: str):
         self.model_path = model_path
         self.model = self._load_and_compile_model(model_path)
+        self.max_withdrawal = MaxWithdrawalCalculator()
 
     def _load_and_compile_model(self, model_path: str) -> ov.CompiledModel:
         model_onnx = core.read_model(model=model_path)
@@ -101,11 +99,12 @@ class FitModel(ABC):
             "win_count": 2 * win_count - total_count,
             "turn_loss_count": turn_loss_count,
             "max_withdrawal": max_withdrawal.max_withdraw,
+            "withdrawal": max_withdrawal.withdraw,
             "guess": dx,
         }
 
 
-class A(FitModel):
+class A(BetModel):
     def bet_model(self, data):
         a5 = min(int(sum(data[-5:]) / 5 * 2), 1)
         a15 = min(int(sum(data[-15:]) / 15 * 2), 1)
@@ -113,7 +112,7 @@ class A(FitModel):
         return super()._choose_model(data, model_dx)
 
 
-class S(FitModel):
+class S(BetModel):
     def bet_model(self, data):
         model_dx = [1, 0, data[-1], data[-10], 1 - data[-10]]
         return super()._choose_model(data, model_dx)

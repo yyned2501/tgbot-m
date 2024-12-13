@@ -2,16 +2,14 @@ import os
 
 from sqlalchemy import select
 from app.models.ydx import ZqYdxMulti
-import openvino as ov
 
 from app import logger
 from app.models import ASSession
-from app.scripts.zhuque.ex.fit_models import A, S, FitModel
+from app.scripts.zhuque.ex.bet_models_base import A, S, BetModel
 
-core = ov.Core()
 
-model_classes: dict[str, type[FitModel]] = {"A": A, "S": S}
-_models: dict[str, FitModel] = {}
+model_classes: dict[str, type[BetModel]] = {"A": A, "S": S}
+_models: dict[str, BetModel] = {}
 _function_registry = {}
 
 
