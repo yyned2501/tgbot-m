@@ -16,6 +16,7 @@ class MaxWithdrawalCalculator:
         self.min_sum_after_max = float("inf")  # 在最大累计和之后的最小累计和
         self.max_withdraw = 0  # 最大撤回值
         self.withdraw = 0
+        self.current_withdraw = 0
 
     def add_value(self, value: int) -> int:
         self.s += value
@@ -29,11 +30,11 @@ class MaxWithdrawalCalculator:
         if self.s < self.min_sum_after_max:
             self.min_sum_after_max = self.s
 
-        # 计算当前的撤回值并更新
-        self.withdraw = self.max_sum - self.min_sum_after_max
-        if self.withdraw > self.max_withdraw:
-            self.max_withdraw = self.withdraw
-
+            # 计算当前的撤回值并更新
+            self.withdraw = self.max_sum - self.min_sum_after_max
+            if self.withdraw > self.max_withdraw:
+                self.max_withdraw = self.withdraw
+        self.current_withdraw = self.max_sum - self.s
         # 返回当前的最大撤回值
         return self.max_withdraw
 
@@ -99,7 +100,7 @@ class BetModel(ABC):
             "win_count": 2 * win_count - total_count,
             "turn_loss_count": turn_loss_count,
             "max_withdrawal": max_withdrawal.max_withdraw,
-            "withdrawal": max_withdrawal.withdraw,
+            "current_withdraw": max_withdrawal.current_withdraw,
             "guess": dx,
         }
 

@@ -242,7 +242,7 @@ async def zhuque_ydx_switch(client: Client, message: Message):
                         if models[k]["guess"] == 1
                         else 1 - models[k]["win_rate"]
                     )
-                    r += f"模型{k}:\n历史失败次数:{models[k]["loss_count"]}\n最大撤回:{models[k]["max_withdrawal"]}\n当前撤回:{models[k]["withdrawal"]}\n最大失败轮次:{models[k]["max_nonzero_index"]}\n净胜次数:{models[k]["win_count"]}\n胜率:{models[k]["win_rate"]:.02%}\n当前失败轮次:{models[k]["turn_loss_count"]}\n模型预测:{models[k]["guess"]}\n\n"
+                    r += f"模型{k}:\n历史失败次数:{models[k]["loss_count"]}\n最大撤回:{models[k]["max_withdrawal"]}\n当前撤回:{models[k]["current_withdraw"]}\n最大失败轮次:{models[k]["max_nonzero_index"]}\n净胜次数:{models[k]["win_count"]}\n胜率:{models[k]["win_rate"]:.02%}\n当前失败轮次:{models[k]["turn_loss_count"]}\n模型预测:{models[k]["guess"]}\n\n"
                 r += f"模型综合预测:{sum(dx_guess)/len(dx_guess):.02%} 概率 大"
                 r += "```"
                 await message.edit(r)
