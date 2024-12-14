@@ -543,7 +543,7 @@ async def zhuque_ydx_check(client: Client, message: Message):
                 ):
                     # 输局5以上且回撤风险不大
                     model.fit_model = "G"
-                    model.lose = int((model.lose - model.win) / 2)
+                    model.lose = max(int((model.lose - model.win) / 2), 3)
                     model.win = 0
                     model.sum_losebonus = int(
                         base.user_bonus / 4000 * grids_need[model.lose]
