@@ -74,7 +74,7 @@ async def create_models():
                 session.add(ZqYdxMulti(name=model_name))
 
 
-async def create_models():
+async def refresh_model_withdrawal():
     session = ASSession()
     models_dict = {}
     async with session.begin():

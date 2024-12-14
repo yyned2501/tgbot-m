@@ -23,16 +23,16 @@ if not os.path.exists("config/launch.yaml"):
     shutil.copyfile("config_example/launch.yaml", "config/launch.yaml")
 
 with open("config/launch.yaml", "r") as file:
-    launch = yaml.safe_load(file)
+    launch: dict = yaml.safe_load(file)
 
 with open("config_example/setting.yaml", "r") as file:
     setting_example = yaml.safe_load(file) or {}
 if not os.path.exists("config/setting.yaml"):
-    setting = setting_example
+    setting: dict = setting_example
 else:
     with open("config/setting.yaml", "r") as file:
         setting = yaml.safe_load(file)
-    setting = merge_and_overwrite(setting_example, setting)
+    setting: dict = merge_and_overwrite(setting_example, setting)
 
 with open("config/setting.yaml", "w") as file:
     yaml.safe_dump(
