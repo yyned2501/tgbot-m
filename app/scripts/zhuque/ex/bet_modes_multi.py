@@ -72,18 +72,3 @@ async def create_models():
         for model_name in _models:
             if model_name not in models_dict:
                 session.add(ZqYdxMulti(name=model_name))
-
-
-async def refresh_model_withdrawal():
-    session = ASSession()
-    models_dict = {}
-    async with session.begin():
-        models = await session.execute(select(ZqYdxMulti))
-        for model in models.scalars():
-            if model.name not in _function_registry:
-                await session.delete(model)
-            else:
-                models_dict[model.name] = model
-        for model_name in _models:
-            if model_name not in models_dict:
-                session.add(ZqYdxMulti(name=model_name))
