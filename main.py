@@ -1,6 +1,6 @@
 from pyrogram import idle
 
-from app import app, scheduler, models, scripts
+from app import app, scheduler, models, scripts, schedulers
 from app.scripts.zhuque.ex.bet_modes_multi import create_models
 
 

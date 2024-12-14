@@ -534,12 +534,9 @@ async def zhuque_ydx_check(client: Client, message: Message):
             if model.fit_model == "D":
                 if (
                     (model.losing_streak == 0)
-                    and (model.max_withdrawal - model.current_withdrawal <= 20)
+                    and (model.max_withdrawal - model.current_withdrawal <= 25)
                     and (model.max_withdrawal - model.current_withdrawal > 5)
-                    and (
-                        (model.lose - model.win >= 5)
-                        or (g_count < 2 and model.max_withdrawal < 80)
-                    )
+                    and ((model.lose - model.win >= 5) or (g_count and (g_count < 2)))
                 ):
                     # 输局5以上且回撤风险不大
                     model.fit_model = "G"
