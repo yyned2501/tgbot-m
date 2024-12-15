@@ -39,7 +39,7 @@ def delete_message(message: Message, sleep_sec: int):
 
 
 async def notify_wwd(client: Client, model: ZqYdxMulti, dx: int):
-    wwd = "[小砾](tg://user?id={829718065})[阿奇](tg://user?id={1016485267})  [灰灰](tg://user?id={7927305165})"
+    wwd = "[小砾](tg://user?id=829718065)[阿奇](tg://user?id=1016485267)  [灰灰](tg://user?id=7927305165)"
     if model.losing_streak >= 6:
         delete_message(
             await client.send_message(
