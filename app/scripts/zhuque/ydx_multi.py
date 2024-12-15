@@ -410,7 +410,7 @@ async def zhuque_ydx_bet(client: Client, message: Message):
                 running_g_models_count = len(running_g_models_list)
                 for model in running_g_models_list:
                     dx = mode(model.name, data)
-                    await notify_wwd(client, model, data)
+                    await notify_wwd(client, model, dx)
                     new_bonus = int(
                         base.user_bonus
                         / grids_need[-1]
