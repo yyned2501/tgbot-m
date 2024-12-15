@@ -38,6 +38,27 @@ def delete_message(message: Message, sleep_sec: int):
     )
 
 
+async def notify_wwd(client: Client, model: ZqYdxMulti, data: list[int]):
+    dx = mode(model.name, data)
+    wwd = "[小砾](tg://user?id={829718065})[阿奇](tg://user?id={1016485267})  [灰灰](tg://user?id={7927305165})"
+    if model.losing_streak >= 6:
+        delete_message(
+            await client.send_message(
+                TARGET,
+                f"{wwd}耶~ 汪汪队出动！！！\n模型{model.name}连负[{model.losing_streak}]，模型预测{dx}",
+            ),
+            60,
+        )
+    if model.winning_streak >= 6:
+        delete_message(
+            await client.send_message(
+                TARGET,
+                f"{wwd}耶~ 汪汪队出动！！！\n模型{model.name}连胜[{model.winning_streak}]，模型预测{dx}",
+            ),
+            60,
+        )
+
+
 async def new_history_list(message: Message):
     """
     通过秋人提供的40个数据来生成历史数据列表
@@ -364,34 +385,21 @@ async def zhuque_ydx_bet(client: Client, message: Message):
                 running_d_models_list = running_d_models.scalars().all()
                 running_d_models_count = len(running_d_models_list)
                 for model in running_d_models_list:
+                    await notify_wwd(client, model, data)
                     if model.losing_streak > base.bet_round + 1:
-                        model.bet_switch = 0
-                        model.losing_streak = 0
-                        model.winning_streak = 0
-                        model.bet_bonus = 0
-                        model.sum_losebonus = 0
                         await client.send_message(
                             TARGET,
-                            f"模型{model.name}没兜住，自动停止，损失{model.sum_losebonus}",
+                            f"模型{model.name}没兜住，自动重置，损失{model.sum_losebonus}",
                         )
-                    else:
-                        dx = mode(model.name, data)
-                        if model.losing_streak > 7:
-                            delete_message(
-                                await client.send_message(
-                                    TARGET,
-                                    f"滴滴滴！模型{model.name}连负[{model.losing_streak}]，模型预测{dx}",
-                                ),
-                                60,
-                            )
-                        if model.losing_streak == 0:
-                            model.bonus = int(base.start_bonus / running_d_models_count)
-                        bet_bonus = int(
-                            model.sum_losebonus / 0.99
-                            + (model.losing_streak + 1) * model.bonus
-                        )
-                        model.bet_bonus = (2 * dx - 1) * bet_bonus
-                        bet_bonus_sum += model.bet_bonus
+                        model.sum_losebonus = 0
+                    if model.losing_streak == 0:
+                        model.bonus = int(base.start_bonus / running_d_models_count)
+                    bet_bonus = int(
+                        model.sum_losebonus / 0.99
+                        + (model.losing_streak + 1) * model.bonus
+                    )
+                    model.bet_bonus = (2 * dx - 1) * bet_bonus
+                    bet_bonus_sum += model.bet_bonus
                 # 网格下注
                 running_g_models = await session.execute(
                     select(ZqYdxMulti).filter(
@@ -401,15 +409,7 @@ async def zhuque_ydx_bet(client: Client, message: Message):
                 running_g_models_list = running_g_models.scalars().all()
                 running_g_models_count = len(running_g_models_list)
                 for model in running_g_models_list:
-                    dx = mode(model.name, data)
-                    if model.losing_streak > 7:
-                        delete_message(
-                            await client.send_message(
-                                TARGET,
-                                f"滴滴滴！模型{model.name}连负[{model.losing_streak}]，模型预测{dx}",
-                            ),
-                            60,
-                        )
+                    await notify_wwd(client, model, data)
                     new_bonus = int(
                         base.user_bonus
                         / grids_need[-1]
