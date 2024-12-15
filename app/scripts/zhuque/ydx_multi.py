@@ -38,8 +38,7 @@ def delete_message(message: Message, sleep_sec: int):
     )
 
 
-async def notify_wwd(client: Client, model: ZqYdxMulti, data: list[int]):
-    dx = mode(model.name, data)
+async def notify_wwd(client: Client, model: ZqYdxMulti, dx: int):
     wwd = "[小砾](tg://user?id={829718065})[阿奇](tg://user?id={1016485267})  [灰灰](tg://user?id={7927305165})"
     if model.losing_streak >= 6:
         delete_message(
@@ -385,7 +384,8 @@ async def zhuque_ydx_bet(client: Client, message: Message):
                 running_d_models_list = running_d_models.scalars().all()
                 running_d_models_count = len(running_d_models_list)
                 for model in running_d_models_list:
-                    await notify_wwd(client, model, data)
+                    dx = mode(model.name, data)
+                    await notify_wwd(client, model, dx)
                     if model.losing_streak > base.bet_round + 1:
                         await client.send_message(
                             TARGET,
@@ -409,6 +409,7 @@ async def zhuque_ydx_bet(client: Client, message: Message):
                 running_g_models_list = running_g_models.scalars().all()
                 running_g_models_count = len(running_g_models_list)
                 for model in running_g_models_list:
+                    dx = mode(model.name, data)
                     await notify_wwd(client, model, data)
                     new_bonus = int(
                         base.user_bonus
