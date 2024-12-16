@@ -39,12 +39,13 @@ def delete_message(message: Message, sleep_sec: int):
 
 
 async def notify_wwd(client: Client, model: ZqYdxMulti, dx: int):
-    wwd = "[小砾](tg://user?id=829718065)[阿奇](tg://user?id=1016485267)  [灰灰](tg://user?id=7927305165)"
+    users = {"小砾": 829718065, "阿奇": 1016485267, "灰灰": 7927305165}
+    wwd = " ".join([f"[{name}](tg://user?id={uid})" for name, uid in users.items()])
     if model.losing_streak >= 6:
         delete_message(
             await client.send_message(
                 TARGET,
-                f"{wwd}耶~ 汪汪队出动！！！\n模型{model.name}连负[{model.losing_streak}]，模型预测{dx}",
+                f"{wwd} 耶~ 汪汪队出动！！！\n模型{model.name}连负[{model.losing_streak}]，模型预测{dx}",
             ),
             60,
         )
