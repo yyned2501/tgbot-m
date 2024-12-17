@@ -39,24 +39,25 @@ def delete_message(message: Message, sleep_sec: int):
 
 
 async def notify_wwd(client: Client, model: ZqYdxMulti, dx: int):
-    users = {"小砾": 829718065, "阿奇": 1016485267, "灰灰": 7927305165}
-    wwd = " ".join([f"[{name}](tg://user?id={uid})" for name, uid in users.items()])
-    if model.losing_streak >= 6:
-        delete_message(
-            await client.send_message(
-                TARGET,
-                f"{wwd} 耶~ 汪汪队出动！！！\n模型{model.name}连负[{model.losing_streak}]，模型预测{dx}",
-            ),
-            60,
-        )
-    if model.winning_streak >= 6:
-        delete_message(
-            await client.send_message(
-                TARGET,
-                f"{wwd}耶~ 汪汪队出动！！！\n模型{model.name}连胜[{model.winning_streak}]，模型预测{dx}",
-            ),
-            60,
-        )
+    if False:
+        users = {"小砾": 829718065, "阿奇": 1016485267, "灰灰": 7927305165}
+        wwd = " ".join([f"[{name}](tg://user?id={uid})" for name, uid in users.items()])
+        if model.losing_streak >= 6:
+            delete_message(
+                await client.send_message(
+                    TARGET,
+                    f"{wwd} 耶~ 汪汪队出动！！！\n模型{model.name}连负[{model.losing_streak}]，模型预测{dx}",
+                ),
+                60,
+            )
+        if model.winning_streak >= 6:
+            delete_message(
+                await client.send_message(
+                    TARGET,
+                    f"{wwd}耶~ 汪汪队出动！！！\n模型{model.name}连胜[{model.winning_streak}]，模型预测{dx}",
+                ),
+                60,
+            )
 
 
 async def new_history_list(message: Message):
@@ -555,7 +556,7 @@ async def zhuque_ydx_check(client: Client, message: Message):
                 model.sum_losebonus = 0
     if res_mess:
         await app.send_message(setting["zhuque"]["ydx_model"]["push_chat_id"], res_mess)
-        async with session.begin():
-            base = await session.get(ZqYdxBase, 1) or ZqYdxBase.init(session)
-            if base.bet_switch and base.bet_round:
-                await base.set_start_bonus()
+    async with session.begin():
+        base = await session.get(ZqYdxBase, 1) or ZqYdxBase.init(session)
+        if base.bet_switch and base.bet_round:
+            await base.set_start_bonus()
