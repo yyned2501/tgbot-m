@@ -371,7 +371,7 @@ async def zhuque_ydx_bet(client: Client, message: Message):
     while error < 5:
         await asyncio.sleep(5)
         async with session.begin():
-            base = await session.get(ZqYdxBase, 1) or ZqYdxBase.init(session)
+            base = await session.get(ZqYdxBase, 1) or ZqYdxBase.init()
             if base.bet_switch == 0:
                 return
             if not base.message_id:
