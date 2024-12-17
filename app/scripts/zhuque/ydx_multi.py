@@ -39,7 +39,7 @@ def delete_message(message: Message, sleep_sec: int):
 
 
 async def notify_wwd(client: Client, model: ZqYdxMulti, dx: int):
-    if False:
+    if setting["zhuque"]["ydx_model"]["wwd"]:
         users = {"小砾": 829718065, "阿奇": 1016485267, "灰灰": 7927305165}
         wwd = " ".join([f"[{name}](tg://user?id={uid})" for name, uid in users.items()])
         if model.losing_streak >= 6:

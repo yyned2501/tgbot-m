@@ -1,6 +1,6 @@
 schedulers:
   zhuque:
-    - jiantingxxx
+    - ydx_refresh_withdrawal
 scripts:
   zhuque:
     - redpocket

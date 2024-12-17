@@ -33,6 +33,7 @@ zhuque:
     push_chat_id: me
   ydx_model:
     push_chat_id: me
+    wwd: False
     
 agsv:
   redpocket:
