@@ -54,7 +54,7 @@ async def notify_wwd(client: Client, model: ZqYdxMulti, dx: int):
             delete_message(
                 await client.send_message(
                     TARGET,
-                    f"{wwd}耶~ 汪汪队出动！！！\n模型{model.name}连胜[{model.winning_streak}]，模型预测{dx}",
+                    f"{wwd} 耶~ 汪汪队出动！！！\n模型{model.name}连胜[{model.winning_streak}]，模型预测{dx}",
                 ),
                 60,
             )
@@ -556,7 +556,24 @@ async def zhuque_ydx_check(client: Client, message: Message):
                 model.sum_losebonus = 0
     if res_mess:
         await app.send_message(setting["zhuque"]["ydx_model"]["push_chat_id"], res_mess)
+    await app.send_message(5697370563, "/info")
+    # async with session.begin():
+    #     base = await session.get(ZqYdxBase, 1) or ZqYdxBase.init()
+    #     if base.bet_switch and base.bet_round:
+    #         await base.set_start_bonus()
+
+
+@app.on_message(
+    filters.chat(5697370563)
+    & filters.regex(r"灵石数量: (\b\d{1,3}(?:,\d{3})*(?:\.\d+)?\b)")
+)
+async def info(client: Client, message: Message):
+    match = message.matches[0]
+    bonus_str:str = match.group(1)
+    bonus_str = bonus_str.replace(",", "")
+    bonus = float(bonus_str)
+    session = ASSession()
     async with session.begin():
-        base = await session.get(ZqYdxBase, 1) or ZqYdxBase.init(session)
+        base = await session.get(ZqYdxBase, 1) or ZqYdxBase.init()
         if base.bet_switch and base.bet_round:
-            await base.set_start_bonus()
+            await base.set_start_bonus(bonus)
