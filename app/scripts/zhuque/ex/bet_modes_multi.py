@@ -28,7 +28,7 @@ def mode(func_name, *args, **kwargs):
     else:
         logger.error(f"不存在模式 {func_name} ,默认使用模式S1")
         return mode("S1", *args, **kwargs)
-
+    
 
 def create_model_function(func):
     return lambda data: func(data)
