@@ -3,10 +3,11 @@ from app.models.ydx import ZqYdxMulti, YdxHistory
 
 from app.models import ASSession
 from app.scripts.zhuque.ex.bet_modes_multi import test
-from app import scheduler
+from app import scheduler,logger
 
-
+logger.info("加载定时撤回更新")
 async def refresh_model_withdrawal():
+    logger.info("开始更新撤回")
     session = ASSession()
     async with session.begin():
         history_result = await session.execute(
