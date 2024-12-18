@@ -554,10 +554,11 @@ async def zhuque_ydx_check(client: Client, message: Message):
                 model.losing_streak = 0
                 model.winning_streak = 0
                 model.sum_losebonus = 0
+        if base.bet_switch == 1:
+            await app.send_message(5697370563, "/info")
     if res_mess:
         await app.send_message(setting["zhuque"]["ydx_model"]["push_chat_id"], res_mess)
-    if base.bet_switch == 1:
-        await app.send_message(5697370563, "/info")
+
     # async with session.begin():
     #     base = await session.get(ZqYdxBase, 1) or ZqYdxBase.init()
     #     if base.bet_switch and base.bet_round:
