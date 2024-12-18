@@ -402,63 +402,63 @@ async def zhuque_ydx_bet(client: Client, message: Message):
                     )
                     model.bet_bonus = (2 * dx - 1) * bet_bonus
                     bet_bonus_sum += model.bet_bonus
-                # 网格下注
-                running_g_models = await session.execute(
-                    select(ZqYdxMulti).filter(
-                        ZqYdxMulti.bet_switch == 1, ZqYdxMulti.fit_model == "G"
-                    )
-                )
-                running_g_models_list = running_g_models.scalars().all()
-                running_g_models_count = len(running_g_models_list)
-                for model in running_g_models_list:
-                    dx = mode(model.name, data)
-                    await notify_wwd(client, model, dx)
-                    new_bonus = int(
-                        base.user_bonus
-                        / grids_need[-1]
-                        / max(running_g_models_count, 2)
-                    )
-                    aim_bonus = (
-                        (model.lose + model.win) / 4 * model.bonus
-                    )  # 目标设置在网格收益的1/2可以更快盈利，减少长时间不能回本的风险
-                    if aim_bonus + model.sum_losebonus > 0:
-                        model.bonus = max(new_bonus, model.bonus)
-                    else:
-                        model.bonus = new_bonus
+                # # 网格下注
+                # running_g_models = await session.execute(
+                #     select(ZqYdxMulti).filter(
+                #         ZqYdxMulti.bet_switch == 1, ZqYdxMulti.fit_model == "G"
+                #     )
+                # )
+                # running_g_models_list = running_g_models.scalars().all()
+                # running_g_models_count = len(running_g_models_list)
+                # for model in running_g_models_list:
+                #     dx = mode(model.name, data)
+                #     await notify_wwd(client, model, dx)
+                #     new_bonus = int(
+                #         base.user_bonus
+                #         / grids_need[-1]
+                #         / max(running_g_models_count, 2)
+                #     )
+                #     aim_bonus = (
+                #         (model.lose + model.win) / 4 * model.bonus
+                #     )  # 目标设置在网格收益的1/2可以更快盈利，减少长时间不能回本的风险
+                #     if aim_bonus + model.sum_losebonus > 0:
+                #         model.bonus = max(new_bonus, model.bonus)
+                #     else:
+                #         model.bonus = new_bonus
 
-                    if model.lose - model.win >= 25:
-                        need_bonus = aim_bonus + model.sum_losebonus
-                        need_grid_index = next(
-                            (
-                                index
-                                for index, value in enumerate(grids_need)
-                                if value >= need_bonus / model.bonus
-                            ),
-                            40,
-                        )
-                        if need_grid_index < model.lose - model.win:
-                            logger.info(
-                                f"{model.name}计算连胜{need_grid_index}次可以盈利，调整网格，增加胜利局数"
-                            )
-                            model.win = model.lose - need_grid_index
-                    bet_bonus = int(
-                        grids[min(model.lose - model.win, 39)] * model.bonus
-                    )
-                    model.bet_bonus = (2 * dx - 1) * bet_bonus
-                    bet_bonus_sum += model.bet_bonus
-                # 跟投下注
-                running_ex_models = await session.execute(
-                    select(ZqYdxMulti).filter(
-                        ZqYdxMulti.bet_switch == 1,
-                        or_(ZqYdxMulti.fit_model == "+", ZqYdxMulti.fit_model == "-"),
-                    )
-                )
-                for model in running_ex_models.scalars():
-                    dx = mode(model.name, data)
-                    if model.fit_model == "-":
-                        dx = 1 - dx
-                    model.bet_bonus = (2 * dx - 1) * model.bonus
-                    bet_bonus_sum += model.bet_bonus
+                #     if model.lose - model.win >= 25:
+                #         need_bonus = aim_bonus + model.sum_losebonus
+                #         need_grid_index = next(
+                #             (
+                #                 index
+                #                 for index, value in enumerate(grids_need)
+                #                 if value >= need_bonus / model.bonus
+                #             ),
+                #             40,
+                #         )
+                #         if need_grid_index < model.lose - model.win:
+                #             logger.info(
+                #                 f"{model.name}计算连胜{need_grid_index}次可以盈利，调整网格，增加胜利局数"
+                #             )
+                #             model.win = model.lose - need_grid_index
+                #     bet_bonus = int(
+                #         grids[min(model.lose - model.win, 39)] * model.bonus
+                #     )
+                #     model.bet_bonus = (2 * dx - 1) * bet_bonus
+                #     bet_bonus_sum += model.bet_bonus
+                # # 跟投下注
+                # running_ex_models = await session.execute(
+                #     select(ZqYdxMulti).filter(
+                #         ZqYdxMulti.bet_switch == 1,
+                #         or_(ZqYdxMulti.fit_model == "+", ZqYdxMulti.fit_model == "-"),
+                #     )
+                # )
+                # for model in running_ex_models.scalars():
+                #     dx = mode(model.name, data)
+                #     if model.fit_model == "-":
+                #         dx = 1 - dx
+                #     model.bet_bonus = (2 * dx - 1) * model.bonus
+                #     bet_bonus_sum += model.bet_bonus
                 if bet_bonus_sum < base.user_bonus:
                     await ydx(client, message, bet_bonus_sum)
                     base.message_id = message.id
@@ -491,13 +491,13 @@ async def zhuque_ydx_check(client: Client, message: Message):
         models = await session.execute(
             select(ZqYdxMulti).filter(ZqYdxMulti.bet_bonus != 0)
         )
-        g_count = (
-            await session.execute(
-                select(func.count(ZqYdxMulti.id)).filter(
-                    ZqYdxMulti.bet_bonus != 0, ZqYdxMulti.fit_model == "G"
-                )
-            )
-        ).scalar()
+        # g_count = (
+        #     await session.execute(
+        #         select(func.count(ZqYdxMulti.id)).filter(
+        #             ZqYdxMulti.bet_bonus != 0, ZqYdxMulti.fit_model == "G"
+        #         )
+        #     )
+        # ).scalar()
         res_mess = ""
         for model in models.scalars():
             if model.bet_bonus * (2 * dx - 1) > 0:
@@ -524,30 +524,30 @@ async def zhuque_ydx_check(client: Client, message: Message):
                 r = f"[负{model.losing_streak}]"
             r += f"[{fit_model_name[model.fit_model]}]"
             r += f"[{model.win}-{model.lose}] 模型 {model.name} : 下注 {model.bet_bonus} 累计盈亏：{model.win_bonus}\n"
-            if model.fit_model == "G":
-                aim_bonus = (model.lose + model.win) / 2 * model.bonus
-                if (
-                    (aim_bonus + model.sum_losebonus < 0) and g_count and (g_count > 2)
-                ) or (model.lose <= model.win):
-                    # 完成盈利目标切超过两个网格模型在运行或净胜局不为负
-                    model.fit_model = "D"
-                    model.sum_losebonus = 0
-                    model.lose = 0
-                    model.win = 0
-            if model.fit_model == "D":
-                if (
-                    (model.losing_streak == 0)
-                    and (model.max_withdrawal - model.current_withdrawal <= 25)
-                    and (model.max_withdrawal - model.current_withdrawal > 5)
-                    and ((model.lose - model.win >= 5) or (g_count and (g_count < 2)))
-                ):
-                    # 输局5以上且回撤风险不大
-                    model.fit_model = "G"
-                    model.lose = max(int((model.lose - model.win) / 2), 3)
-                    model.win = 0
-                    model.sum_losebonus = int(
-                        base.user_bonus / 4000 * grids_need[model.lose]
-                    )
+            # if model.fit_model == "G":
+            #     aim_bonus = (model.lose + model.win) / 2 * model.bonus
+            #     if (
+            #         (aim_bonus + model.sum_losebonus < 0) and g_count and (g_count > 2)
+            #     ) or (model.lose <= model.win):
+            #         # 完成盈利目标切超过两个网格模型在运行或净胜局不为负
+            #         model.fit_model = "D"
+            #         model.sum_losebonus = 0
+            #         model.lose = 0
+            #         model.win = 0
+            # if model.fit_model == "D":
+            #     if (
+            #         (model.losing_streak == 0)
+            #         and (model.max_withdrawal - model.current_withdrawal <= 25)
+            #         and (model.max_withdrawal - model.current_withdrawal > 5)
+            #         and ((model.lose - model.win >= 5) or (g_count and (g_count < 2)))
+            #     ):
+            #         # 输局5以上且回撤风险不大
+            #         model.fit_model = "G"
+            #         model.lose = max(int((model.lose - model.win) / 2), 3)
+            #         model.win = 0
+            #         model.sum_losebonus = int(
+            #             base.user_bonus / 4000 * grids_need[model.lose]
+            #         )
             res_mess += r
             model.bet_bonus = 0
             if model.bet_switch == 0:
