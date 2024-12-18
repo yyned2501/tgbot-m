@@ -556,7 +556,8 @@ async def zhuque_ydx_check(client: Client, message: Message):
                 model.sum_losebonus = 0
     if res_mess:
         await app.send_message(setting["zhuque"]["ydx_model"]["push_chat_id"], res_mess)
-    await app.send_message(5697370563, "/info")
+    if base.bet_switch == 1:
+        await app.send_message(5697370563, "/info")
     # async with session.begin():
     #     base = await session.get(ZqYdxBase, 1) or ZqYdxBase.init()
     #     if base.bet_switch and base.bet_round:
@@ -569,7 +570,7 @@ async def zhuque_ydx_check(client: Client, message: Message):
 )
 async def info(client: Client, message: Message):
     match = message.matches[0]
-    bonus_str:str = match.group(1)
+    bonus_str: str = match.group(1)
     bonus_str = bonus_str.replace(",", "")
     bonus = float(bonus_str)
     session = ASSession()
