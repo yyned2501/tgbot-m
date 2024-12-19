@@ -26,10 +26,11 @@ for i in range(1, 40):
     grids_need.append(sum(grids))
 
 
-def delete_message(message: Message, sleep_sec: int):
-    async def _delete_message(message: Message):
-        await message.delete()
+async def _delete_message(message: Message):
+    await message.delete()
 
+
+def delete_message(message: Message, sleep_sec: int):
     scheduler.add_job(
         _delete_message,
         "date",
@@ -107,7 +108,16 @@ async def new_history_list(message: Message):
     return single_line_list
 
 
-async def ydx(client: Client, message: Message, bonus: int):
+def ydx(client: Client, message: Message, bonus: int):
+    scheduler.add_job(
+        _ydx,
+        "date",
+        next_run_time=datetime.datetime.now() + datetime.timedelta(seconds=1),
+        args=(client, message, bonus),
+    )
+
+
+async def _ydx(client: Client, message: Message, bonus: int):
     """
     获取当前用户在指定站点的bonus总和。
 
@@ -460,7 +470,7 @@ async def zhuque_ydx_bet(client: Client, message: Message):
                 #     model.bet_bonus = (2 * dx - 1) * model.bonus
                 #     bet_bonus_sum += model.bet_bonus
                 if bet_bonus_sum < base.user_bonus:
-                    await ydx(client, message, bet_bonus_sum)
+                    ydx(client, message, bet_bonus_sum)
                     base.message_id = message.id
                 else:
                     await client.send_message(TARGET, "又又又破产啦！！！！")
