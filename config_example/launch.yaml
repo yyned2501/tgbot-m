@@ -5,7 +5,6 @@ scripts:
   zhuque:
     - redpocket
     - dajie
-    - ydx_model
     - ydx_multi
   redleaves:
     - redpocket
