@@ -6,7 +6,7 @@ from sqlalchemy import select
 
 from app import app
 from app.models import ASSession
-from app.models.redpocket import Transform
+from app.models.redpocket import Transform, User
 
 TARGET = -1002022762746
 
@@ -43,5 +43,18 @@ async def gift(client: Client, message: Message):
                 await message.reply(f"今天给过了，明天再来！")
             else:
                 bonus = randint(5, 1000)
+                if user := await session.get(User, uid):
+                    if (
+                        user.name
+                        != f"{message.from_user.first_name} {message.from_user.last_name}"
+                    ):
+                        user.name = f"{message.from_user.first_name} {message.from_user.last_name}"
+                else:
+                    session.add(
+                        User(
+                            id=uid,
+                            name=f"{message.from_user.first_name} {message.from_user.last_name}",
+                        )
+                    )
                 session.add(Transform(site="象站", user_id=uid, bonus=-bonus))
                 await message.reply(f"+{bonus}")
