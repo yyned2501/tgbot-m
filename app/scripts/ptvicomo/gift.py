@@ -57,7 +57,7 @@ async def gift(client: Client, message: Message):
         uids = [tr.user_id for tr in today_tranform]
         if len(uids) < 50:
             if uid in uids:
-                delete_message(message.reply(f"今天给过了，明天再来！"), 30)
+                delete_message(await message.reply(f"今天给过了，明天再来！"), 30)
             else:
                 bonus = randint(5, 1000)
                 session.add(Transform(site="象站", user_id=uid, bonus=-bonus))
