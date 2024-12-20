@@ -60,5 +60,5 @@ async def gift(client: Client, message: Message):
                 delete_message(message.reply(f"今天给过了，明天再来！"), 30)
             else:
                 bonus = randint(5, 1000)
-                session.add(Transform(site="象站", user_id=user.id, bonus=-bonus))
+                session.add(Transform(site="象站", user_id=uid, bonus=-bonus))
                 await message.reply(f"+{bonus}")
