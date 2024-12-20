@@ -2,7 +2,7 @@ from sqlalchemy import desc, select
 from app.models.ydx import ZqYdxMulti, YdxHistory
 
 from app.models import ASSession
-from app.scripts.zhuque.ex.bet_modes_multi import test
+from app.scripts.zhuque.ex.bet_modes import test
 from app import scheduler,logger
 
 logger.info("加载定时撤回更新")

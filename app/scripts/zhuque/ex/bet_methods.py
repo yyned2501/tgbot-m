@@ -1,10 +1,8 @@
 from abc import ABC, abstractmethod
 
-import numpy as np
 import openvino as ov
 
-from app import logger
-from app.models.ydx import YdxHistory, ZqYdxBase, ZqYdxMulti
+from app.models.ydx import ZqYdxModels, ZqYdxMethods, ZqYdxBaseNew, ZqYdxRuns
 
 
 core = ov.Core()
@@ -15,17 +13,26 @@ for i in range(1, 40):
     grids.append(last_g / 0.99 + 1)
     grids_need.append(sum(grids))
 
+double = [1]
+double_need = [1]
+for i in range(1, 15):
+    current_lose_bonus = double_need[i - 1]
+    double.append(current_lose_bonus / 0.99 + 1)
+    grids_need.append(sum(grids))
 
-class FitModel(ABC):
 
-    def __init__(self, model: ZqYdxMulti, base: ZqYdxBase):
-        self.model = model
+class BetMethod(ABC):
+    def __init__(
+        self,
+        method: ZqYdxMethods,
+        model: ZqYdxModels,
+        base: ZqYdxBaseNew,
+        run: ZqYdxRuns,
+    ):
         self.base = base
-        self.bonus = 0
-
-    @abstractmethod
-    def logger(self):
-        pass
+        self.method = method
+        self.model = model
+        self.run = run
 
     @abstractmethod
     def bet_bonus(self):
@@ -36,17 +43,18 @@ class FitModel(ABC):
         pass
 
 
-class D(FitModel):
+class D(BetMethod):
     def bet_bonus(self):
         return int(
-            self.model.sum_losebonus / 0.99
-            + (self.model.losing_streak + 1) * self.bonus
+            self.run.current_lose_bonus / 0.99
+            + (self.model.losing_streak + 1) * self.method.start_bonus
         )
 
     def fresh_bonus(self):
-        pass
-
-
-class G(FitModel):
-    def bet_bonus(self):
-        return int(grids[min(self.model.lose - self.model.win, 39)] * self.bonus)
+        if self.model.losing_streak == 0:
+            return int(
+                min(
+                    self.base.user_bonus / double_need[self.method.max_lose_times],
+                    self.base.max_bet_bonus / double[self.method.max_lose_times],
+                )
+            )

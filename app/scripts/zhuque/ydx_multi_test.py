@@ -16,14 +16,22 @@ TARGET = -1001833464786
 rate = 0.99
 dx_list = ["小", "大"]
 bs_list = ["s", "b"]
-ex_bet = {"bonus": 0, "win": 0, "lose": 0, "aim": 0, "win_bonus": 0, "betbonus": 0}
-fit_model_name = {"G": "网格", "D": "倍投", "+": "跟投", "-": "反投"}
-grids = [0]
-grids_need = [0]
-for i in range(1, 40):
-    last_g = grids[i - 1]
-    grids.append(max(last_g / 0.99 + int(i / 10) + 1, last_g / 0.9))
-    grids_need.append(sum(grids))
+
+
+@app.on_message(
+    filters.chat(5697370563)
+    & filters.regex(r"灵石数量: (\b\d{1,3}(?:,\d{3})*(?:\.\d+)?\b)")
+)
+async def info(client: Client, message: Message):
+    match = message.matches[0]
+    bonus_str: str = match.group(1)
+    bonus_str = bonus_str.replace(",", "")
+    bonus = float(bonus_str)
+    session = ASSession()
+    async with session.begin():
+        base = await session.get(ZqYdxBase, 1) or ZqYdxBase.init()
+        if base.bet_switch and base.bet_round:
+            await base.set_start_bonus(bonus)
 
 
 async def _delete_message(message: Message):
@@ -354,14 +362,6 @@ async def zhuque_ydx_switch(client: Client, message: Message):
                             model.bet_bonus = 0
                             model.sum_losebonus = 0
                             await message.edit(f"模型{model.name}修改为倍投模式")
-                        elif command == "G":
-                            model.fit_model = command
-                            model.win = 0
-                            model.lose = 3
-                            model.sum_losebonus = int(
-                                base.user_bonus / 4000 * grids_need[model.lose]
-                            )
-                            await message.edit(f"模型{model.name}修改为网格模式")
                         elif command[0] == "+" or command[0] == "-":
                             bonus = int(command[1:])
                             model.fit_model = command[0]
@@ -573,19 +573,3 @@ async def zhuque_ydx_check(client: Client, message: Message):
     #     base = await session.get(ZqYdxBase, 1) or ZqYdxBase.init()
     #     if base.bet_switch and base.bet_round:
     #         await base.set_start_bonus()
-
-
-@app.on_message(
-    filters.chat(5697370563)
-    & filters.regex(r"灵石数量: (\b\d{1,3}(?:,\d{3})*(?:\.\d+)?\b)")
-)
-async def info(client: Client, message: Message):
-    match = message.matches[0]
-    bonus_str: str = match.group(1)
-    bonus_str = bonus_str.replace(",", "")
-    bonus = float(bonus_str)
-    session = ASSession()
-    async with session.begin():
-        base = await session.get(ZqYdxBase, 1) or ZqYdxBase.init()
-        if base.bet_switch and base.bet_round:
-            await base.set_start_bonus(bonus)

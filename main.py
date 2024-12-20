@@ -1,7 +1,7 @@
 from pyrogram import idle
 
 from app import app, scheduler, models, scripts, schedulers
-from app.scripts.zhuque.ex.bet_modes_multi import create_models
+from app.scripts.zhuque.ex.bet_modes import create_models
 
 
 async def main():
