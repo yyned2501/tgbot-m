@@ -7,6 +7,7 @@ from sqlalchemy import select
 from app import app
 from app.models import ASSession
 from app.models.redpocket import Transform, User
+from app.libs.messages import delete_message
 
 TARGET = -1002022762746
 
@@ -24,6 +25,22 @@ async def gift(client: Client, message: Message):
     else:
         return
     async with session.begin():
+        if user := await session.get(User, uid):
+            if (
+                user.name
+                != f"{message.from_user.first_name} {message.from_user.last_name}"
+            ):
+                user.name = (
+                    f"{message.from_user.first_name} {message.from_user.last_name}"
+                )
+        else:
+            session.add(
+                User(
+                    id=uid,
+                    name=f"{message.from_user.first_name} {message.from_user.last_name}",
+                )
+            )
+    async with session.begin():
         today_tranform = (
             (
                 await session.execute(
@@ -40,21 +57,8 @@ async def gift(client: Client, message: Message):
         uids = [tr.user_id for tr in today_tranform]
         if len(uids) < 50:
             if uid in uids:
-                await message.reply(f"今天给过了，明天再来！")
+                delete_message(message.reply(f"今天给过了，明天再来！"), 30)
             else:
                 bonus = randint(5, 1000)
-                if user := await session.get(User, uid):
-                    if (
-                        user.name
-                        != f"{message.from_user.first_name} {message.from_user.last_name}"
-                    ):
-                        user.name = f"{message.from_user.first_name} {message.from_user.last_name}"
-                else:
-                    session.add(
-                        User(
-                            id=uid,
-                            name=f"{message.from_user.first_name} {message.from_user.last_name}",
-                        )
-                    )
-                session.add(Transform(site="象站", user_id=uid, bonus=-bonus))
+                session.add(Transform(site="象站", user_id=user.id, bonus=-bonus))
                 await message.reply(f"+{bonus}")
