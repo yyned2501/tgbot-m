@@ -19,7 +19,10 @@ async def gift(client: Client, message: Message):
     today_midnight = datetime.datetime.combine(
         datetime.datetime.today().date(), datetime.datetime.min.time()
     )
-    uid = message.from_user.id
+    if message.from_user:
+        uid = message.from_user.id
+    else:
+        return
     async with session.begin():
         today_tranform = (
             (
