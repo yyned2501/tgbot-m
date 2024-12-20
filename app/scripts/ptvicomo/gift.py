@@ -22,17 +22,14 @@ async def gift(client: Client, message: Message):
     )
     if message.from_user:
         uid = message.from_user.id
+        name = [message.from_user.first_name, message.from_user.last_name]
+        name = " ".join([n for n in name if n])
     else:
         return
     async with session.begin():
         if user := await session.get(User, uid):
-            if (
-                user.name
-                != f"{message.from_user.first_name} {message.from_user.last_name}"
-            ):
-                user.name = (
-                    f"{message.from_user.first_name} {message.from_user.last_name}"
-                )
+            if user.name != name:
+                user.name = name
         else:
             session.add(
                 User(
