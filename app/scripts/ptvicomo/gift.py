@@ -34,7 +34,7 @@ async def gift(client: Client, message: Message):
             session.add(
                 User(
                     id=uid,
-                    name=f"{message.from_user.first_name} {message.from_user.last_name}",
+                    name=name,
                 )
             )
     async with session.begin():
