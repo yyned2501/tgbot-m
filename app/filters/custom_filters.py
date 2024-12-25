@@ -56,3 +56,10 @@ async def agsv_bot_filter(_, __, m: Message):
 
 
 agsv_bot = create(agsv_bot_filter)
+
+
+async def ptvicomo_bot_filter(_, __, m: Message):
+    return bool(m.from_user and m.from_user.is_bot and m.from_user.id == 7124396542)
+
+
+ptvicomo_bot = create(ptvicomo_bot_filter)

@@ -8,6 +8,7 @@ from app import app
 from app.models import ASSession
 from app.models.redpocket import Transform, User
 from app.libs.messages import delete_message
+from app.filters import custom_filters
 
 TARGET = -1002022762746
 
@@ -59,3 +60,10 @@ async def gift(client: Client, message: Message):
                 bonus = randint(5, 1000)
                 session.add(Transform(site="象站", user_id=uid, bonus=-bonus))
                 await message.reply(f"+{bonus}")
+
+
+@app.on_message(
+    filters.chat(TARGET) & custom_filters.ptvicomo_bot & filters.regex(r"奖池金额"),
+)
+async def lottery(client: Client, message: Message):
+    return await message.reply("048*9999")
