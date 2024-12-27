@@ -1,5 +1,5 @@
 import datetime
-from random import randint
+from random import randint, sample
 from pyrogram.types.messages_and_media import Message
 from pyrogram import filters, Client
 from sqlalchemy import select
@@ -66,4 +66,8 @@ async def gift(client: Client, message: Message):
     filters.chat(TARGET) & custom_filters.ptvicomo_bot & filters.regex(r"奖池金额"),
 )
 async def lottery(client: Client, message: Message):
-    return await message.reply("048*9999")
+    numbers_all = list(range(10))
+    for _ in range(3):
+        number = sample(numbers_all, 3)
+        bonus = randint(10000, 100000)
+        await message.reply(f"{"".join(number)}*{bonus}")
