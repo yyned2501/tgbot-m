@@ -16,6 +16,10 @@ if setting["proxy"]["enable"]:
         "scheme": "http",
         "hostname": setting["proxy"]["ip"],
         "port": setting["proxy"]["port"],
+        "username": setting["proxy"]["username"],
+        "password": setting["proxy"]["password"],
+        
+        
     }
 else:
     proxy = None
