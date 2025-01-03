@@ -9,6 +9,8 @@ proxy:
   enable: False
   ip: 127.0.0.1
   port: 7890
+  username: Clash
+  password: password
 
 GB_VAR:
   GROUP_ID:
