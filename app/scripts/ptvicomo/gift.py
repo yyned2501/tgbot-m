@@ -69,6 +69,6 @@ async def gift(client: Client, message: Message):
 async def lottery(client: Client, message: Message):
     numbers_all = list(range(10))
     for _ in range(3):
-        number = sample(numbers_all, 3)
+        number = list(map(str,sample(numbers_all, 3)))
         bonus = randint(10000, 100000)
-        await message.reply(f"{"".join(str(number))}*{bonus}")
+        await message.reply(f"{"".join(number)}*{bonus}")
