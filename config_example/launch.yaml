@@ -2,6 +2,9 @@ schedulers:
   zhuque:
     - ydx_refresh_withdrawal
 scripts:
+  ptvicomo:
+    - gift
+    - lottery
   zhuque:
     - redpocket
     - dajie

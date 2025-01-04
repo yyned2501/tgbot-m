@@ -1,7 +1,5 @@
 import datetime
-import asyncio
-
-from random import randint, sample
+from random import randint
 from pyrogram.types.messages_and_media import Message
 from pyrogram import filters, Client
 from sqlalchemy import select
@@ -10,7 +8,6 @@ from app import app
 from app.models import ASSession
 from app.models.redpocket import Transform, User
 from app.libs.messages import delete_message
-from app.filters import custom_filters
 
 TARGET = -1002022762746
 
@@ -62,16 +59,3 @@ async def gift(client: Client, message: Message):
                 bonus = randint(100, 1000)
                 session.add(Transform(site="象站", user_id=uid, bonus=-bonus))
                 await message.reply(f"+{bonus}")
-
-
-@app.on_message(
-    filters.chat(
-        TARGET) & custom_filters.ptvicomo_bot & filters.regex(r"奖池金额"),
-)
-async def lottery(client: Client, message: Message):
-    numbers_all = list(range(10))
-    for _ in range(3):
-        number = list(map(str, sample(numbers_all, 3)))
-        bonus = randint(10000, 100000)
-        await message.reply(f"{"".join(number)}*{bonus}")
-        await asyncio.sleep(1)
