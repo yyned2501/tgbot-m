@@ -6,7 +6,7 @@ from pyrogram import filters
 from app.filters import custom_filters
 from app import app
 
-TARGET = -1001234567890
+TARGET = -1002022762746
 
 
 @app.on_message(
