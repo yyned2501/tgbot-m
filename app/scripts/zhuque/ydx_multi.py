@@ -393,7 +393,7 @@ async def zhuque_ydx_bet(client: Client, message: Message):
                     dx = mode(model.name, data)
                     await notify_wwd(client, model, dx)
                     bet_bonus = 1
-                    if model.losing_streak == 0:
+                    if model.losing_streak == 7:
                         bet_bonus = int(base.start_bonus)
                     model.bet_bonus = (2 * dx - 1) * bet_bonus
                     bet_bonus_sum += model.bet_bonus
