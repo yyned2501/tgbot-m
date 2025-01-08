@@ -58,50 +58,12 @@ class ZqYdxBase(Base):
             self.test_round()
 
     def test_round(self):
-        max_bonus = min(self.max_bet_bonus, self.user_bonus, 5e7)
-        min_bonus = 500
-        m = min(
-            (
-                int(
-                    min(self.user_bonus, 1e8)
-                    / (2 ** (self.bet_round + 2) - self.bet_round - 2)
-                    / 0.99**self.bet_round
-                )
-                // 500
-                + 1
+        if self.bet_round:
+            max_bonus = min(self.max_bet_bonus, self.user_bonus, 5e7)
+            min_bonus = 500
+            self.start_bonus = (
+                max_bonus / (2**self.bet_round - 1) // min_bonus * min_bonus
             )
-            * 500,
-            (
-                int(
-                    min(max_bonus, 1e8)
-                    / (2 ** (self.bet_round + 1) - 1)
-                    / 0.99 ** (self.bet_round - 1)
-                )
-                // 500
-                + 1
-            )
-            * 500,
-        )
-        for i in range(m):
-            startbonus = m - i
-            if startbonus < min_bonus:
-                break
-            bet_bonus = 0
-            sum_bonus = 0
-            for i in range(self.bet_round + 2):
-                bonus = sum_bonus / 0.99 + startbonus * (i + 1)
-                last_bonus = bet_bonus
-                bet_bonus = bonus // min_bonus * min_bonus
-                last_sum_bonus = sum_bonus
-                sum_bonus += bet_bonus
-                if sum_bonus > self.user_bonus or bet_bonus > max_bonus:
-                    if i > self.bet_round:
-                        logger.debug(
-                            f"{i}, {startbonus}, {last_bonus}, {last_sum_bonus}"
-                        )
-                        self.start_bonus = startbonus
-                        return
-                    break
 
 
 class ZqYdxMulti(Base):
