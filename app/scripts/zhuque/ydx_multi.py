@@ -432,24 +432,23 @@ async def zhuque_ydx_check(client: Client, message: Message):
         )
         res_mess = ""
         for model in models.scalars():
-            if model.bet_bonus * (2 * dx - 1) > 0:
-                model.win += 1
+            ret_bonus = model.bet_bonus * (2 * dx - 1)
+            if ret_bonus > 0:
+                if ret_bonus > 1:
+                    model.win += 1
+                    model.win_bonus += int(abs(model.bet_bonus) * 0.99)
                 model.winning_streak += 1
                 model.losing_streak = 0
-                model.sum_losebonus = (
-                    0
-                    if model.fit_model == "D"
-                    else (model.sum_losebonus - int(abs(model.bet_bonus) * 0.99))
-                )
-                model.win_bonus += int(abs(model.bet_bonus) * 0.99)
+                model.sum_losebonus = 0
                 model.current_withdrawal = max(model.current_withdrawal - 1, 0)
                 r = f"[胜{model.winning_streak}]"
-            else:
-                model.lose += 1
+            elif ret_bonus < 0:
+                if ret_bonus < -1:
+                    model.lose += 1
+                    model.sum_losebonus += abs(model.bet_bonus)
+                    model.win_bonus -= abs(model.bet_bonus)
                 model.losing_streak += 1
                 model.winning_streak = 0
-                model.sum_losebonus += abs(model.bet_bonus)
-                model.win_bonus -= abs(model.bet_bonus)
                 model.current_withdrawal += 1
                 if model.current_withdrawal > model.max_withdrawal:
                     model.max_withdrawal = model.current_withdrawal
