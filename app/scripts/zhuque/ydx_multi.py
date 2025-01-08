@@ -40,25 +40,26 @@ def delete_message(message: Message, sleep_sec: int):
 
 
 async def notify_wwd(client: Client, model: ZqYdxMulti, dx: int):
-    if setting["zhuque"]["ydx_model"]["wwd"]:
-        users = {"小砾": 829718065, "阿奇": 1016485267, "灰灰": 7927305165}
-        wwd = " ".join([f"[{name}](tg://user?id={uid})" for name, uid in users.items()])
-        if model.losing_streak >= 6:
-            delete_message(
-                await client.send_message(
-                    TARGET,
-                    f"{wwd} 耶~ 汪汪队出动！！！\n模型{model.name}连负[{model.losing_streak}]，模型预测{dx}",
-                ),
-                60,
-            )
-        if model.winning_streak >= 6:
-            delete_message(
-                await client.send_message(
-                    TARGET,
-                    f"{wwd} 耶~ 汪汪队出动！！！\n模型{model.name}连胜[{model.winning_streak}]，模型预测{dx}",
-                ),
-                60,
-            )
+    pass
+    # if setting["zhuque"]["ydx_model"]["wwd"]:
+    #     users = {"小砾": 829718065, "阿奇": 1016485267, "灰灰": 7927305165}
+    #     wwd = " ".join([f"[{name}](tg://user?id={uid})" for name, uid in users.items()])
+    #     if model.losing_streak >= 6:
+    #         delete_message(
+    #             await client.send_message(
+    #                 TARGET,
+    #                 f"{wwd} 耶~ 汪汪队出动！！！\n模型{model.name}连负[{model.losing_streak}]，模型预测{dx}",
+    #             ),
+    #             60,
+    #         )
+    #     if model.winning_streak >= 6:
+    #         delete_message(
+    #             await client.send_message(
+    #                 TARGET,
+    #                 f"{wwd} 耶~ 汪汪队出动！！！\n模型{model.name}连胜[{model.winning_streak}]，模型预测{dx}",
+    #             ),
+    #             60,
+    #         )
 
 
 async def new_history_list(message: Message):
