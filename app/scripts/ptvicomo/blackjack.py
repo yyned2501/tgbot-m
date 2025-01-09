@@ -30,8 +30,12 @@ def calculate_score(cards):
 
 
 @app.on_message(
-    filters.chat(BOT)
-    & filters.regex(
+    filters.regex(
+        r"庄：\?\?\? ((?:[2-9JQKA][♦♣♥♠]\s*)+)\n你(\d+)点：((?:[2-9JQKA][♦♣♥♠]\s*)+)"
+    )
+)
+@app.on_edited_message(
+    filters.regex(
         r"庄：\?\?\? ((?:[2-9JQKA][♦♣♥♠]\s*)+)\n你(\d+)点：((?:[2-9JQKA][♦♣♥♠]\s*)+)"
     )
 )
@@ -85,13 +89,3 @@ async def blackjack(client: Client, message: Message):
     await message.reply_text(
         f"庄的点数: {zhuang_score}\n你的点数: {ni_score}\n不拿获胜概率: {win_probability:.2%}\n拿牌获胜概率: {hit_win_probability:.2%}"
     )
-
-
-@app.on_edited_message(
-    filters.chat(BOT)
-    & filters.regex(
-        r"庄：\?\?\? ((?:[2-9JQKA][♦♣♥♠]\s*)+)\n你(\d+)点：((?:[2-9JQKA][♦♣♥♠]\s*)+)"
-    )
-)
-async def blackjack_edit(client: Client, message: Message):
-    await blackjack(client, message)
