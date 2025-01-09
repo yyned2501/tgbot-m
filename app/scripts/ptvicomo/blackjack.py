@@ -24,7 +24,7 @@ def card_value(card):
 
 def calculate_score(cards):
     score = sum(card_value(card) for card in cards)
-    if score <= 11 and "A" in cards:
+    if score <= 11 and any(card.startswith("A") for card in cards):
         score += 10
     return score
 
