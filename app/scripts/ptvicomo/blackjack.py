@@ -63,6 +63,7 @@ async def blackjack(client: Client, message: Message):
             win_count += 1
 
     win_probability = win_count / total_simulations
+    logger.info(f"庄的点数: {zhuang_score}\n你的点数: {ni_score}\n你的获胜概率: {win_probability:.2%}")
     await message.reply_text(
         f"庄的点数: {zhuang_score}\n你的点数: {ni_score}\n你的获胜概率: {win_probability:.2%}"
     )
