@@ -63,11 +63,27 @@ async def blackjack(client: Client, message: Message):
             win_count += 1
 
     win_probability = win_count / total_simulations
-    logger.info(
-        f"庄的点数: {zhuang_score}\n你的点数: {ni_score}\n你的获胜概率: {win_probability:.2%}"
-    )
+    hit_win_count = 0
+    for _ in range(total_simulations):
+        ni_simulated = ni_cards[:]
+        ni_simulated.append(sample(remaining_cards, 1)[0])
+        ni_simulated_score = calculate_score(ni_simulated)
+        if ni_simulated_score <= 21:
+            zhuang_simulated = zhuang_cards[:]
+            while calculate_score(zhuang_simulated) < 17:
+                zhuang_simulated.append(sample(remaining_cards, 1)[0])
+
+            zhuang_simulated_score = calculate_score(zhuang_simulated)
+
+            if (
+                ni_simulated_score > zhuang_simulated_score
+                or zhuang_simulated_score > 21
+            ):
+                hit_win_count += 1
+
+    hit_win_probability = hit_win_count / total_simulations
     await message.reply_text(
-        f"庄的点数: {zhuang_score}\n你的点数: {ni_score}\n你的获胜概率: {win_probability:.2%}"
+        f"庄的点数: {zhuang_score}\n你的点数: {ni_score}\n不拿获胜概率: {win_probability:.2%}\n拿牌获胜概率: {hit_win_probability:.2%}"
     )
 
 
