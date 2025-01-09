@@ -63,7 +63,19 @@ async def blackjack(client: Client, message: Message):
             win_count += 1
 
     win_probability = win_count / total_simulations
-    logger.info(f"庄的点数: {zhuang_score}\n你的点数: {ni_score}\n你的获胜概率: {win_probability:.2%}")
+    logger.info(
+        f"庄的点数: {zhuang_score}\n你的点数: {ni_score}\n你的获胜概率: {win_probability:.2%}"
+    )
     await message.reply_text(
         f"庄的点数: {zhuang_score}\n你的点数: {ni_score}\n你的获胜概率: {win_probability:.2%}"
     )
+
+
+@app.on_edited_message(
+    filters.chat(BOT)
+    & filters.regex(
+        r"庄：\?\?\? ((?:[2-9JQKA][♦♣♥♠]\s*)+)\n你(\d+)点：((?:[2-9JQKA][♦♣♥♠]\s*)+)"
+    )
+)
+async def blackjack_edit(client: Client, message: Message):
+    await blackjack(client, message)
