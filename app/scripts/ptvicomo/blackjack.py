@@ -29,14 +29,16 @@ def calculate_score(cards):
     return score
 
 
-@app.on_message(custom_filters.reply_to_me&
-    filters.regex(
-        r"庄：\?\?\? ((?:[2-9JQKA][♦♣♥♠]\s*)+)\n你(\d+)点：((?:[2-9JQKA][♦♣♥♠]\s*)+)"
+@app.on_message(
+    custom_filters.reply_to_me
+    & filters.regex(
+        r"庄：\?\?\? ((?:10|[2-9JQKA][♦♣♥♠]\s*)+)\n你(\d+)点：((?:10|[2-9JQKA][♦♣♥♠]\s*)+)"
     )
 )
-@app.on_edited_message(custom_filters.reply_to_me&
-    filters.regex(
-        r"庄：\?\?\? ((?:[2-9JQKA][♦♣♥♠]\s*)+)\n你(\d+)点：((?:[2-9JQKA][♦♣♥♠]\s*)+)"
+@app.on_edited_message(
+    custom_filters.reply_to_me
+    & filters.regex(
+        r"庄：\?\?\? ((?:10|[2-9JQKA][♦♣♥♠]\s*)+)\n你(\d+)点：((?:10|[2-9JQKA][♦♣♥♠]\s*)+)"
     )
 )
 async def blackjack(client: Client, message: Message):
