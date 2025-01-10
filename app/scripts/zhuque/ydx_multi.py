@@ -212,11 +212,10 @@ async def zhuque_ydx_switch(client: Client, message: Message):
                 bonus = message.command[2]
                 if bonus.isdigit():
                     bonus = int(bonus)
-                    if 500 <= bonus < 100000:
-                        base.start_bonus = bonus
-                        base.bet_round = None
-                        await message.edit(f"底注 {base.start_bonus} 设置成功！。。。")
-                        delete_message(message, 5)
+                    base.start_bonus = bonus
+                    base.bet_round = None
+                    await message.edit(f"底注 {base.start_bonus} 设置成功！。。。")
+                    delete_message(message, 5)
 
         elif message.command[1] == "kp":
             if len(message.command) >= 3:
