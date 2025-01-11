@@ -11,6 +11,25 @@ logger = logging.getLogger("main")
 
 GROUP = -1002022762746
 BOT = 7124396542
+ALL_CARDS = [
+    f"{rank}{suit}"
+    for rank in [
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "J",
+        "Q",
+        "K",
+        "A",
+    ]
+    for suit in ["♠", "♥", "♦", "♣"]
+]
 
 
 def card_value(card):
@@ -52,7 +71,7 @@ async def blackjack(client: Client, message: Message):
     ni_cards = ni.split()
     zhuang_score = calculate_score(zhuang_cards)
     ni_score = calculate_score(ni_cards)
-    remaining_cards = [f"{rank}{suit}" for rank in "23456789JQKA" for suit in "♦♣♥♠"]
+    remaining_cards = ALL_CARDS[:]
     for card in zhuang_cards + ni_cards:
         remaining_cards.remove(card)
 
