@@ -14,15 +14,16 @@ BOT = 7124396542
 
 
 def card_value(card):
-    if card[0] in "JQK":
+    point = card[:-1]
+    if point in "JQK":
         return 10
-    elif card[0] == "A":
+    elif point == "A":
         return 1
     else:
-        return int(card[0])
+        return int(point)
 
 
-def calculate_score(cards):
+def calculate_score(cards: list[str]):
     score = sum(card_value(card) for card in cards)
     if score <= 11 and any(card.startswith("A") for card in cards):
         score += 10
@@ -32,13 +33,13 @@ def calculate_score(cards):
 @app.on_message(
     custom_filters.reply_to_me
     & filters.regex(
-        r"庄：\?\?\? ((?:10|[2-9JQKA][♦♣♥♠]\s*)+)\n你(\d+)点：((?:10|[2-9JQKA][♦♣♥♠]\s*)+)"
+        r"庄：\?\?\? ((?:[0-9JQKA]*.\s*)+)\n你(\d+)点：((?:[0-9JQKA]*.\s*)+)"
     )
 )
 @app.on_edited_message(
     custom_filters.reply_to_me
     & filters.regex(
-        r"庄：\?\?\? ((?:10|[2-9JQKA][♦♣♥♠]\s*)+)\n你(\d+)点：((?:10|[2-9JQKA][♦♣♥♠]\s*)+)"
+        r"庄：\?\?\? ((?:[0-9JQKA]*.\s*)+)\n你(\d+)点：((?:[0-9JQKA]*.\s*)+)"
     )
 )
 async def blackjack(client: Client, message: Message):
