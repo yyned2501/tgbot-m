@@ -12,7 +12,7 @@ from app.models import ASSession
 from app.models.ydx import YdxHistory, ZqYdxBase, ZqYdxMulti
 from app.scripts.zhuque.ex.bet_modes import mode, test, get_funcs
 
-TARGET = -1001833464786
+TARGET = -1002262543959
 rate = 0.99
 dx_list = ["小", "大"]
 bs_list = ["s", "b"]
