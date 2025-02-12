@@ -86,8 +86,13 @@ async def new_history_list(message: Message):
             select(YdxHistory).order_by(desc(YdxHistory.id)).limit(40)
         )
         history = history_result.scalars().all()
-        last_saved_time = history[0].create_time
-        if datetime.datetime.now() - last_saved_time > datetime.timedelta(minutes=1):
+        if len(history) > 0:
+            last_saved_time = history[0].create_time
+        if len(
+            history
+        ) == 0 or datetime.datetime.now() - last_saved_time > datetime.timedelta(
+            minutes=1
+        ):
             data = [ydx_history.dx for ydx_history in history]
             saved_index = len(single_line_list)
             if ld := len(data) < 40:
