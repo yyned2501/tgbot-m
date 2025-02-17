@@ -425,7 +425,7 @@ async def zhuque_ydx_check(client: Client, message: Message):
     session = ASSession()
     res_mess = None
     async with session.begin():
-        base = await session.get(ZqYdxBase, 1) or ZqYdxBase.init(session)
+        base = await session.get(ZqYdxBase, 1) or ZqYdxBase.init()
         if base.kp_switch == 1:
             await app.send_message(TARGET, f"/ydx")
         if base.message_id:
