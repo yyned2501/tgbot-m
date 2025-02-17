@@ -7,11 +7,11 @@ from sqlalchemy import (
     select,
 )
 from sqlalchemy.orm import Mapped, mapped_column
-from app.models.base import Base
+from app.models.base import TimeBase
 from app.models import ASSession
 
 
-class User(Base):
+class User(TimeBase):
     __tablename__ = "user"
     id: Mapped[int] = mapped_column(BigInteger, primary_key=True)
     name: Mapped[str] = mapped_column(String(30))
@@ -112,7 +112,7 @@ class User(Base):
         session.add(transform)
 
 
-class Transform(Base):
+class Transform(TimeBase):
     __tablename__ = "transform"
     id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
     site: Mapped[str] = mapped_column(String(32))

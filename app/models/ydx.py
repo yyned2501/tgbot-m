@@ -1,23 +1,20 @@
 import logging
-import datetime
 
 from sqlalchemy import (
     String,
     Integer,
-    DateTime,
-    func,
 )
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.models import ASSession
-from app.models.base import Base
+from app.models.base import Base, CreateTimeBase
 from app.libs.zhuque_requests import get_info
 
 
 logger = logging.getLogger("main")
 
 
-class YdxHistory(Base):
+class YdxHistory(CreateTimeBase):
     __tablename__ = "zqydx_history"
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     dx: Mapped[int] = mapped_column(Integer)
@@ -81,62 +78,4 @@ class ZqYdxMulti(Base):
     current_withdrawal: Mapped[int] = mapped_column(Integer, default=0)
     bet_bonus: Mapped[int] = mapped_column(Integer, default=0)
     sum_losebonus: Mapped[int] = mapped_column(Integer, default=0)
-    win_bonus: Mapped[int] = mapped_column(Integer, default=0)
-
-
-class ZqYdxBaseNew(Base):
-    __tablename__ = "zqydx_base_new"
-    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
-    kp_switch: Mapped[int] = mapped_column(Integer)
-    message_id: Mapped[int] = mapped_column(Integer, nullable=True)
-    bet_switch: Mapped[int] = mapped_column(Integer)
-    user_bonus: Mapped[int] = mapped_column(Integer)
-    max_bet_bonus: Mapped[int] = mapped_column(Integer)
-
-    @classmethod
-    def init(cls):
-        self = cls(
-            start_bonus=500,
-            kp_switch=0,
-            bet_switch=0,
-            user_bonus=0,
-            max_bet_bonus=10000000,
-        )
-        ASSession.add(self)
-        return self
-
-
-class ZqYdxModels(Base):
-    __tablename__ = "zqydx_models_new"
-    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
-    name: Mapped[str] = mapped_column(String(8))
-    bet_switch: Mapped[int] = mapped_column(Integer, default=1)
-    win: Mapped[int] = mapped_column(Integer, default=0)
-    lose: Mapped[int] = mapped_column(Integer, default=0)
-    winning_streak: Mapped[int] = mapped_column(Integer, default=0)
-    losing_streak: Mapped[int] = mapped_column(Integer, default=0)
-    max_withdrawal: Mapped[int] = mapped_column(Integer, default=0)
-    current_withdrawal: Mapped[int] = mapped_column(Integer, default=0)
-
-
-class ZqYdxMethods(Base):
-    __tablename__ = "zqydx_methods"
-    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
-    name: Mapped[str] = mapped_column(String(8))
-    bet_switch: Mapped[int] = mapped_column(Integer)
-    start_bonus: Mapped[int] = mapped_column(Integer)
-    max_bet_bonus: Mapped[int] = mapped_column(Integer)
-    max_lose_times: Mapped[int] = mapped_column(Integer, nullable=True)
-    aim_win_times: Mapped[int] = mapped_column(Integer, nullable=True)
-
-
-class ZqYdxRuns(Base):
-    __tablename__ = "zqydx_runs"
-    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
-    bonus: Mapped[int] = mapped_column(Integer, default=0)
-    model_id: Mapped[int] = mapped_column(Integer)
-    method_id: Mapped[int] = mapped_column(Integer)
-    bet_switch: Mapped[int] = mapped_column(Integer)
-    bet_bonus: Mapped[int] = mapped_column(Integer, default=0)
-    current_lose_bonus: Mapped[int] = mapped_column(Integer, default=0)
     win_bonus: Mapped[int] = mapped_column(Integer, default=0)
