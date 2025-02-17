@@ -7,7 +7,7 @@ from app.models.transform import User
 from app.filters import custom_filters
 from app.libs.messages import delete_message
 
-TARGET = -1001833464786
+TARGET = [-1001833464786, -1002262543959]
 SITE_NAME = "朱雀"
 
 

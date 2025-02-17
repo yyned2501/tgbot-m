@@ -9,6 +9,7 @@ scripts:
     - redpocket
     - dajie
     - ydx_multi
+    - transform
   redleaves:
     - redpocket
   agsv:
