@@ -87,16 +87,16 @@ class User(Base):
         :param uname: 用户tgname
         :type uid: str
         """
+
         async with ASSession() as session:
-            async with session.begin_nested():
-                user = await session.get(cls, uid)
-                if user:
-                    if user.name != uname:
-                        user.name = uname
-                else:
-                    user = cls(id=uid, name=uname)
-                    session.add(user)
-                return user
+            user = await session.get(cls, uid)
+            if user:
+                if user.name != uname:
+                    user.name = uname
+            else:
+                user = cls(id=uid, name=uname)
+                session.add(user)
+            return user
 
     async def add_transform_record(self, site: str, bonus: int):
         """
@@ -108,9 +108,8 @@ class User(Base):
         :type bonus: int
         """
         async with ASSession() as session:
-            async with session.begin_nested():
-                transform = Transform(site=site, user_id=self.id, bonus=bonus)
-                session.add(transform)
+            transform = Transform(site=site, user_id=self.id, bonus=bonus)
+            session.add(transform)
 
 
 class Transform(Base):
