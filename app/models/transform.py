@@ -107,9 +107,9 @@ class User(Base):
         :param bonus: 转账金额
         :type bonus: int
         """
-        async with ASSession() as session:
-            transform = Transform(site=site, user_id=self.id, bonus=bonus)
-            session.add(transform)
+        session = ASSession()
+        transform = Transform(site=site, user_id=self.id, bonus=bonus)
+        session.add(transform)
 
 
 class Transform(Base):
