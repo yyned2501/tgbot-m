@@ -12,7 +12,7 @@ from app.config import setting
 class MyClient(Client):
     def __init__(self, *arg, **karg):
         super().__init__(*arg, **karg)
-        self.bucket = AsyncTokenBucket(capacity=10, fill_rate=2)
+        self.bucket = AsyncTokenBucket(capacity=10, fill_rate=1)
 
     async def invoke(self, *arg, **kargs):
         await self.bucket.consume()
