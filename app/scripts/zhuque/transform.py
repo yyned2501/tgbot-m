@@ -30,7 +30,7 @@ async def transform_get(client, message: Message):
             post_bonus = await user.get_bonus_post_sum_for_site(SITE_NAME)
             reply_message = (
                 f"```\n感谢 {username} 大佬赠送 的 {ls} 灵石\n"
-                f"大佬一共给小弟转了 {get_bonus} 灵石\n"
+                f"大佬一共给小弟转了 {get_bonus+ls} 灵石\n"
                 f"小弟一共给大佬转了 {-post_bonus} 灵石\n"
                 "```"
             )
@@ -51,11 +51,11 @@ async def transform_use(client, message: Message):
     async with ASSession() as session:
         async with session.begin():
             user = await User.get(transform_user.id, username)
-            await user.add_transform_record(SITE_NAME, int(ls))
-            get_bonus = await user.get_bonus_get_sum_for_site(SITE_NAME)
+            await user.add_transform_record(SITE_NAME, -int(ls))
+            post_bonus = await user.get_bonus_post_sum_for_site(SITE_NAME)
             reply_message = (
                 f"```\n{username} 送你 {ls} 灵石 能不能让你叫我一声大佬？\n"
-                f"我一共给你转了 {get_bonus} 灵石\n"
+                f"我一共给你转了 {post_bonus} 灵石\n"
                 "```"
             )
             delete_message(await transform_message.reply(reply_message), 60)

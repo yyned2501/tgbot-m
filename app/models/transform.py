@@ -116,5 +116,5 @@ class Transform(TimeBase):
     __tablename__ = "transform"
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     site: Mapped[str] = mapped_column(String(32))
-    user_id: Mapped[int] = mapped_column(ForeignKey("user.id"))
+    user_id: Mapped[int] = mapped_column(BigInteger)
     bonus: Mapped[int] = mapped_column(Integer)
