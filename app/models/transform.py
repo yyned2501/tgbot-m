@@ -26,14 +26,14 @@ class User(Base):
         :rtype: int
         """
 
-        async with ASSession() as session:
-            bonus_sum_select = select(
-                func.sum(Transform.bonus).filter(
-                    Transform.user_id == self.id, Transform.site == site_name
-                )
+        session = ASSession()
+        bonus_sum_select = select(
+            func.sum(Transform.bonus).filter(
+                Transform.user_id == self.id, Transform.site == site_name
             )
-            bonus_sum = (await session.execute(bonus_sum_select)).scalar_one_or_none()
-            return bonus_sum if bonus_sum is not None else 0
+        )
+        bonus_sum = (await session.execute(bonus_sum_select)).scalar_one_or_none()
+        return bonus_sum if bonus_sum is not None else 0
 
     async def get_bonus_get_sum_for_site(self, site_name: str) -> int:
         """
@@ -45,16 +45,16 @@ class User(Base):
         :rtype: int
         """
 
-        async with ASSession() as session:
-            bonus_sum_select = select(
-                func.sum(Transform.bonus).filter(
-                    Transform.user_id == self.id,
-                    Transform.site == site_name,
-                    Transform.bonus > 0,
-                )
+        session = ASSession()
+        bonus_sum_select = select(
+            func.sum(Transform.bonus).filter(
+                Transform.user_id == self.id,
+                Transform.site == site_name,
+                Transform.bonus > 0,
             )
-            bonus_sum = (await session.execute(bonus_sum_select)).scalar_one_or_none()
-            return bonus_sum if bonus_sum is not None else 0
+        )
+        bonus_sum = (await session.execute(bonus_sum_select)).scalar_one_or_none()
+        return bonus_sum if bonus_sum is not None else 0
 
     async def get_bonus_post_sum_for_site(self, site_name: str) -> int:
         """
@@ -66,16 +66,16 @@ class User(Base):
         :rtype: int
         """
 
-        async with ASSession() as session:
-            bonus_sum_select = select(
-                func.sum(Transform.bonus).filter(
-                    Transform.user_id == self.id,
-                    Transform.site == site_name,
-                    Transform.bonus < 0,
-                )
+        session = ASSession()
+        bonus_sum_select = select(
+            func.sum(Transform.bonus).filter(
+                Transform.user_id == self.id,
+                Transform.site == site_name,
+                Transform.bonus < 0,
             )
-            bonus_sum = (await session.execute(bonus_sum_select)).scalar_one_or_none()
-            return bonus_sum if bonus_sum is not None else 0
+        )
+        bonus_sum = (await session.execute(bonus_sum_select)).scalar_one_or_none()
+        return bonus_sum if bonus_sum is not None else 0
 
     @classmethod
     async def get(cls, uid: int, uname: str):
@@ -88,15 +88,15 @@ class User(Base):
         :type uid: str
         """
 
-        async with ASSession() as session:
-            user = await session.get(cls, uid)
-            if user:
-                if user.name != uname:
-                    user.name = uname
-            else:
-                user = cls(id=uid, name=uname)
-                session.add(user)
-            return user
+        session = ASSession()
+        user = await session.get(cls, uid)
+        if user:
+            if user.name != uname:
+                user.name = uname
+        else:
+            user = cls(id=uid, name=uname)
+            session.add(user)
+        return user
 
     async def add_transform_record(self, site: str, bonus: int):
         """
