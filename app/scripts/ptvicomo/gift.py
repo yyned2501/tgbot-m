@@ -16,7 +16,7 @@ TARGET = -1002022762746
     filters.chat(TARGET) & filters.regex(r"^#小萝莉给点"),
 )
 async def gift(client: Client, message: Message):
-    session = ASSession()
+
     today_midnight = datetime.datetime.combine(
         datetime.datetime.today().date(), datetime.datetime.min.time()
     )
@@ -26,36 +26,30 @@ async def gift(client: Client, message: Message):
         name = " ".join([n for n in name if n])
     else:
         return
-    async with session.begin():
-        if user := await session.get(User, uid):
-            if user.name != name:
-                user.name = name
-        else:
-            session.add(
-                User(
-                    id=uid,
-                    name=name,
-                )
-            )
-    async with session.begin():
-        today_tranform = (
-            (
-                await session.execute(
-                    select(Transform).filter(
-                        Transform.create_time >= today_midnight,
-                        Transform.site == "象站",
-                        Transform.bonus < 0,
+    async with ASSession() as session:
+        async with session.begin():
+            user = User.get(uid, name)
+            async with session.begin_nested():
+                today_tranform = (
+                    (
+                        await session.execute(
+                            select(Transform).filter(
+                                Transform.create_time >= today_midnight,
+                                Transform.site == "象站",
+                                Transform.bonus < 0,
+                            )
+                        )
                     )
+                    .scalars()
+                    .all()
                 )
-            )
-            .scalars()
-            .all()
-        )
-        uids = [tr.user_id for tr in today_tranform]
-        if len(uids) < 50:
-            if uid in uids:
-                delete_message(await message.reply(f"今天给过了，明天再来！"), 30)
-            else:
-                bonus = randint(100, 1000)
-                session.add(Transform(site="象站", user_id=uid, bonus=-bonus))
-                await message.reply(f"+{bonus}")
+                uids = [tr.user_id for tr in today_tranform]
+                if len(uids) < 50:
+                    if uid in uids:
+                        delete_message(
+                            await message.reply(f"今天给过了，明天再来！"), 30
+                        )
+                    else:
+                        bonus = randint(100, 1000)
+                        session.add(Transform(site="象站", user_id=uid, bonus=-bonus))
+                        await message.reply(f"+{bonus}")
