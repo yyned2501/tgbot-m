@@ -45,5 +45,5 @@ async def gift(client: Client, message: Message):
                         )
                     else:
                         bonus = randint(100, 1000)
-                        user.add_transform_record("象站", bonus)
+                        await user.add_transform_record("象站", bonus)
                         await message.reply(f"+{bonus}")
