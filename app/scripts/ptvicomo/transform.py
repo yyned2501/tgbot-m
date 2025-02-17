@@ -12,9 +12,9 @@ BONUS_NAME = "象草"
 
 @app.on_message(
     filters.chat(TARGET)
-    & custom_filters.zhuque_bot
+    & custom_filters.ptvicomo_bot
     & custom_filters.command_to_me
-    & filters.regex(r"转账成功, 信息如下: \n.+ 转出 (\d+)\n")
+    & filters.regex(r"给 .+ 发送了 (\d+) 象草\n")
 )
 async def transform_get(client, message: Message):
     bonus = message.matches[0].group(1)
@@ -24,9 +24,9 @@ async def transform_get(client, message: Message):
 
 @app.on_message(
     filters.chat(TARGET)
-    & custom_filters.zhuque_bot
+    & custom_filters.ptvicomo_bot
     & custom_filters.reply_to_me
-    & filters.regex(r"转账成功, 信息如下: \n.+ 转出 (\d+)\n")
+    & filters.regex(r"给 .+ 发送了 (\d+) 象草\n")
 )
 async def transform_use(client, message: Message):
     bonus = message.matches[0].group(1)
