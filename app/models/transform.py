@@ -6,6 +6,7 @@ from sqlalchemy import (
     func,
     select,
 )
+import pyrogram
 from sqlalchemy.orm import Mapped, mapped_column
 from app.models.base import TimeBase
 from app.models import ASSession
@@ -75,26 +76,27 @@ class User(TimeBase):
             )
         )
         bonus_sum = (await session.execute(bonus_sum_select)).scalar_one_or_none()
-        return bonus_sum if bonus_sum is not None else 0
+        return -bonus_sum if bonus_sum is not None else 0
 
     @classmethod
-    async def get(cls, uid: int, uname: str):
+    async def get(cls, tg_user: pyrogram.types.User):
         """
-        添加转账记录。
+        获取或创建用户记录。
 
-        :param uid: 用户tgid
-        :type uid: int
-        :param uname: 用户tgname
-        :type uid: str
+        :param tg_user: 用户对象
+        :type tg_user: pyrogram.types.User
+        :return: 用户记录
+        :rtype: User
         """
 
         session = ASSession()
-        user = await session.get(cls, uid)
+        username = " ".join(filter(None, [tg_user.first_name, tg_user.last_name]))
+        user = await session.get(cls, tg_user.id)
         if user:
-            if user.name != uname:
-                user.name = uname
+            if user.name != username:
+                user.name = username
         else:
-            user = cls(id=uid, name=uname)
+            user = cls(id=tg_user.id, name=username)
             session.add(user)
             await session.flush()
         return user
