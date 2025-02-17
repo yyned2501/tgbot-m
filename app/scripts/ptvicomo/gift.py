@@ -6,7 +6,7 @@ from sqlalchemy import select
 
 from app import app
 from app.models import ASSession
-from app.models.redpocket import Transform, User
+from app.models.transform import Transform, User
 from app.libs.messages import delete_message
 
 TARGET = -1002022762746
@@ -20,15 +20,9 @@ async def gift(client: Client, message: Message):
     today_midnight = datetime.datetime.combine(
         datetime.datetime.today().date(), datetime.datetime.min.time()
     )
-    if message.from_user:
-        uid = message.from_user.id
-        name = [message.from_user.first_name, message.from_user.last_name]
-        name = " ".join([n for n in name if n])
-    else:
-        return
     async with ASSession() as session:
         async with session.begin():
-            user = User.get(uid, name)
+            user = await User.get(message.from_user)
             async with session.begin_nested():
                 today_tranform = (
                     (
@@ -45,11 +39,11 @@ async def gift(client: Client, message: Message):
                 )
                 uids = [tr.user_id for tr in today_tranform]
                 if len(uids) < 50:
-                    if uid in uids:
+                    if user.id in uids:
                         delete_message(
                             await message.reply(f"今天给过了，明天再来！"), 30
                         )
                     else:
                         bonus = randint(100, 1000)
-                        session.add(Transform(site="象站", user_id=uid, bonus=-bonus))
+                        user.add_transform_record("象站", bonus)
                         await message.reply(f"+{bonus}")
