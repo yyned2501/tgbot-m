@@ -96,6 +96,7 @@ class User(TimeBase):
         else:
             user = cls(id=uid, name=uname)
             session.add(user)
+            await session.flush()
         return user
 
     async def add_transform_record(self, site: str, bonus: int):
@@ -110,6 +111,7 @@ class User(TimeBase):
         session = ASSession()
         transform = Transform(site=site, user_id=self.id, bonus=bonus)
         session.add(transform)
+        await session.flush()
 
 
 class Transform(TimeBase):
