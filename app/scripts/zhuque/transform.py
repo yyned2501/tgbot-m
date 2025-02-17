@@ -21,7 +21,9 @@ async def transform_get(client, message: Message):
     ls = message.matches[0].group(1)
     transform_message = message.reply_to_message
     transform_user = transform_message.from_user
-    username = f"{transform_user.first_name} {transform_user.last_name}"
+    username = " ".join(
+        filter(None, [transform_user.first_name, transform_user.last_name])
+    )
     async with ASSession() as session:
         async with session.begin():
             user = await User.get(transform_user.id, username)
@@ -47,7 +49,9 @@ async def transform_use(client, message: Message):
     ls = message.matches[0].group(1)
     transform_message = message.reply_to_message.reply_to_message
     transform_user = transform_message.from_user
-    username = f"{transform_user.first_name} {transform_user.last_name}"
+    username = " ".join(
+        filter(None, [transform_user.first_name, transform_user.last_name])
+    )
     async with ASSession() as session:
         async with session.begin():
             user = await User.get(transform_user.id, username)
