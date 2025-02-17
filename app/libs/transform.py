@@ -22,7 +22,7 @@ async def transform(transform_message: Message, bonus: int, site: str, bonus_nam
                 )
             else:
                 reply_message = (
-                    f"```\n小{user.name}, 送你 {bonus} {bonus_name} 能不能让你叫我一声大佬？\n"
+                    f"```\n小{user.name}, 送你 {-bonus} {bonus_name} 能不能让你叫我一声大佬？\n"
                     f"我一共给你转了 {post_bonus} {bonus_name}\n"
                     "```"
                 )
