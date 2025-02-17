@@ -30,7 +30,7 @@ async def transform_get(client, message: Message):
             post_bonus = await user.get_bonus_post_sum_for_site(SITE_NAME)
             reply_message = (
                 f"```\n感谢 {username} 大佬赠送 的 {ls} 灵石\n"
-                f"大佬一共给小弟转了 {get_bonus+ls} 灵石\n"
+                f"大佬一共给小弟转了 {get_bonus} 灵石\n"
                 f"小弟一共给大佬转了 {-post_bonus} 灵石\n"
                 "```"
             )
