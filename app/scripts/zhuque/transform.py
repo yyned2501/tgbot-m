@@ -58,7 +58,7 @@ async def transform_use(client, message: Message):
             await user.add_transform_record(SITE_NAME, -int(ls))
             post_bonus = await user.get_bonus_post_sum_for_site(SITE_NAME)
             reply_message = (
-                f"```\n{username} 送你 {ls} 灵石 能不能让你叫我一声大佬？\n"
+                f"```\n{username} , 送你 {ls} 灵石 能不能让你叫我一声大佬？\n"
                 f"我一共给你转了 {-post_bonus} 灵石\n"
                 "```"
             )
