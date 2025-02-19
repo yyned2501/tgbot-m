@@ -35,4 +35,4 @@ async def s_delete_message():
 
 scheduler.add_job(s_delete_message, "interval", seconds=1)
 for job in scheduler.get_jobs():
-    logger.info(f"Job {job.id} next run time: {job.next_run_time}")
+    logger.info(f"{job}")
