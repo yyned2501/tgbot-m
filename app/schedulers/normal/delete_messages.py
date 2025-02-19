@@ -11,7 +11,6 @@ logger.info("启动定时删除消息任务")
 async def s_delete_message():
     # 获取所有以 "DM" 开头的键
     delete_messages_keys = redis_cli.keys("DM*")
-    logger.info(f"待删除的消息列表{delete_messages_keys}")
     if delete_messages_keys:
         for key in delete_messages_keys:
             value = redis_cli.get(key)
@@ -34,5 +33,3 @@ async def s_delete_message():
 
 
 scheduler.add_job(s_delete_message, "interval", seconds=1)
-for job in scheduler.get_jobs():
-    logger.info(f"{job}")
