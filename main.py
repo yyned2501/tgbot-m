@@ -1,8 +1,11 @@
+import logging
 from pyrogram import idle
 
-from app import app, scheduler, logger
+from app import app, scheduler
 from app import models, scripts, schedulers
 from app.scripts.zhuque.ex.bet_modes import create_models
+
+logger = logging.getLogger("main")
 
 
 async def main():
