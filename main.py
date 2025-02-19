@@ -12,8 +12,10 @@ async def main():
     await models.create_all()
     await create_models()
     # scheduler.start()
+    logger.info("监听主程序")
     await idle()
     await app.stop()
+    logger.info("关闭主程序")
 
 
 if __name__ == "__main__":
