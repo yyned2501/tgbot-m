@@ -21,9 +21,6 @@ def delete_message(message: Message, delay: int = 0):
     )
 
 
-logger = logging.getLogger("test")
-
-
 async def s_delete_message():
     # 获取所有以 "DM" 开头的键
     delete_messages_keys = redis_cli.keys("DM*")
