@@ -5,6 +5,7 @@ import traceback
 from app import app, redis_cli, scheduler
 
 logger = logging.getLogger("main")
+logger.info("启动定时删除消息任务")
 
 
 async def s_delete_message():
