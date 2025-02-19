@@ -8,6 +8,7 @@ logger = logging.getLogger("main")
 
 
 async def _delete_message(message: Message):
+    logger.info(f"删除消息{message.text}")
     try:
         await message.delete()
     except Exception as e:
