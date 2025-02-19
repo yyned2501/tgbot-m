@@ -1,6 +1,9 @@
 import asyncio
+import logging
 import time
 from asyncio import Lock
+
+logger = logging.getLogger("main")
 
 
 class AsyncTokenBucket:
