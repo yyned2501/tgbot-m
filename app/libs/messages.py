@@ -26,3 +26,4 @@ def delete_message(message: Message, sleep_sec: int):
         next_run_time=next_run_time,
         args=(message,),
     )
+    logger.info(f"当前任务列表: {scheduler.get_jobs()}")
