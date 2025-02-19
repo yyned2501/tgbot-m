@@ -11,11 +11,10 @@ async def main():
     await app.start()
     await models.create_all()
     await create_models()
-    scheduler.start()
+    # scheduler.start()
     await idle()
     await app.stop()
 
 
 if __name__ == "__main__":
     asyncio.run(main())
-
