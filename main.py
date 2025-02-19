@@ -8,7 +8,9 @@ logger.info("主程序启动")
 
 
 async def main():
+    logger.info("app.start()")
     await app.start()
+    logger.info("models.create_all()")
     await models.create_all()
     await create_models()
     scheduler.start()
