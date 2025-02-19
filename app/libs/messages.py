@@ -26,4 +26,8 @@ def delete_message(message: Message, sleep_sec: int):
         next_run_time=next_run_time,
         args=(message,),
     )
-    logger.info(f"当前任务列表: {scheduler.get_jobs()}")
+    jobs = scheduler.get_jobs()
+    for job in jobs:
+        logger.info(
+            f"任务ID: {job.id}, 任务名称: {job.name}, 任务下次运行时间: {job.next_run_time}"
+        )
