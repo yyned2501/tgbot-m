@@ -18,9 +18,11 @@ async def _delete_message(message: Message):
 
 
 def delete_message(message: Message, sleep_sec: int):
+    next_run_time = datetime.datetime.now() + datetime.timedelta(seconds=sleep_sec)
+    logger.info(f"添加定时删除消息{message.text}，删除时间{next_run_time}")
     scheduler.add_job(
         _delete_message,
         "date",
-        next_run_time=datetime.datetime.now() + datetime.timedelta(seconds=sleep_sec),
+        next_run_time=next_run_time,
         args=(message,),
     )
