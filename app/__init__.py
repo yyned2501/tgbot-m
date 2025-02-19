@@ -34,7 +34,7 @@ if setting["proxy"]["enable"]:
 else:
     proxy = None
 
-app = Client(
+app = MyClient(
     "sessions/tgbot",
     api_id=setting["tg"]["api_id"],
     api_hash=setting["tg"]["api_hash"],
