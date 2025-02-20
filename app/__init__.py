@@ -44,12 +44,12 @@ else:
     proxy = None
 
 
-app = MyClient(
-    "sessions/tgbot",
-    api_id=setting["tg"]["api_id"],
-    api_hash=setting["tg"]["api_hash"],
-    proxy=proxy,
-)
+# app = MyClient(
+#     "sessions/tgbot",
+#     api_id=setting["tg"]["api_id"],
+#     api_hash=setting["tg"]["api_hash"],
+#     proxy=proxy,
+# )
 redis_cli = redis.Redis(
     host=setting["redis"]["host"],
     port=setting["redis"]["port"],

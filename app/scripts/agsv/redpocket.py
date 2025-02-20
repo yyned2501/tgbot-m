@@ -4,14 +4,14 @@ from pyrogram.types.messages_and_media import Message
 from pyrogram import filters, Client
 from pyrogram.enums import ParseMode
 
-from app import app, logger
+from app import Client, logger
 from app.filters.custom_filters import agsv_bot
 from app.config import setting
 
 TARGET = -1002123701097
 
 
-@app.on_message(filters.chat(TARGET) & agsv_bot & filters.regex(r"幸运抽奖"))
+@Client.on_message(filters.chat(TARGET) & agsv_bot & filters.regex(r"幸运抽奖"))
 async def get_redpocket_message(client: Client, message: Message):
     await asyncio.sleep(randint(5, 10))
     logger.info("AGSV:参与幸运抽奖")
@@ -24,7 +24,7 @@ async def get_redpocket_message(client: Client, message: Message):
     )
 
 
-@app.on_message(filters.chat(TARGET) & agsv_bot & filters.regex(r"领取口令: (.+)$"))
+@Client.on_message(filters.chat(TARGET) & agsv_bot & filters.regex(r"领取口令: (.+)$"))
 async def get_redpocket_message(client: Client, message: Message):
     await asyncio.sleep(randint(5, 10))
     kl = message.matches[0].group(1)
@@ -37,7 +37,7 @@ async def get_redpocket_message(client: Client, message: Message):
     )
 
 
-@app.on_message(filters.chat(TARGET) & agsv_bot & filters.regex(r"^【.+红包】"))
+@Client.on_message(filters.chat(TARGET) & agsv_bot & filters.regex(r"^【.+红包】"))
 async def get_redpocket_message(client: Client, message: Message):
     await asyncio.sleep(randint(5, 10))
     logger.info(f"AGSV:领取普通红包")

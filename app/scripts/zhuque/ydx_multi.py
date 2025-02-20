@@ -1,11 +1,11 @@
 import asyncio
 import datetime
 
-from pyrogram import filters, Client
+from pyrogram import filters
 from pyrogram.types.messages_and_media import Message
 from sqlalchemy import desc, func, or_, select, update
 
-from app import app, logger, scheduler
+from app import Client, logger, scheduler
 from app.config import setting
 from app.filters import custom_filters
 from app.models import ASSession
@@ -181,7 +181,7 @@ async def check_ydx_message(message: Message, base: ZqYdxBase):
             )
 
 
-@app.on_message(filters.command("zqydx") & filters.me)
+@Client.on_message(filters.command("zqydx") & filters.me)
 async def zhuque_ydx_switch(client: Client, message: Message):
     session = ASSession()
     async with session.begin():
@@ -372,7 +372,7 @@ async def zhuque_ydx_switch(client: Client, message: Message):
                     delete_message(message, 5)
 
 
-@app.on_message(
+@Client.on_message(
     filters.chat(TARGET) & custom_filters.zhuque_bot & filters.regex(r"创建时间")
 )
 async def zhuque_ydx_bet(client: Client, message: Message):
@@ -414,7 +414,7 @@ async def zhuque_ydx_bet(client: Client, message: Message):
                 error += 1
 
 
-@app.on_message(
+@Client.on_message(
     filters.chat(TARGET)
     & custom_filters.zhuque_bot
     & filters.regex(r"已结算: 结果为 \d (.)")
@@ -427,7 +427,7 @@ async def zhuque_ydx_check(client: Client, message: Message):
     async with session.begin():
         base = await session.get(ZqYdxBase, 1) or ZqYdxBase.init()
         if base.kp_switch == 1:
-            await app.send_message(TARGET, f"/ydx")
+            await client.send_message(TARGET, f"/ydx")
         if base.message_id:
             await check_ydx_message(message, base)
         base.message_id = None
@@ -466,12 +466,14 @@ async def zhuque_ydx_check(client: Client, message: Message):
                 model.winning_streak = 0
                 model.sum_losebonus = 0
         if base.bet_switch == 1:
-            await app.send_message(5697370563, "/info")
+            await client.send_message(5697370563, "/info")
     if res_mess:
-        await app.send_message(setting["zhuque"]["ydx_model"]["push_chat_id"], res_mess)
+        await client.send_message(
+            setting["zhuque"]["ydx_model"]["push_chat_id"], res_mess
+        )
 
 
-@app.on_message(
+@Client.on_message(
     filters.chat(5697370563)
     & filters.regex(r"灵石数量: (\b\d{1,3}(?:,\d{3})*(?:\.\d+)?\b)")
 )
