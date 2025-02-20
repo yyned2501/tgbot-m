@@ -15,7 +15,7 @@ async def transform(transform_message: Message, bonus: int, site: str, bonus_nam
             post_bonus = await user.get_bonus_post_sum_for_site(site)
             if bonus > 0:
                 reply_message = (
-                    f"```\n感谢 {user.name} 大佬赠送 的 {bonus} {bonus_name}\n"
+                    f"```\n感谢 {user.name} 大佬赠送的 {bonus} {bonus_name}\n"
                     f"大佬一共给小弟转了 {get_bonus} {bonus_name}\n"
                     f"小弟一共给大佬转了 {post_bonus} {bonus_name}\n"
                     "```"

@@ -23,7 +23,7 @@ services:
     image: redis:latest
     container_name: redis
     ports:
-      - "6379:6379"
+      - 6379:6379
     volumes:
       - ./data/redis:/data
     network_mode: bridge

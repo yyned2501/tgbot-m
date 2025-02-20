@@ -10,7 +10,6 @@ from app import models
 from app.libs.logs import logger
 from app.libs.async_token_bucket import AsyncTokenBucket
 from app.config import setting
-from app.scripts.zhuque.ex.bet_modes import create_models
 
 
 class Client(_Client):
@@ -49,13 +48,15 @@ redis_cli = redis.Redis(
 
 
 async def start_app():
+    from app.scripts.zhuque.ex.bet_modes import create_models
+
     global app
     app = Client(
         "sessions/tgbot",
         api_id=setting["tg"]["api_id"],
         api_hash=setting["tg"]["api_hash"],
         proxy=proxy,
-        plugins=dict(root="app.scripts"),
+        plugins=dict(root="app.scripts", include=["zhuque.ydx_multi"]),
     )
 
     logger.info("启动主程序")
