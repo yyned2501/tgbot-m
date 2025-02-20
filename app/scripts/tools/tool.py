@@ -22,7 +22,7 @@ async def get_message(client: Client, message: Message):
 
 
 @Client.on_message(filters.command("setloglevel"))
-async def get_message(client: Client, message: Message):
+async def set_log_level(client: Client, message: Message):
     level = message.command[1].upper()
     if level in LOG_LEVELS:
         logger.setLevel(LOG_LEVELS[level])
