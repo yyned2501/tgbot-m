@@ -1,10 +1,10 @@
 import datetime
 from random import randint
 from pyrogram.types.messages_and_media import Message
-from pyrogram import filters, Client
+from pyrogram import filters
 from sqlalchemy import select
 
-from app import app
+from app import Client
 from app.models import ASSession
 from app.models.transform import Transform, User
 from app.libs.messages import delete_message
@@ -13,7 +13,7 @@ TARGET = -1002022762746
 SITE_NAME = "象岛"
 
 
-@app.on_message(
+@Client.on_message(
     filters.chat(TARGET) & filters.regex(r"^#小萝莉给点"),
 )
 async def gift(client: Client, message: Message):

@@ -1,15 +1,14 @@
 import asyncio
 from random import randint, sample
-from pyrogram import Client
 from pyrogram.types import Message
 from pyrogram import filters
 from app.filters import custom_filters
-from app import app
+from app import Client
 
 TARGET = -1002022762746
 
 
-@app.on_message(
+@Client.on_message(
     filters.chat(
         TARGET) & custom_filters.ptvicomo_bot & filters.regex(r"奖池金额"),
 )

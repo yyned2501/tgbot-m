@@ -1,16 +1,16 @@
 import asyncio
 from random import randint
 from pyrogram.types.messages_and_media import Message
-from pyrogram import filters, Client
+from pyrogram import filters
 
-from app import app, logger
+from app import Client, logger
 from app.filters import custom_filters
 
 
 TARGET = -1001873711923
 
 
-@app.on_message(
+@Client.on_message(
     filters.chat(TARGET)
     & filters.inline_keyboard
     & custom_filters.yyz_bot

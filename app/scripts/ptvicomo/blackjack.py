@@ -4,7 +4,7 @@ from pyrogram import Client
 from pyrogram.types import Message
 from pyrogram import filters
 from app.filters import custom_filters
-from app import app
+from app import Client
 import logging
 
 logger = logging.getLogger("main")
@@ -49,13 +49,13 @@ def calculate_score(cards: list[str]):
     return score
 
 
-@app.on_message(
+@Client.on_message(
     custom_filters.reply_to_me
     & filters.regex(
         r"庄：\?\?\? ((?:[0-9JQKA]*.\s*)+)\n你(\d+)点：((?:[0-9JQKA]*.\s*)+)"
     )
 )
-@app.on_edited_message(
+@Client.on_edited_message(
     custom_filters.reply_to_me
     & filters.regex(
         r"庄：\?\?\? ((?:[0-9JQKA]*.\s*)+)\n你(\d+)点：((?:[0-9JQKA]*.\s*)+)"
