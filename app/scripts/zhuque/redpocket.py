@@ -1,9 +1,9 @@
 import asyncio
 import re
-from pyrogram import filters, Client
+from pyrogram import filters
 from pyrogram.types.messages_and_media import Message
 
-from app import app
+from app import Client
 from app.models import ASSession
 from app.models.redpocket import Redpocket
 from app.filters import custom_filters
@@ -18,7 +18,7 @@ async def in_redpockets_filter(_, __, m: Message):
     return bool(m.text in redpockets)
 
 
-@app.on_message(
+@Client.on_message(
     filters.chat(TARGET)
     & custom_filters.zhuque_bot
     & filters.regex(r"内容: (.*)\n灵石: .*\n剩余: .*\n大善人: (.*)")

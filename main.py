@@ -10,7 +10,8 @@ import asyncio
 from pyrogram import idle
 from app import Client, scheduler, logger, setting, proxy
 from app import models
-from app.scripts.zhuque.ex.bet_modes import create_models
+
+# from app.scripts.zhuque.ex.bet_modes import create_models
 
 
 async def main():
@@ -24,7 +25,7 @@ async def main():
     logger.info("启动主程序")
     await app.start()
     await models.create_all()
-    await create_models()
+    # await create_models()
     scheduler.start()
     logger.info("监听主程序")
     await idle()
