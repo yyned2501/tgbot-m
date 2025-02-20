@@ -55,7 +55,7 @@ async def start_app():
         api_id=setting["tg"]["api_id"],
         api_hash=setting["tg"]["api_hash"],
         proxy=proxy,
-        plugins=dict(root="scripts"),
+        plugins=dict(root="app.scripts"),
     )
     logger.info("启动主程序")
     await app.start()
