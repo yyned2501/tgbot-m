@@ -2,13 +2,13 @@ import json
 import logging
 import time
 import traceback
-from app import app, redis_cli, scheduler
+from app import Client, redis_cli, scheduler
 
 logger = logging.getLogger("main")
 logger.info("启动定时删除消息任务")
 
 
-async def s_delete_message():
+async def s_delete_message(app: Client):
     # 获取所有以 "DM" 开头的键
     delete_messages_keys = redis_cli.keys("DM*")
     if delete_messages_keys:
