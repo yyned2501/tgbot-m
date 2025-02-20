@@ -1,9 +1,12 @@
-import uvloop
+import sys
 
-uvloop.install()
-import asyncio
+if sys.platform != "win32":
+    import uvloop
+
+    uvloop.install()
+
+
 from pyrogram import idle
-
 from app import app, scheduler, logger
 from app import models, scripts, schedulers
 from app.scripts.zhuque.ex.bet_modes import create_models
