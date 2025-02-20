@@ -20,7 +20,7 @@ async def main():
         api_id=setting["tg"]["api_id"],
         api_hash=setting["tg"]["api_hash"],
         proxy=proxy,
-        plugins=dict(root="app", exclude=["scripts.zhuque.ydx_multi"]),
+        plugins=dict(root="app.scripts", exclude=["zhuque.transform"]),
     )
     logger.info("启动主程序")
     await app.start()

@@ -1,7 +1,7 @@
 from pyrogram import filters
 from pyrogram.types.messages_and_media import Message
 
-from app import app
+from app import Client
 from app.filters import custom_filters
 from app.libs.transform import transform
 
@@ -10,7 +10,7 @@ SITE_NAME = "朱雀"
 BONUS_NAME = "灵石"
 
 
-@app.on_message(
+@Client.on_message(
     filters.chat(TARGET)
     & custom_filters.zhuque_bot
     & custom_filters.command_to_me
@@ -22,7 +22,7 @@ async def transform_get(client, message: Message):
     return await transform(transform_message, int(bonus), SITE_NAME, BONUS_NAME)
 
 
-@app.on_message(
+@Client.on_message(
     filters.chat(TARGET)
     & custom_filters.zhuque_bot
     & custom_filters.reply_to_me
