@@ -1,3 +1,4 @@
+import asyncio
 import os
 
 import redis
@@ -17,6 +18,14 @@ class MyClient(Client):
     async def invoke(self, *arg, **kargs):
         await self.bucket.consume()
         return await super().invoke(*arg, **kargs)
+
+    def run(self, *arg, **kargs):
+        if len(arg) > 0:
+            co = arg[0]
+            loop = asyncio.get_event_loop()
+            loop.run_until_complete(co)
+        else:
+            super().run(*arg, **kargs)
 
 
 os.environ["TZ"] = "Asia/Shanghai"
