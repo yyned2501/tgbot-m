@@ -38,3 +38,9 @@ with open("config/setting.yaml", "w") as file:
     yaml.safe_dump(
         setting, file, default_flow_style=False, allow_unicode=True, sort_keys=False
     )
+
+plugins = [
+    f"{site}.{plugin}"
+    for site in launch.get("scripts", {})
+    for plugin in launch["scripts"][site]
+]

@@ -9,7 +9,7 @@ from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from app import models
 from app.libs.logs import logger
 from app.libs.async_token_bucket import AsyncTokenBucket
-from app.config import setting
+from app.config import setting, plugins
 
 
 class Client(_Client):
@@ -56,7 +56,7 @@ async def start_app():
         api_id=setting["tg"]["api_id"],
         api_hash=setting["tg"]["api_hash"],
         proxy=proxy,
-        plugins=dict(root="app.scripts", include=["zhuque.ydx_multi"]),
+        plugins=dict(root="app.scripts", include=plugins),
     )
 
     logger.info("启动主程序")
