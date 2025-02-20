@@ -19,6 +19,14 @@ services:
     ports:
       - 8880:9001 #supervisor管理端口
     tty: true
+  redis:
+    image: redis:latest
+    container_name: redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./data/redis:/data
+    network_mode: bridge
 ```
 
 首次启动后,可以进入config文件夹修改setting和launch
