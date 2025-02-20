@@ -6,9 +6,9 @@ from pyrogram import idle
 
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
+from app import models
 from app.libs.logs import logger
 from app.libs.async_token_bucket import AsyncTokenBucket
-from app import models
 from app.config import setting
 from app.scripts.zhuque.ex.bet_modes import create_models
 
@@ -25,6 +25,8 @@ class Client(_Client):
 
 os.environ["TZ"] = "Asia/Shanghai"
 scheduler = AsyncIOScheduler()
+
+app: Client = None
 
 if setting["proxy"]["enable"]:
     logger.info("proxy start")
@@ -44,12 +46,10 @@ redis_cli = redis.Redis(
     port=setting["redis"]["port"],
     db=setting["redis"]["db"],
 )
-import asyncio
-
-from app import Client, scheduler, logger, setting, proxy
 
 
 async def start_app():
+    global app
     app = Client(
         "sessions/tgbot",
         api_id=setting["tg"]["api_id"],
@@ -57,6 +57,7 @@ async def start_app():
         proxy=proxy,
         plugins=dict(root="app.scripts"),
     )
+
     logger.info("启动主程序")
     await app.start()
     await models.create_all()
