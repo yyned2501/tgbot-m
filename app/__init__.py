@@ -34,6 +34,7 @@ if setting["proxy"]["enable"]:
 else:
     proxy = None
 
+
 app = MyClient(
     "sessions/tgbot",
     api_id=setting["tg"]["api_id"],
