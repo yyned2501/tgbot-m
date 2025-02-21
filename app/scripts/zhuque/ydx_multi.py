@@ -39,29 +39,6 @@ def delete_message(message: Message, sleep_sec: int):
     )
 
 
-async def notify_wwd(client: Client, model: ZqYdxMulti, dx: int):
-    pass
-    # if setting["zhuque"]["ydx_model"]["wwd"]:
-    #     users = {"小砾": 829718065, "阿奇": 1016485267, "灰灰": 7927305165}
-    #     wwd = " ".join([f"[{name}](tg://user?id={uid})" for name, uid in users.items()])
-    #     if model.losing_streak >= 6:
-    #         delete_message(
-    #             await client.send_message(
-    #                 TARGET,
-    #                 f"{wwd} 耶~ 汪汪队出动！！！\n模型{model.name}连负[{model.losing_streak}]，模型预测{dx}",
-    #             ),
-    #             60,
-    #         )
-    #     if model.winning_streak >= 6:
-    #         delete_message(
-    #             await client.send_message(
-    #                 TARGET,
-    #                 f"{wwd} 耶~ 汪汪队出动！！！\n模型{model.name}连胜[{model.winning_streak}]，模型预测{dx}",
-    #             ),
-    #             60,
-    #         )
-
-
 async def new_history_list(message: Message):
     """
     通过秋人提供的40个数据来生成历史数据列表
@@ -274,7 +251,7 @@ async def zhuque_ydx_switch(client: Client, message: Message):
                         if models[k]["guess"] == 1
                         else 1 - models[k]["win_rate"]
                     )
-                    r += f"模型{k}:\n历史失败次数:{models[k]["loss_count"]}\n最大撤回:{models[k]["max_withdrawal"]}\n当前撤回:{models[k]["current_withdraw"]}\n最大失败轮次:{models[k]["max_nonzero_index"]}\n净胜次数:{models[k]["win_count"]}\n胜率:{models[k]["win_rate"]:.02%}\n当前失败轮次:{models[k]["turn_loss_count"]}\n模型预测:{models[k]["guess"]}\n\n"
+                    r += f"模型{k}:\n历史失败次数:{models[k]["loss_count"]}\n最大失败轮次:{models[k]["max_nonzero_index"]}\n净胜次数:{models[k]["win_count"]}\n胜率:{models[k]["win_rate"]:.02%}\n当前失败轮次:{models[k]["turn_loss_count"]}\n模型预测:{models[k]["guess"]}\n\n"
                 r += f"模型综合预测:{sum(dx_guess)/len(dx_guess):.02%} 概率 大"
                 r += "```"
                 # 赋值给模型同步
@@ -396,7 +373,6 @@ async def zhuque_ydx_bet(client: Client, message: Message):
                 running_d_models_list = running_d_models.scalars().all()
                 for model in running_d_models_list:
                     dx = mode(model.name, data)
-                    await notify_wwd(client, model, dx)
                     bet_bonus = 1
                     if model.losing_streak == 7:
                         bet_bonus = int(base.start_bonus)
@@ -465,8 +441,6 @@ async def zhuque_ydx_check(client: Client, message: Message):
                 model.losing_streak = 0
                 model.winning_streak = 0
                 model.sum_losebonus = 0
-        if base.bet_switch == 1:
-            await client.send_message(5697370563, "/info")
     if res_mess:
         await client.send_message(
             setting["zhuque"]["ydx_model"]["push_chat_id"], res_mess

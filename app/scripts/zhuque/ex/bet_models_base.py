@@ -9,41 +9,10 @@ from app import logger
 core = ov.Core()
 
 
-class MaxWithdrawalCalculator:
-    def __init__(self):
-        self.s = 0  # 当前累计和
-        self.max_sum = 0  # 累计和的最大值
-        self.min_sum_after_max = float("inf")  # 在最大累计和之后的最小累计和
-        self.max_withdraw = 0  # 最大撤回值
-        self.withdraw = 0
-        self.current_withdraw = 0
-
-    def add_value(self, value: int) -> int:
-        self.s += value
-
-        # 更新最大累计和
-        if self.s > self.max_sum:
-            self.max_sum = self.s
-            self.min_sum_after_max = self.s  # 重置为当前值，因为找到了新的最大累计和
-
-        # 在达到最大累计和之后，更新最小累计和
-        if self.s < self.min_sum_after_max:
-            self.min_sum_after_max = self.s
-
-            # 计算当前的撤回值并更新
-            self.withdraw = self.max_sum - self.min_sum_after_max
-            if self.withdraw > self.max_withdraw:
-                self.max_withdraw = self.withdraw
-        self.current_withdraw = self.max_sum - self.s
-        # 返回当前的最大撤回值
-        return self.max_withdraw
-
-
 class BetModel(ABC):
     def __init__(self, model_path: str):
         self.model_path = model_path
         self.model = self._load_and_compile_model(model_path)
-        self.max_withdrawal = MaxWithdrawalCalculator()
 
     def _load_and_compile_model(self, model_path: str) -> ov.CompiledModel:
         model_onnx = core.read_model(model=model_path)
@@ -71,7 +40,6 @@ class BetModel(ABC):
         turn_loss_count = 0
         win_count = 0
         total_count = 0
-        max_withdrawal = MaxWithdrawalCalculator()
         for i in range(40, len(data) + 1):
             data_i = data[i - 40 : i]
             dx = self.bet_model(data_i)
@@ -81,10 +49,8 @@ class BetModel(ABC):
                     loss_count[turn_loss_count] += 1
                     win_count += 1
                     turn_loss_count = 0
-                    max_withdrawal.add_value(1)
                 else:
                     turn_loss_count += 1
-                    max_withdrawal.add_value(-1)
         max_nonzero_index = next(
             (
                 index
@@ -99,8 +65,6 @@ class BetModel(ABC):
             "win_rate": win_count / total_count,
             "win_count": 2 * win_count - total_count,
             "turn_loss_count": turn_loss_count,
-            "max_withdrawal": max_withdrawal.max_withdraw,
-            "current_withdraw": max_withdrawal.current_withdraw,
             "guess": dx,
         }
 
