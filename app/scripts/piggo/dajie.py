@@ -1,8 +1,4 @@
-import asyncio
-from random import randint
-import re
 from pyrogram import filters
-from pyrogram.enums import ParseMode
 from pyrogram.types.messages_and_media import Message
 
 from app import Client, logger
@@ -33,7 +29,7 @@ async def dajie_win(client: Client, message: Message):
         r"你成功打劫了.*加倍羞辱了 (\d+) 次 扣除税 ([\d\.]+) 共获得 ([\d\.]+) 个魔力"
     )
 )
-async def dajie_win(client: Client, message: Message):
+async def dajie_lose(client: Client, message: Message):
     match = message.matches[0]
     count = int(match.group(1))
     tax = float(match.group(2))
