@@ -21,6 +21,7 @@ BOT = 6121385204
 async def dajie_win(client: Client, message: Message):
     match = message.matches[0]
     bonus = match.group(1)
+    logger.info(f"猪猪被打劫，获得{bonus}魔力")
     await message.reply_to_message.reply(f"感谢大佬赠送的 {bonus} 魔力，爱你哟")
 
 
@@ -37,5 +38,6 @@ async def dajie_win(client: Client, message: Message):
     count = match.group(1)
     tax = match.group(2)
     bonus = match.group(3)
+    logger.info(f"猪猪被打劫，失去{bonus+tax}魔力")
     await message.reply_to_message.reply(f"竟敢抢我魔力 {bonus+tax} ? 看我打劫回来！")
     await message.reply_to_message.reply(f"/dajie {count}")
