@@ -51,7 +51,7 @@ async def self_delatemessage(client: Client, message: Message):
         return
 
     async for msg in client.search_messages(
-        message.chat.id, from_user="me", offset=offset - 1, limit=count
+        message.chat.id, from_user="me", limit=count
     ):
         count_buffer += 1
         msgs.append(msg.id)
@@ -60,7 +60,10 @@ async def self_delatemessage(client: Client, message: Message):
         await client.delete_messages(message.chat.id, msgs)
 
     delete_message(
-        await message.edit(f"已删除消息{str(count_buffer)} / {str(count)}"), 3
+        await client.send_message(
+            message.chat.id, f"已删除消息{str(count_buffer)} / {str(count)}"
+        ),
+        3,
     )
 
 
