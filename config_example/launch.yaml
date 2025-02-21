@@ -3,8 +3,10 @@ schedulers:
     - ydx_refresh_withdrawal
 scripts:
   ptvicomo:
-    - gift
     - lottery
+    - blackjack
+    - redpocket
+    - transform
   zhuque:
     - redpocket
     - dajie
