@@ -3,6 +3,7 @@ from pyrogram.types.messages_and_media import Message
 
 from app import Client, logger
 from app.filters import custom_filters
+from app.libs.messages import delete_message
 
 GROUP = -1002119517619
 BOT = 6121385204
@@ -18,7 +19,9 @@ async def dajie_win(client: Client, message: Message):
     match = message.matches[0]
     bonus = float(match.group(1))
     logger.info(f"猪猪被打劫，获得{bonus}魔力")
-    await message.reply_to_message.reply(f"感谢大佬赠送的 {bonus} 魔力，爱你哟")
+    delete_message(
+        await message.reply_to_message.reply(f"感谢大佬赠送的 {bonus} 魔力，爱你哟"), 60
+    )
 
 
 @Client.on_message(
@@ -35,5 +38,10 @@ async def dajie_lose(client: Client, message: Message):
     tax = float(match.group(2))
     bonus = float(match.group(3))
     logger.info(f"猪猪被打劫，失去{bonus+tax}魔力")
-    await message.reply_to_message.reply(f"竟敢抢我魔力 {bonus+tax} ? 看我打劫回来！")
+    delete_message(
+        await message.reply_to_message.reply(
+            f"竟敢抢我魔力 {bonus+tax} ? 看我打劫回来！"
+        ),
+        60,
+    )
     await message.reply_to_message.reply(f"/dajie {count}")
