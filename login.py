@@ -1,3 +1,4 @@
+import asyncio
 import subprocess
 
 from pyrogram import Client
@@ -16,17 +17,16 @@ if setting["proxy"]["enable"]:
 else:
     proxy = None
 
-app = Client(
-    "sessions/tgbot",
-    api_id=setting["tg"]["api_id"],
-    api_hash=setting["tg"]["api_hash"],
-    proxy=proxy,
-)
-
 
 async def main():
+    app = Client(
+        "sessions/tgbot",
+        api_id=setting["tg"]["api_id"],
+        api_hash=setting["tg"]["api_hash"],
+        proxy=proxy,
+    )
     async with app:
-        await app.send_message("me", "登录成功") 
+        await app.send_message("me", "登录成功")
     print("登录成功")
     command = ["supervisorctl", "start", "main"]
     result = subprocess.run(command, capture_output=True, text=True)
@@ -38,4 +38,4 @@ async def main():
 
 
 if __name__ == "__main__":
-    app.run(main())
+    asyncio.run(main())
