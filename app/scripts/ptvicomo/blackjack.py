@@ -167,7 +167,7 @@ async def blackjack(client: Client, message: Message):
         deck = Deck(dealer_cards, player_cards)
         done_value += deck.calculate_result()
         add_value += deck.add()
-    logger.info(f"{add_value}-{done_value}")
+    logger.info(f"{add_value}:{done_value}")
     if add_value >= done_value:
         await message.click(0)
     else:
