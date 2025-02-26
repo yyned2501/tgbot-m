@@ -255,17 +255,6 @@ async def zhuque_ydx_switch(client: Client, message: Message):
                 r += f"模型综合预测:{sum(dx_guess)/len(dx_guess):.02%} 概率 大"
                 r += "```"
                 # 赋值给模型同步
-                models_ = await session.execute(select(ZqYdxMulti))
-                for model in models_.scalars():
-                    if models[model.name]["max_withdrawal"] > model.max_withdrawal:
-                        model.max_withdrawal = models[model.name]["max_withdrawal"]
-                    if (
-                        models[model.name]["current_withdraw"]
-                        > model.current_withdrawal
-                    ):
-                        model.current_withdrawal = models[model.name][
-                            "current_withdraw"
-                        ]
                 await message.edit(r)
                 delete_message(message, 30)
 
@@ -420,7 +409,6 @@ async def zhuque_ydx_check(client: Client, message: Message):
                 model.winning_streak += 1
                 model.losing_streak = 0
                 model.sum_losebonus = 0
-                model.current_withdrawal = max(model.current_withdrawal - 1, 0)
                 r = f"[胜{model.winning_streak}]"
             elif ret_bonus < 0:
                 if ret_bonus < -1:
@@ -429,9 +417,6 @@ async def zhuque_ydx_check(client: Client, message: Message):
                     model.win_bonus -= abs(model.bet_bonus)
                 model.losing_streak += 1
                 model.winning_streak = 0
-                model.current_withdrawal += 1
-                if model.current_withdrawal > model.max_withdrawal:
-                    model.max_withdrawal = model.current_withdrawal
                 r = f"[负{model.losing_streak}]"
             r += f"[{fit_model_name[model.fit_model]}]"
             r += f"[{model.win}-{model.lose}] 模型 {model.name} : 下注 {model.bet_bonus} 累计盈亏：{model.win_bonus}\n"
