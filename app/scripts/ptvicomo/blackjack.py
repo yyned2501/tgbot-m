@@ -70,9 +70,9 @@ class Deck:
 
     def add(self):
         sub_0 = -1
-        while (sub := self.calculate_result()) < 1 and self.calculate_hand_value(
-            self.dealer_hand
-        ) < 21:
+        while ((sub := self.calculate_result()) < 1) and (
+            self.calculate_hand_value(self.player_hand) < 21
+        ):
             if sub == 0:
                 sub_0 = sub
             self.player_draw()
