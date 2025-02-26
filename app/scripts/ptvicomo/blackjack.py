@@ -1,3 +1,4 @@
+import asyncio
 from copy import deepcopy
 import random
 import re
@@ -166,13 +167,14 @@ async def blackjack(client: Client, message: Message):
 
     add_value = 0
     done_value = 0
-    total_simulations = 100
+    total_simulations = 1000
 
     for _ in range(total_simulations):
         deck = Deck(dealer_cards, player_cards)
         done_value += deck.calculate_result()
         add_value += deck.add()
     logger.info(f"{add_value}:{done_value}")
+    await asyncio.sleep(1)
     if add_value >= done_value:
         await message.click(0)
     else:
