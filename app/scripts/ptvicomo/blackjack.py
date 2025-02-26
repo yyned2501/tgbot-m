@@ -47,7 +47,7 @@ class Deck:
         self.dealer_value = self.dealer_hand_value()
 
     def shuffle_card(self):
-        self.cards = ALL_CARDS
+        self.cards = deepcopy(ALL_CARDS)
         for card in self.dealer_hand + self.player_hand:
             self.cards.remove(card)
         random.shuffle(self.cards)
