@@ -1,7 +1,6 @@
-import asyncio
 from copy import deepcopy
 import random
-from random import randint, sample
+import re
 from pyrogram import Client
 from pyrogram.types import Message
 from pyrogram import filters
@@ -9,10 +8,16 @@ from app.filters import custom_filters
 from app import Client
 import logging
 
+from app.libs.messages import delete_message
+
 logger = logging.getLogger("main")
 
 GROUP = -1002022762746
 BOT = 7124396542
+MAX_BONUS = 10000
+MAX_LOSE_TIME = 3
+lose_time = 0
+AUTO = False
 ALL_CARDS = [
     f"{rank}{suit}"
     for rank in [
@@ -172,3 +177,50 @@ async def blackjack(client: Client, message: Message):
         await message.click(0)
     else:
         await message.click(1)
+
+
+@Client.on_message(filters.command("xd21") & filters.me)
+async def xd21(client: Client, message: Message):
+    global AUTO
+
+    if message.command[1] == "on":
+        AUTO = True
+        delete_message(await message.edit("21点启动"), 5)
+    else:
+        AUTO = False
+        delete_message(await message.edit("21点关闭"), 5)
+    await client.send_message(
+        message.chat.id,
+        f"/blackjack@PTVicomoBot {int(MAX_BONUS/(2**MAX_LOSE_TIME))}",
+    )
+
+
+"""玩家：Yy 七世
+象草：10000
+庄20点：5♦️ 5♥️ 3♠️ A♦️ 6♥️
+你22点：2♣️ 4♣️ 7♠️ 9♠️
+
+你输了！"""
+
+
+@Client.on_message(
+    (custom_filters.reply_to_me | filters.private)
+    & filters.regex(r"庄.*?你(输|赢)了", re.DOTALL)
+)
+@Client.on_edited_message(
+    (custom_filters.reply_to_me | filters.private)
+    & filters.regex(r"庄.*?你(输|赢)了", re.DOTALL)
+)
+async def end_game(client: Client, message: Message):
+    match = message.matches[0]
+    x = match.group(1)
+    global lose_time
+    if x == "赢":
+        lose_time = 0
+    else:
+        lose_time = min(lose_time + 1, MAX_LOSE_TIME)
+    bonus = int(MAX_BONUS / (2 ** (MAX_LOSE_TIME - lose_time)))
+    await client.send_message(
+        message.chat.id,
+        f"/blackjack@PTVicomoBot {bonus}",
+    )
