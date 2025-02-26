@@ -42,10 +42,11 @@ class Deck:
         logger.info(player_cards)
         self.shuffle_card()
         logger.info(self.cards)
-        while card := self.guess_dealer_first_card() == False:
+        while (card := self.guess_dealer_first_card()) == False:
             self.shuffle_card()
+        logger.info(self.cards)
         self.dealer_hand = [card] + self.dealer_hand
-        print(self.dealer_hand)
+        logger.info(self.dealer_hand)
         while self.dealer_hand_value() < 17:
             self.dealer_draw()
         self.dealer_value = self.dealer_hand_value()
@@ -57,13 +58,14 @@ class Deck:
         random.shuffle(self.cards)
 
     def guess_dealer_first_card(self):
-        card = self.draw_card()
+        card = self.cards[-1]
         if len(self.dealer_hand) > 1:
             if self.calculate_hand_value([card, self.dealer_hand[0]]) > 16:
                 return False
         if len(self.player_hand) - len(self.dealer_hand) > 1:
             if self.calculate_hand_value([card, self.dealer_hand]) < 17:
                 return False
+        self.cards.remove(card)
         return card
 
     def add(self):
