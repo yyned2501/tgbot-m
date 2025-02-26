@@ -163,13 +163,15 @@ async def blackjack(client: Client, message: Message):
 
     add_value = 0
     done_value = 0
-    total_simulations = 10000
+    total_simulations = 100
 
     for _ in range(total_simulations):
         deck = Deck(dealer_cards, player_cards)
         done_value += deck.calculate_result()
+        logger.info(done_value)
         add_value += deck.add()
+        logger.info(add_value)
 
-    await message.reply_text(
+    await message.reply(
         f"不拿希望: {add_value/total_simulations:.2%}\n拿牌期望: {done_value/total_simulations:.2%}"
     )
