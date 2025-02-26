@@ -161,7 +161,7 @@ async def blackjack(client: Client, message: Message):
 
     add_value = 0
     done_value = 0
-    total_simulations = 1000
+    total_simulations = 100
 
     for _ in range(total_simulations):
         deck = Deck(dealer_cards, player_cards)
