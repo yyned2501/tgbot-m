@@ -38,12 +38,14 @@ class Deck:
     def __init__(self, dealer_cards: list[str], player_cards: list[str]):
         self.dealer_hand = dealer_cards
         self.player_hand = player_cards
-        print(dealer_cards, player_cards)
+        logger.info(dealer_cards)
+        logger.info(player_cards)
         self.shuffle_card()
-        print(self.cards)
+        logger.info(self.cards)
         while card := self.guess_dealer_first_card() == False:
             self.shuffle_card()
         self.dealer_hand = [card] + self.dealer_hand
+        print(self.dealer_hand)
         while self.dealer_hand_value() < 17:
             self.dealer_draw()
         self.dealer_value = self.dealer_hand_value()
