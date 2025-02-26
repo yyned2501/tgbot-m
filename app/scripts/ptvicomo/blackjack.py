@@ -224,3 +224,19 @@ async def end_game(client: Client, message: Message):
         message.chat.id,
         f"/blackjack@PTVicomoBot {bonus}",
     )
+
+
+@Client.on_message(
+    (custom_filters.reply_to_me | filters.private)
+    & filters.regex(r"庄.*?平局", re.DOTALL)
+)
+@Client.on_edited_message(
+    (custom_filters.reply_to_me | filters.private)
+    & filters.regex(r"庄.*?平局", re.DOTALL)
+)
+async def end_game(client: Client, message: Message):
+    bonus = int(MAX_BONUS / (2 ** (MAX_LOSE_TIME - lose_time)))
+    await client.send_message(
+        message.chat.id,
+        f"/blackjack@PTVicomoBot {bonus}",
+    )
