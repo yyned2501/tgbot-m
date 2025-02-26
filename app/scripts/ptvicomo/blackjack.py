@@ -195,14 +195,6 @@ async def xd21(client: Client, message: Message):
     )
 
 
-"""玩家：Yy 七世
-象草：10000
-庄20点：5♦️ 5♥️ 3♠️ A♦️ 6♥️
-你22点：2♣️ 4♣️ 7♠️ 9♠️
-
-你输了！"""
-
-
 @Client.on_message(
     (custom_filters.reply_to_me | filters.private)
     & filters.regex(r"庄.*?你(输|赢)了", re.DOTALL)
@@ -234,7 +226,7 @@ async def end_game(client: Client, message: Message):
     (custom_filters.reply_to_me | filters.private)
     & filters.regex(r"庄.*?平局", re.DOTALL)
 )
-async def end_game(client: Client, message: Message):
+async def next_game(client: Client, message: Message):
     bonus = int(MAX_BONUS / (2 ** (MAX_LOSE_TIME - lose_time)))
     await client.send_message(
         message.chat.id,
