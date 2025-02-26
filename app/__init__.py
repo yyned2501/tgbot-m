@@ -1,3 +1,4 @@
+import asyncio
 import os
 
 import redis
@@ -19,7 +20,11 @@ class Client(_Client):
 
     async def invoke(self, *arg, **kargs):
         await self.bucket.consume()
-        return await super().invoke(*arg, **kargs)
+        try:
+            return await super().invoke(*arg, **kargs)
+        except TimeoutError:
+            asyncio.sleep(1)
+            return await self.invoke(*arg, **kargs)
 
 
 os.environ["TZ"] = "Asia/Shanghai"
