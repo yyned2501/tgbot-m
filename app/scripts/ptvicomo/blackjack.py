@@ -36,8 +36,8 @@ ALL_CARDS = [
 
 class Deck:
     def __init__(self, dealer_cards: list[str], player_cards: list[str]):
-        self.dealer_hand = dealer_cards
-        self.player_hand = player_cards
+        self.dealer_hand = deepcopy(dealer_cards)
+        self.player_hand = deepcopy(player_cards)
         logger.info(dealer_cards)
         logger.info(player_cards)
         self.shuffle_card()
