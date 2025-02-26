@@ -66,6 +66,7 @@ class Deck:
 
     def add(self):
         sub_0 = -1
+        self.player_draw()
         while ((sub := self.calculate_result()) < 1) and (
             self.calculate_hand_value(self.player_hand) < 21
         ):
