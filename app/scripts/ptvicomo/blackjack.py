@@ -39,6 +39,7 @@ class Deck:
         self.dealer_hand = dealer_cards
         self.player_hand = player_cards
         self.shuffle_card()
+        print()
         while card := self.guess_dealer_first_card() == False:
             self.shuffle_card()
         self.dealer_hand = [card] + self.dealer_hand
@@ -152,8 +153,8 @@ class Deck:
 async def blackjack(client: Client, message: Message):
     logger.info(message.text)
     match = message.matches[0]
-    dealer_cards = match.group(1)
-    player_cards = match.group(2)
+    dealer_cards = match.group(1).split(" ")
+    player_cards = match.group(2).split(" ")
 
     add_value = 0
     done_value = 0
