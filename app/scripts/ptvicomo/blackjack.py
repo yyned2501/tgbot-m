@@ -44,7 +44,7 @@ class Deck:
         self.dealer_hand = [card] + self.dealer_hand
         while self.dealer_hand_value() < 17:
             self.dealer_draw()
-        logger.info(f"dealer:{self.dealer_hand}")
+        logger.debug(f"dealer:{self.dealer_hand}")
         self.dealer_value = self.dealer_hand_value()
 
     def shuffle_card(self):
@@ -73,7 +73,7 @@ class Deck:
             if sub == 0:
                 sub_0 = sub
             self.player_draw()
-        logger.info(f"player{self.player_hand}")
+        logger.debug(f"player{self.player_hand}")
         return max(self.calculate_result(), sub_0)
 
     def draw_card(self):
@@ -166,10 +166,9 @@ async def blackjack(client: Client, message: Message):
     for _ in range(total_simulations):
         deck = Deck(dealer_cards, player_cards)
         done_value += deck.calculate_result()
-
         add_value += deck.add()
-        logger.info(f"{_}:{add_value}-{done_value}")
-
-    await message.reply(
-        f"不拿希望: {done_value/total_simulations:.02}\n拿牌期望: {add_value/total_simulations:.02}"
-    )
+    logger.info(f"{add_value}-{done_value}")
+    if add_value >= done_value:
+        await message.click(0)
+    else:
+        await message.click(1)
