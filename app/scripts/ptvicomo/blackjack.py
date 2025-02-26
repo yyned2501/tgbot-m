@@ -38,15 +38,10 @@ class Deck:
     def __init__(self, dealer_cards: list[str], player_cards: list[str]):
         self.dealer_hand = deepcopy(dealer_cards)
         self.player_hand = deepcopy(player_cards)
-        logger.info(dealer_cards)
-        logger.info(player_cards)
         self.shuffle_card()
-        logger.info(self.cards)
         while (card := self.guess_dealer_first_card()) == False:
             self.shuffle_card()
-        logger.info(self.cards)
         self.dealer_hand = [card] + self.dealer_hand
-        logger.info(self.dealer_hand)
         while self.dealer_hand_value() < 17:
             self.dealer_draw()
         self.dealer_value = self.dealer_hand_value()
@@ -168,10 +163,8 @@ async def blackjack(client: Client, message: Message):
     for _ in range(total_simulations):
         deck = Deck(dealer_cards, player_cards)
         done_value += deck.calculate_result()
-        logger.info(done_value)
         add_value += deck.add()
-        logger.info(add_value)
 
     await message.reply(
-        f"不拿希望: {add_value/total_simulations:.2%}\n拿牌期望: {done_value/total_simulations:.2%}"
+        f"不拿希望: {done_value/total_simulations:.02}\n拿牌期望: {add_value/total_simulations:.02}"
     )
