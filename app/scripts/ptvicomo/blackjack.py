@@ -215,6 +215,7 @@ async def end_game(client: Client, message: Message):
         lose_time = min(lose_time + 1, MAX_LOSE_TIME)
     bonus = int(MAX_BONUS / (2 ** (MAX_LOSE_TIME - lose_time)))
     if AUTO:
+        await asyncio.sleep(2)
         await client.send_message(
             message.chat.id,
             f"/blackjack@PTVicomoBot {bonus}",
@@ -232,6 +233,7 @@ async def end_game(client: Client, message: Message):
 async def next_game(client: Client, message: Message):
     bonus = int(MAX_BONUS / (2 ** (MAX_LOSE_TIME - lose_time)))
     if AUTO:
+        await asyncio.sleep(2)
         await client.send_message(
             message.chat.id,
             f"/blackjack@PTVicomoBot {bonus}",
