@@ -176,9 +176,9 @@ async def blackjack(client: Client, message: Message):
     logger.info(f"{add_value}:{done_value}")
     await asyncio.sleep(1)
     if add_value >= done_value:
-        await message.click(0)
+        await client.request_callback_answer(message.chat.id, message.id, "add")
     else:
-        await message.click(1)
+        await client.request_callback_answer(message.chat.id, message.id, "done")
 
 
 @Client.on_message(filters.command("xd21") & filters.me)
