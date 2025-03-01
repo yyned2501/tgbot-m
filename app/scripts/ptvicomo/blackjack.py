@@ -62,7 +62,7 @@ class Deck:
     def guess_dealer_first_card(self):
         card = self.cards[-1]
         if len(self.dealer_hand) > 1:
-            if self.calculate_hand_value([card, self.dealer_hand[0]]) > 16:
+            if self.calculate_hand_value([card] + self.dealer_hand[:-1]) > 16:
                 return False
         if len(self.player_hand) - len(self.dealer_hand) > 1:
             if self.calculate_hand_value([card] + self.dealer_hand) < 17:
