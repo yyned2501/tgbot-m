@@ -18,13 +18,14 @@ class Client(_Client):
         super().__init__(*arg, **karg)
         self.bucket = AsyncTokenBucket(capacity=10, fill_rate=1)
 
-    async def invoke(self, *arg, **kargs):
+    async def invoke(self, *arg, err=0, **kargs):
         await self.bucket.consume()
-        try:
-            return await super().invoke(*arg, **kargs)
-        except TimeoutError:
-            asyncio.sleep(1)
-            return await self.invoke(*arg, **kargs)
+        if err < 3:
+            try:
+                return await super().invoke(*arg, **kargs)
+            except TimeoutError:
+                asyncio.sleep(1)
+                return await self.invoke(*arg, err=err + 1, **kargs)
 
 
 os.environ["TZ"] = "Asia/Shanghai"
