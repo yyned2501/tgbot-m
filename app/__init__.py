@@ -16,7 +16,7 @@ from app.config import setting, plugins
 class Client(_Client):
     def __init__(self, *arg, **karg):
         super().__init__(*arg, **karg)
-        self.bucket = AsyncTokenBucket(capacity=10, fill_rate=1)
+        self.bucket = AsyncTokenBucket(capacity=10, fill_rate=5)
 
     async def invoke(self, *arg, err=0, **kargs):
         await self.bucket.consume()
