@@ -37,7 +37,7 @@ async def gift(client: Client, message: Message):
                 .all()
             )
             uids = set([tr.user_id for tr in today_tranform])
-            if len(uids) < 10:
+            if len(uids) < setting["ptvicomo"]["gift"]["count"]:
                 if user.id in uids:
                     delete_message(await message.reply(f"今天给过了，明天再来！"), 30)
                 else:

@@ -36,7 +36,7 @@ zhuque:
   ydx_model:
     push_chat_id: me
     wwd: False
-    
+
 agsv:
   redpocket:
     push_chat_id: me
@@ -48,3 +48,4 @@ redleaves:
 ptvicomo:
   gift:
     keyword: "#小萝莉给点"
+    count: 20
