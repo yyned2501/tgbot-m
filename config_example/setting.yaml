@@ -44,3 +44,7 @@ agsv:
 redleaves:
   redpocket:
     push_chat_id: me
+
+ptvicomo:
+  gift:
+    keyword: "#小萝莉给点"

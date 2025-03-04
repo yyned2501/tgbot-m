@@ -4,7 +4,7 @@ from pyrogram.types.messages_and_media import Message
 from pyrogram import filters
 from sqlalchemy import select
 
-from app import Client
+from app import Client, setting
 from app.models import ASSession
 from app.models.transform import Transform, User
 from app.libs.messages import delete_message
@@ -14,7 +14,7 @@ SITE_NAME = "象岛"
 
 
 @Client.on_message(
-    filters.chat(TARGET) & filters.regex(r"^#小萝莉给点"),
+    filters.chat(TARGET) & filters.regex(rf"^{setting["ptvicomo"]["gift"]["keyword"]}"),
 )
 async def gift(client: Client, message: Message):
     today_midnight = datetime.datetime.combine(
