@@ -26,10 +26,8 @@ class Client(_Client):
         if err < 3:
             try:
                 return await super().invoke(*arg, **kargs)
-            except pyrogram.errors.exceptions.bad_request_400.QueryIdInvalid:
-                logger.error(traceback.format_exc())
             except TimeoutError:
-                asyncio.sleep(1)
+                await asyncio.sleep(1)
                 return await self.invoke(*arg, err=err + 1, **kargs)
 
 
