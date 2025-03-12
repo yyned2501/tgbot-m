@@ -16,7 +16,7 @@ async def fdajie(client: Client, message: Message):
         new_name = message.command[2]
     first_name = client.me.first_name
     last_name = client.me.last_name
-    await client.update_profile(new_name)
+    await client.update_profile(new_name, "")
     r_message = await message.reply_to_message.reply(f"/dajie {count}")
     await asyncio.sleep(1)
     await r_message.delete()
