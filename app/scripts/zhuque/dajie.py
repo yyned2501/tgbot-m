@@ -1,3 +1,4 @@
+import asyncio
 from pyrogram import filters
 from pyrogram.types.messages_and_media import Message
 
@@ -16,6 +17,7 @@ async def fdajie(client: Client, message: Message):
     first_name = client.me.first_name
     last_name = client.me.last_name
     await client.update_profile(new_name)
-    await (await message.reply_to_message.reply(f"/dajie {count}")).delete()
+    r_message = await message.reply_to_message.reply(f"/dajie {count}")
+    await asyncio.sleep(1)
+    await r_message.delete()
     await client.update_profile(first_name, last_name)
-    
