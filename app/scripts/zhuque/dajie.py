@@ -14,7 +14,7 @@ async def fdajie(client: Client, message: Message):
     count = int(message.command[1])
     if len(message.command) > 2:
         new_first_name = message.command[2]
-        new_last_name = ""
+        new_last_name = message.command[3] if len(message.command) > 3 else ""
     else:
         new_first_name = message.reply_to_message.from_user.first_name
         new_last_name = message.reply_to_message.from_user.last_name
