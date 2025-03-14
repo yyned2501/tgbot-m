@@ -15,7 +15,7 @@ logger = logging.getLogger("main")
 
 GROUP = -1002022762746
 BOT = 7124396542
-MAX_BONUS = 10000
+MAX_BONUS = 1000000
 MAX_LOSE_TIME = 3
 lose_time = 0
 AUTO = False
@@ -188,13 +188,13 @@ async def xd21(client: Client, message: Message):
     if message.command[1] == "on":
         AUTO = True
         delete_message(await message.edit("21点启动"), 5)
+        await client.send_message(
+            message.chat.id,
+            f"/blackjack@PTVicomoBot {int(MAX_BONUS/(2**MAX_LOSE_TIME))}",
+        )
     else:
         AUTO = False
         delete_message(await message.edit("21点关闭"), 5)
-    await client.send_message(
-        message.chat.id,
-        f"/blackjack@PTVicomoBot {int(MAX_BONUS/(2**MAX_LOSE_TIME))}",
-    )
 
 
 @Client.on_message(
