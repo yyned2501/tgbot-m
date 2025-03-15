@@ -187,6 +187,10 @@ async def xd21(client: Client, message: Message):
 
     if message.command[1] == "on":
         AUTO = True
+        MAX_BONUS = int(message.command[2]) if len(message.command) > 2 else MAX_BONUS
+        MAX_LOSE_TIME = (
+            int(message.command[3]) if len(message.command) > 3 else MAX_LOSE_TIME
+        )
         delete_message(await message.edit("21点启动"), 5)
         await client.send_message(
             message.chat.id,
