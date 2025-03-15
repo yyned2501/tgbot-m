@@ -183,7 +183,7 @@ async def blackjack(client: Client, message: Message):
 
 @Client.on_message(filters.command("xd21") & filters.me)
 async def xd21(client: Client, message: Message):
-    global AUTO
+    global AUTO, MAX_BONUS, MAX_LOSE_TIME
 
     if message.command[1] == "on":
         AUTO = True
