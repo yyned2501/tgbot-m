@@ -89,5 +89,5 @@ async def lphoto(client: Client, message: Message):
 
 @Client.on_message(filters.me & filters.command("sphoto"))
 async def sphoto(client: Client, message: Message):
-    await client.set_profile_photo("photo.jpg")
+    await client.set_profile_photo(photo="photo.jpg")
     await message.delete()
