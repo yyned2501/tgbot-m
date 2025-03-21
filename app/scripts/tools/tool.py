@@ -74,9 +74,14 @@ async def call_self_delatemessage(client: Client, message: Message):
     await self_delatemessage(client, message)
 
 
-@Client.on_message(filters.me & filters.command("dphoto"))
-async def call_self_delatemessage(client: Client, message: Message):
+@Client.on_message(filters.me & filters.command("lphoto"))
+async def lphoto(client: Client, message: Message):
     photos_list = []
     async for photo in client.get_chat_photos("me"):
         photos_list.append(photo.file_id)
     await message.edit(f"头像列表: {photos_list}")
+
+@Client.on_message(filters.me & filters.command("sphoto"))
+async def sphoto(client: Client, message: Message):
+    photo = await client.get_profile_photos("me")
+    await message.edit(f"头像: {photo[0].file_id}")
