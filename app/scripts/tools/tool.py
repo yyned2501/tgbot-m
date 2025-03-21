@@ -73,9 +73,19 @@ async def self_delatemessage(client: Client, message: Message):
 async def call_self_delatemessage(client: Client, message: Message):
     await self_delatemessage(client, message)
 
-
-@Client.on_message(filters.me & filters.command("gphoto") & filters.reply)
+@Client.on_message(filters.me & filters.command("lphoto") )
 async def lphoto(client: Client, message: Message):
+    photos_list = []
+    async for photo in client.get_chat_photos("me"):
+        photo_path = await client.download_media(photo.file_id)
+
+    await message.edit("正在发送头像...")
+    for photo_path in photos_list:
+        await client.send_document("me", photo)
+
+    await message.edit("所有头像已发送到你的私聊。")
+@Client.on_message(filters.me & filters.command("gphoto") & filters.reply)
+async def gphoto(client: Client, message: Message):
     photos_list = []
     async for photo in client.get_chat_photos(message.reply_to_message.from_user.id, 1):
         photo_path = await client.download_media(photo.file_id, file_name="photo.jpg")
@@ -89,5 +99,12 @@ async def lphoto(client: Client, message: Message):
 
 @Client.on_message(filters.me & filters.command("sphoto"))
 async def sphoto(client: Client, message: Message):
-    await client.set_profile_photo(photo="photo.jpg")
+    await client.set_profile_photo(photo="downloads/photo.jpg")
+    await message.delete()
+
+
+@Client.on_message(filters.me & filters.command("dphoto"))
+async def dphoto(client: Client, message: Message):
+    async for photo in client.get_chat_photos("me", limit=1):
+        await client.delete_profile_photos(photo.file_id)
     await message.delete()
