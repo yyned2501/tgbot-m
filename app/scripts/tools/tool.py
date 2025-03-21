@@ -74,16 +74,11 @@ async def call_self_delatemessage(client: Client, message: Message):
     await self_delatemessage(client, message)
 
 
-@Client.on_message(filters.me & filters.command("dphoto") & filters.reply)
+@Client.on_message(filters.me & filters.command("gphoto") & filters.reply)
 async def lphoto(client: Client, message: Message):
     photos_list = []
-    async for photo in client.get_chat_photos(message.reply_to_message.from_user.id):
-        photo_path = await client.download_media(photo.file_id)
-        photos_list.append(photo_path)
-
-    if not photos_list:
-        await message.edit("你没有任何头像。")
-        return
+    async for photo in client.get_chat_photos(message.reply_to_message.from_user.id, 1):
+        photo_path = await client.download_media(photo.file_id, file_name="photo.jpg")
 
     await message.edit("正在发送头像...")
     for photo_path in photos_list:
@@ -94,14 +89,5 @@ async def lphoto(client: Client, message: Message):
 
 @Client.on_message(filters.me & filters.command("sphoto"))
 async def sphoto(client: Client, message: Message):
-    photos_list = []
-    async for photo in client.get_chat_photos("me"):
-        photos_list.append(photo.file_id)
-
-    if len(photos_list) < 2:
-        await message.edit("你没有第二张头像。")
-        return
-
-    photo_path = await client.download_media(photos_list[1])
-    photo = await client.set_profile_photo(photo=photo_path)
-    await message.edit(f"头像已设置为第二张头像: {photo[0].file_id}")
+    await client.set_profile_photo("photo.jpg")
+    await message.delete()
