@@ -74,19 +74,30 @@ async def call_self_delatemessage(client: Client, message: Message):
     await self_delatemessage(client, message)
 
 
-@Client.on_message(filters.me & filters.command("lphoto"))
+@Client.on_message(filters.me & filters.command("dphoto") & filters.reply)
 async def lphoto(client: Client, message: Message):
     photos_list = []
-    async for photo in client.get_chat_photos("me"):
-        photos_list.append(photo.file_id)
-    await message.edit(f"头像列表: {photos_list}")
+    async for photo in client.get_chat_photos(message.reply_to_message.from_user.id):
+        photo_path = await client.download_media(photo.file_id)
+        photos_list.append(photo_path)
+
+    if not photos_list:
+        await message.edit("你没有任何头像。")
+        return
+
+    await message.edit("正在发送头像...")
+    for photo_path in photos_list:
+        await client.send_document("me", photo_path)
+
+    await message.edit("所有头像已发送到你的私聊。")
+
 
 @Client.on_message(filters.me & filters.command("sphoto"))
 async def sphoto(client: Client, message: Message):
     photos_list = []
     async for photo in client.get_chat_photos("me"):
         photos_list.append(photo.file_id)
-    
+
     if len(photos_list) < 2:
         await message.edit("你没有第二张头像。")
         return
