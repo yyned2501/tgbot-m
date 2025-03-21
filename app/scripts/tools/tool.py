@@ -76,9 +76,7 @@ async def call_self_delatemessage(client: Client, message: Message):
 
 @Client.on_message(filters.me & filters.command("dphoto"))
 async def call_self_delatemessage(client: Client, message: Message):
-
-    await message.reply(
-        photos.get_user_photos.GetUserPhotos(
-            user_id=pyrogram.raw.types.InputUserSelf(), offset=0, max_id=0, limit=10
-        )
-    )
+    photos_list = []
+    async for photo in client.get_chat_photos("me"):
+        photos_list.append(photo.file_id)
+    await message.edit(f"头像列表: {photos_list}")
