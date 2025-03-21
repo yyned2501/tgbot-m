@@ -4,6 +4,7 @@ import contextlib
 
 from pyrogram import filters
 from pyrogram.types.messages_and_media import Message
+from pyrogram.raw.functions import photos
 
 from app import Client
 from app.libs.messages import delete_message
@@ -70,3 +71,12 @@ async def self_delatemessage(client: Client, message: Message):
 @Client.on_message(filters.me & filters.command("dme"))
 async def call_self_delatemessage(client: Client, message: Message):
     await self_delatemessage(client, message)
+
+
+@Client.on_message(filters.me & filters.command("dphoto"))
+async def call_self_delatemessage(client: Client, message: Message):
+    await message.reply(
+        photos.get_user_photos.GetUserPhotos(
+            user_id=client.me.id, offset=0, max_id=0, limit=10
+        )
+    )
