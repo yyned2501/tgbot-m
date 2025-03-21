@@ -77,6 +77,6 @@ async def call_self_delatemessage(client: Client, message: Message):
 async def call_self_delatemessage(client: Client, message: Message):
     await message.reply(
         photos.get_user_photos.GetUserPhotos(
-            user_id=client.me.id, offset=0, max_id=0, limit=10
+            user_id=client.me, offset=0, max_id=0, limit=10
         )
     )
