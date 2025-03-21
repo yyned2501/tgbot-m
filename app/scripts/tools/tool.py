@@ -83,5 +83,13 @@ async def lphoto(client: Client, message: Message):
 
 @Client.on_message(filters.me & filters.command("sphoto"))
 async def sphoto(client: Client, message: Message):
-    photo = await client.get_profile_photos("me")
-    await message.edit(f"头像: {photo[0].file_id}")
+    photos_list = []
+    async for photo in client.get_chat_photos("me"):
+        photos_list.append(photo.file_id)
+    
+    if len(photos_list) < 2:
+        await message.edit("你没有第二张头像。")
+        return
+
+    photo = await client.set_profile_photo(photo=photos_list[1])
+    await message.edit(f"头像已设置为第二张头像: {photo[0].file_id}")
