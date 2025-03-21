@@ -91,5 +91,6 @@ async def sphoto(client: Client, message: Message):
         await message.edit("你没有第二张头像。")
         return
 
-    photo = await client.set_profile_photo(photo=photos_list[1])
+    photo_path = await client.download_media(photos_list[1])
+    photo = await client.set_profile_photo(photo=photo_path)
     await message.edit(f"头像已设置为第二张头像: {photo[0].file_id}")
