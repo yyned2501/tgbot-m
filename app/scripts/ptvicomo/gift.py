@@ -43,3 +43,4 @@ async def gift(client: Client, message: Message):
                 else:
                     bonus = randint(100, 1000)
                     await message.reply(f"+{bonus}")
+            delete_message(message, 30)
