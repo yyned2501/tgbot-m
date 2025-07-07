@@ -15,8 +15,8 @@ logger = logging.getLogger("main")
 
 GROUP = -1002022762746
 BOT = 7124396542
-MAX_BONUS = 1000000
-MAX_LOSE_TIME = 3
+MAX_BONUS = 100000
+MAX_LOSE_TIME = 0
 lose_time = 0
 AUTO = False
 ALL_CARDS = [
